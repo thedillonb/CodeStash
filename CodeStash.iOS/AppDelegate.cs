@@ -1,8 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using MonoTouch.Foundation;
+﻿using MonoTouch.Foundation;
 using MonoTouch.UIKit;
+using CodeStash.iOS.ViewControllers.Application;
+using System.Reactive.Concurrency;
+using ReactiveUI;
+using Xamarin.Utilities.Core.Services;
+using System;
+using System.Reactive;
+using System.Threading;
 
 namespace CodeStash.iOS
 {
@@ -27,10 +31,26 @@ namespace CodeStash.iOS
             UIApplication.Main(args, null, "AppDelegate");
         }
 
-        public override void FinishedLaunching(UIApplication application)
+        public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            Window = new UIWindow();
+            System.Console.WriteLine("UI Thread: " + System.Threading.Thread.CurrentThread.ManagedThreadId);
+            RxApp.MainThreadScheduler = new SynchronizationContextScheduler(SynchronizationContext.Current);
+            RxApp.DefaultExceptionHandler = Observer.Create((Exception e) =>
+            {
+                IoC.Resolve<IAlertDialogService>().Alert("Unhandled Exception", e.Message);
+                Console.WriteLine("Exception occured: " + e.Message + " at " + e.StackTrace);
+            });
+
+            // Load the IoC
+            IoC.RegisterAssemblyServicesAsSingletons(typeof(Xamarin.Utilities.Core.Services.IDefaultValueService).Assembly);
+            IoC.RegisterAssemblyServicesAsSingletons(typeof(Xamarin.Utilities.Services.DefaultValueService).Assembly);
+            IoC.RegisterAssemblyServicesAsSingletons(typeof(Core.Services.IApplicationService).Assembly);
+            IoC.RegisterAssemblyServicesAsSingletons(GetType().Assembly);
+
+            Window = new UIWindow(UIScreen.MainScreen.Bounds);
+            Window.RootViewController = new StartupViewController();
             Window.MakeKeyAndVisible();
+            return true;
         }
     }
 }
