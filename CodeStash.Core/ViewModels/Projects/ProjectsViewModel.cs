@@ -1,5 +1,4 @@
-﻿using System;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System.Threading.Tasks;
 using CodeStash.Core.Services;
 using AtlassianStashSharp.Models;
@@ -16,20 +15,14 @@ namespace CodeStash.Core.ViewModels.Projects
 
         public ProjectsViewModel(IApplicationService applicationService)
         {
-            this.ApplicationService = applicationService;
+            ApplicationService = applicationService;
             GoToProjectCommand = new ReactiveCommand();
             Projects = new ReactiveList<Project>();
         }
 
         public override async Task Load()
         {
-            var d = await ApplicationService.StashClient.Projects.GetAll().ExecuteAsync();
-
-            using (Projects.SuppressChangeNotifications())
-            {
-                Projects.Clear();
-                Projects.AddRange(d.Data.Values);
-            }
+            Projects.Reset((await ApplicationService.StashClient.Projects.GetAll().ExecuteAsync()).Data.Values);
         }
     }
 }

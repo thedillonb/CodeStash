@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -125,9 +125,16 @@
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
+    <InterfaceDefinition Include="ViewControllers\Application\AddAccountView.xib">
+      <SubType>Designer</SubType>
+    </InterfaceDefinition>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="ViewControllers\Application\LoginViewController.cs" />
+    <Compile Include="ViewControllers\Application\LoginViewController.designer.cs">
+      <DependentUpon>LoginViewController.cs</DependentUpon>
+    </Compile>
     <Compile Include="ViewControllers\Application\StartupViewController.cs" />
     <Compile Include="ViewControllers\Projects\ProjectsViewController.cs" />
     <Compile Include="ViewControllers\Repositories\RepositoriesViewController.cs" />
@@ -146,8 +153,12 @@
     <Compile Include="Images\Images.cs" />
     <Compile Include="ViewControllers\Commits\CommitsBranchViewController.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\lib\MonoTouch.SlideoutNavigation\MonoTouch.SlideoutNavigation\MonoTouch.SlideoutNavigation.csproj">
+      <Project>{6d7b9b53-cfef-46be-a608-14a4a1381cf6}</Project>
+      <Name>MonoTouch.SlideoutNavigation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\lib\Xamarin.Utilities\Xamarin.Utilities.iOS\Xamarin.Utilities.iOS.csproj">
       <Project>{5E7E39CA-0CCE-41FE-A868-EE0E567E069E}</Project>
       <Name>Xamarin.Utilities.iOS</Name>
@@ -168,20 +179,15 @@
       <Project>{3FFBFFF8-5560-4EDE-82E5-3FFDFBBA8A50}</Project>
       <Name>MonoTouch.Dialog</Name>
     </ProjectReference>
-    <ProjectReference Include="..\lib\MonoTouch.SlideoutNavigation\MonoTouch.SlideoutNavigation\MonoTouch.SlideoutNavigation.csproj">
-      <Project>{6D7B9B53-CFEF-46BE-A608-14A4A1381CF6}</Project>
-      <Name>MonoTouch.SlideoutNavigation</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ViewControllers\" />
-    <Folder Include="ViewControllers\Application\" />
-    <Folder Include="ViewControllers\Projects\" />
-    <Folder Include="ViewControllers\Repositories\" />
-    <Folder Include="ViewControllers\Source\" />
-    <Folder Include="ViewControllers\PullRequests\" />
-    <Folder Include="ViewControllers\Commits\" />
-    <Folder Include="Images\" />
     <Folder Include="Elements\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\grey_button%402x.png" />
+    <Content Include="Images\grey_button.png" />
+    <Content Include="Images\login_user_unknown%402x.png" />
+    <Content Include="Images\login_user_unknown.png" />
+    <Content Include="Images\logo.png" />
   </ItemGroup>
 </Project>

@@ -1,13 +1,10 @@
-﻿using System;
-using MonoTouch.Dialog;
-using MonoTouch.UIKit;
+﻿using CodeStash.Core.ViewModels.Application;
 
 namespace CodeStash.iOS.ViewControllers.Application
 {
-    public class SettingsViewController : DialogViewController
+    public class SettingsViewController : ViewModelDialogViewController<SettingsViewModel>
     {
         public SettingsViewController()
-            : base(UITableViewStyle.Grouped, null, true)
         {
         }
     }

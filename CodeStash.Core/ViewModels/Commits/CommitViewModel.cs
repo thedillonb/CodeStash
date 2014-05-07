@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using CodeStash.Core.Services;
 using AtlassianStashSharp.Models;
 using ReactiveUI;
@@ -36,11 +35,7 @@ namespace CodeStash.Core.ViewModels.Commits
             Commit = (await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Commits[Node].Get().ExecuteAsync()).Data;
 
             var data = await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Commits[Node].GetAllChanges().ExecuteAsync();
-            using (Changes.SuppressChangeNotifications())
-            {
-                Changes.Clear();
-                Changes.AddRange(data.Data.Values);
-            }
+            Changes.Reset(data.Data.Values);
         }
     }
 }

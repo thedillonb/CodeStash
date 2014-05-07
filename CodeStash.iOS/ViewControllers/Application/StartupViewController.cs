@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Linq;
 using MonoTouch.UIKit;
 using CodeStash.Core.ViewModels.Application;
 using MonoTouch.Dialog.Utilities;
@@ -6,6 +7,7 @@ using MonoTouch.SlideoutNavigation;
 using CodeStash.iOS.ViewControllers.Projects;
 using MonoTouch.Foundation;
 using System.Drawing;
+using ReactiveUI;
 
 namespace CodeStash.iOS.ViewControllers.Application
 {
@@ -13,7 +15,7 @@ namespace CodeStash.iOS.ViewControllers.Application
     {
         public readonly StartupViewModel ViewModel = IoC.Resolve<StartupViewModel>();
 
-        const float imageSize = 128f;
+        const float ImageSize = 128f;
 
         private UIImageView _imgView;
         private UILabel _statusLabel;
@@ -25,9 +27,7 @@ namespace CodeStash.iOS.ViewControllers.Application
         {
             ViewModel.GoToMainCommand.Subscribe(x =>
             {
-                var slideout = new SimpleSlideoutNavigationController();
-                slideout.MenuViewController = new UIViewController();
-
+                var slideout = new SimpleSlideoutNavigationController {MenuViewController = new UIViewController()};
 
                 var c = new CustomMenuNavigationController(new ProjectsViewController(), slideout);
                 slideout.MenuViewController.AddChildViewController(c);
@@ -35,11 +35,14 @@ namespace CodeStash.iOS.ViewControllers.Application
                 c.View.AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
                 slideout.MenuViewController.View.Add(c.View);
 
-                var toolbar = new UIToolbar(new RectangleF(0, slideout.MenuViewController.View.Bounds.Height - 44f, slideout.MenuViewController.View.Bounds.Width, 44f));
-                toolbar.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleTopMargin;
-                toolbar.Items = new UIBarButtonItem[] 
+                var toolbar = new UIToolbar(new RectangleF(0, slideout.MenuViewController.View.Bounds.Height - 44f, slideout.MenuViewController.View.Bounds.Width, 44f))
                 {
-                    new UIBarButtonItem(UIBarButtonSystemItem.Action, (s, e) => PresentViewController(new SettingsViewController(), true, null))
+                    AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleTopMargin,
+                    Items = new[]
+                    {
+                        new UIBarButtonItem(UIBarButtonSystemItem.Action,
+                            (s, e) => PresentViewController(new SettingsViewController(), true, null))
+                    }
                 };
                 slideout.MenuViewController.View.Add(toolbar);
 
@@ -47,15 +50,29 @@ namespace CodeStash.iOS.ViewControllers.Application
                 slideout.MainViewController = mainNavigationController;
                 UIApplication.SharedApplication.Delegate.Window.RootViewController = slideout;
             });
+
+            ViewModel.GoToAccountsCommand.Subscribe(_ =>
+            {
+                var ctrl = new AccountsViewController();
+                ctrl.ViewModel.DismissCommand.Subscribe(__ => DismissViewController(true, null));
+                PresentViewController(new UINavigationController(ctrl), true, null);
+            });
+
+            ViewModel.GoToNewUserCommand.Subscribe(_ =>
+            {
+                var ctrl = new LoginViewController();
+                ctrl.ViewModel.DismissCommand.Subscribe(__ => DismissViewController(true, null));
+                PresentViewController(new UINavigationController(ctrl), true, null);
+            });
         }
 
         public override void ViewWillLayoutSubviews()
         {
             base.ViewWillLayoutSubviews();
 
-            _imgView.Frame = new System.Drawing.RectangleF(View.Bounds.Width / 2 - imageSize / 2, View.Bounds.Height / 2 - imageSize / 2 - 30f, imageSize, imageSize);
-            _statusLabel.Frame = new System.Drawing.RectangleF(0, _imgView.Frame.Bottom + 10f, View.Bounds.Width, 15f);
-            _activityView.Center = new System.Drawing.PointF(View.Bounds.Width / 2, _statusLabel.Frame.Bottom + 16f + 16F);
+            _imgView.Frame = new RectangleF(View.Bounds.Width / 2 - ImageSize / 2, View.Bounds.Height / 2 - ImageSize / 2 - 30f, ImageSize, ImageSize);
+            _statusLabel.Frame = new RectangleF(0, _imgView.Frame.Bottom + 10f, View.Bounds.Width, 15f);
+            _activityView.Center = new PointF(View.Bounds.Width / 2, _statusLabel.Frame.Bottom + 16f + 16F);
 
             try
             {
@@ -72,35 +89,45 @@ namespace CodeStash.iOS.ViewControllers.Application
             View.AutosizesSubviews = true;
 
             _imgView = new UIImageView();
-            _imgView.Layer.CornerRadius = imageSize / 2;
+            _imgView.Layer.CornerRadius = ImageSize / 2;
             _imgView.Layer.MasksToBounds = true;
             Add(_imgView);
 
-            _statusLabel = new UILabel();
-            _statusLabel.TextAlignment = UITextAlignment.Center;
-            _statusLabel.Font = UIFont.FromName("HelveticaNeue", 13f);
-            _statusLabel.TextColor = UIColor.FromWhiteAlpha(0.34f, 1f);
+            _statusLabel = new UILabel
+            {
+                TextAlignment = UITextAlignment.Center,
+                Font = UIFont.FromName("HelveticaNeue", 13f),
+                TextColor = UIColor.FromWhiteAlpha(0.34f, 1f)
+            };
             Add(_statusLabel);
 
-            _activityView = new UIActivityIndicatorView() { HidesWhenStopped = true };
-            _activityView.Color = UIColor.FromRGB(0.33f, 0.33f, 0.33f);
+            _activityView = new UIActivityIndicatorView
+            {
+                HidesWhenStopped = true,
+                Color = UIColor.FromRGB(0.33f, 0.33f, 0.33f)
+            };
             Add(_activityView);
 
-//            var vm = (BaseStartupViewModel)ViewModel;
-//            vm.Bind(x => x.IsLoggingIn, x =>
-//            {
-//                if (x)
-//                {
-//                    _activityView.StartAnimating();
-//                }
-//                else
-//                {
-//                    _activityView.StopAnimating();
-//                }
-//            });
-//
-//            vm.Bind(x => x.ImageUrl, UpdatedImage);
-//            vm.Bind(x => x.Status, x => _statusLabel.Text = x);
+
+            ViewModel.WhenAnyValue(x => x.Account).Where(x => x != null).Subscribe(x =>
+            {
+                UpdatedImage(null);
+                _statusLabel.Text = "Logging in " + x.Username;
+                _activityView.Hidden = false;
+                _statusLabel.Hidden = false;
+            });
+
+            ViewModel.LoadCommand.IsExecuting.Subscribe(x =>
+            {
+                if (x)
+                {
+                    _activityView.StartAnimating();
+                }
+                else
+                {
+                    _activityView.StopAnimating();
+                }
+            });
 
         }
 
@@ -126,9 +153,9 @@ namespace CodeStash.iOS.ViewControllers.Application
 
         private void AssignUnknownUserImage()
         {
-//            var img = Theme.CurrentTheme.LoginUserUnknown.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
-//            _imgView.Image = img;
-//            _imgView.TintColor = UIColor.FromWhiteAlpha(0.34f, 1f);
+            var img = Images.LoginUserUnknown.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
+            _imgView.Image = img;
+            _imgView.TintColor = UIColor.FromWhiteAlpha(0.34f, 1f);
         }
 
 
@@ -148,7 +175,7 @@ namespace CodeStash.iOS.ViewControllers.Application
         public override void ViewDidAppear(bool animated)
         {
             base.ViewDidAppear(animated);
-            ViewModel.GoToMainCommand.Execute(null);
+            ViewModel.LoadCommand.Execute(null);
         }
 
         public override bool ShouldAutorotate()
@@ -173,11 +200,6 @@ namespace CodeStash.iOS.ViewControllers.Application
             private readonly SlideoutNavigationController _slideoutNavigationController;
 
             /// <summary>
-            /// The view controller transform.
-            /// </summary>
-            public Func<UIViewController, UIViewController> ViewControllerTransform;
-
-            /// <summary>
             /// Initializes a new instance of the <see cref="MonoTouch.SlideoutNavigation.MenuNavigationController"/> class.
             /// </summary>
             /// <param name="rootViewController">Root view controller.</param>
@@ -186,12 +208,12 @@ namespace CodeStash.iOS.ViewControllers.Application
                 : base(rootViewController)
             {
                 _slideoutNavigationController = slideoutNavigationController;
-                ViewControllerTransform = x => new MainNavigationController(x, slideoutNavigationController);
             }
 
             public override void PresentViewController(UIViewController viewControllerToPresent, bool animated, NSAction completionHandler)
             {
-                _slideoutNavigationController.SetMainViewController(ViewControllerTransform(viewControllerToPresent), animated);
+                var ctrl = new MainNavigationController(viewControllerToPresent, _slideoutNavigationController);
+                _slideoutNavigationController.SetMainViewController(ctrl, animated);
             }
         }
 

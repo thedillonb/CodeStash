@@ -40,11 +40,7 @@ namespace CodeStash.Core.ViewModels.Source
         {
             var response = await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].GetContents(Path, Branch, false).ExecuteAsync();
             ContentPath = response.Data.Path;
-            using (Contents.SuppressChangeNotifications())
-            {
-                Contents.Clear();
-                Contents.AddRange(response.Data.Children.Values);
-            }
+            Contents.Reset(response.Data.Children.Values);
         }
     }
 }

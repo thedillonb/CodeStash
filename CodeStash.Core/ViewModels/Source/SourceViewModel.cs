@@ -43,20 +43,12 @@ namespace CodeStash.Core.ViewModels.Source
             if (SelectedView == 0)
             {
                 var response = await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Branches.GetAll().ExecuteAsync();
-                using (Branches.SuppressChangeNotifications())
-                {
-                    Branches.Clear();
-                    Branches.AddRange(response.Data.Values);
-                }
+                Branches.Reset(response.Data.Values);
             }
             else
             {
                 var response = await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Tags.GetAll().ExecuteAsync();
-                using (Tags.SuppressChangeNotifications())
-                {
-                    Tags.Clear();
-                    Tags.AddRange(response.Data.Values);
-                }
+                Tags.Reset(response.Data.Values);
             }
         }
     }

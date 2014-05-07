@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -29,6 +29,7 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Monotouch" />
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -50,15 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
-    <Folder Include="ViewModels\" />
-    <Folder Include="ViewModels\Application\" />
-    <Folder Include="ViewModels\Projects\" />
-    <Folder Include="ViewModels\Repositories\" />
-    <Folder Include="Services\" />
-    <Folder Include="ViewModels\Commits\" />
-    <Folder Include="ViewModels\Source\" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\lib\AtlassianStashSharp\AtlassianStashSharp.csproj">
       <Project>{E70FFE95-0577-4BE0-9D1B-978AFE3B2464}</Project>
@@ -70,9 +64,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Account.cs" />
+    <Compile Include="Data\Accounts.cs" />
+    <Compile Include="Data\Database.cs" />
+    <Compile Include="ViewModels\Application\AccountsViewModel.cs" />
+    <Compile Include="ViewModels\Application\LoginViewModel.cs" />
+    <Compile Include="ViewModels\Application\SettingsViewModel.cs" />
     <Compile Include="ViewModels\LoadableViewModel.cs" />
     <Compile Include="ViewModels\Application\StartupViewModel.cs" />
     <Compile Include="ViewModels\Projects\ProjectsViewModel.cs" />
+    <Compile Include="ViewModels\PullRequests\PullRequestsViewModel.cs" />
+    <Compile Include="ViewModels\PullRequests\PullRequestViewModel.cs" />
     <Compile Include="ViewModels\Repositories\RepositoriesViewModel.cs" />
     <Compile Include="Services\IApplicationService.cs" />
     <Compile Include="Services\ApplicationService.cs" />
