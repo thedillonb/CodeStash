@@ -3,21 +3,38 @@ using CodeStash.Core.ViewModels.Repositories;
 using MonoTouch.Dialog;
 using CodeStash.iOS.ViewControllers.Commits;
 using CodeStash.iOS.ViewControllers.Source;
+using CodeStash.iOS.ViewControllers.PullRequests;
+using CodeStash.iOS.Views;
+using MonoTouch.UIKit;
+using MonoTouch.Dialog.Elements;
 
 namespace CodeStash.iOS.ViewControllers.Repositories
 {
     public class RepositoryViewController : ViewModelDialogViewController<RepositoryViewModel>
     {
-        public RepositoryViewController()
-            : base(MonoTouch.UIKit.UITableViewStyle.Grouped)
+        private readonly RepositoryHeaderView _header;
+        private const float _spacing = 10f;
+
+        public RepositoryViewController(string projectKey, string repositorySlug)
         {
+            ViewModel.ProjectKey = projectKey;
+            ViewModel.RepositorySlug = repositorySlug;
+            Title = repositorySlug;
+
+            _header = new RepositoryHeaderView() { BackgroundColor = UIColor.Clear };
+            _header.ImageView.Image = Images.LoginUserUnknown;
+            _header.NameLabel.Text = repositorySlug;
+
             var commitSection = new Section();
+            commitSection.Add(new SpacingElement(_spacing));
             commitSection.Add(new StyledStringElement("Commits", () => ViewModel.GoToCommitsCommand.Execute(null)));
 
             var sourceSection = new Section();
+            sourceSection.Add(new SpacingElement(_spacing));
             sourceSection.Add(new StyledStringElement("Source Code", () => ViewModel.GoToSourceCommand.Execute(null)));
 
             var pullRequestsSection = new Section();
+            pullRequestsSection.Add(new SpacingElement(_spacing));
             pullRequestsSection.Add(new StyledStringElement("Pull Requests", () => ViewModel.GoToPullRequestsCommand.Execute(null)));
 
             var root = new RootElement(Title);
@@ -26,9 +43,11 @@ namespace CodeStash.iOS.ViewControllers.Repositories
             root.Add(pullRequestsSection);
             Root = root;
 
-            ViewModel.GoToCommitsCommand.Subscribe(_ => 
-                NavigationController.PushViewController(
-                    new CommitsBranchViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug), true));
+            ViewModel.GoToCommitsCommand.Subscribe(_ =>
+            {
+                var ctrl = new CommitsBranchViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug);
+                NavigationController.PushViewController(ctrl, true);
+            });
 
             ViewModel.GoToSourceCommand.Subscribe(_ =>
             {
@@ -38,6 +57,20 @@ namespace CodeStash.iOS.ViewControllers.Repositories
                 NavigationController.PushViewController(ctrl, true);
             });
 
+            ViewModel.GoToPullRequestsCommand.Subscribe(_ =>
+            {
+                var ctrl = new PullRequestsViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug);
+                NavigationController.PushViewController(ctrl, true);
+            });
+        }
+
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
+            TableView.TableHeaderView = _header;
+            TableView.TableFooterView = new UIView();
+            TableView.SeparatorInset = UIEdgeInsets.Zero;
+            TableView.BackgroundColor = UIColor.GroupTableViewBackgroundColor;
         }
     }
 }

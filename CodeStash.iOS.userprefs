@@ -1,6 +1,17 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhoneRetina.7.1" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="lib/AtlassianStashSharp/Helpers/UnixDateTimeHelper.cs">
+    <Files>
+      <File FileName="CodeStash.Core/Data/Account.cs" Line="1" Column="1" />
+      <File FileName="CodeStash.Core/ViewModels/Application/SettingsViewModel.cs" Line="1" Column="1" />
+      <File FileName="CodeStash.Core/ViewModels/Application/AccountsViewModel.cs" Line="1" Column="1" />
+      <File FileName="CodeStash.iOS/ViewControllers/Application/LoginViewController.cs" Line="1" Column="1" />
+      <File FileName="CodeStash.iOS/Images/Images.cs" Line="1" Column="1" />
+      <File FileName="CodeStash.Core/ViewModels/Application/LoginViewModel.cs" Line="1" Column="1" />
+      <File FileName="CodeStash.iOS/ViewControllers/PullRequests/PullRequestsViewController.cs" Line="1" Column="1" />
+      <File FileName="lib/AtlassianStashSharp/Helpers/UnixDateTimeHelper.cs" Line="15" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

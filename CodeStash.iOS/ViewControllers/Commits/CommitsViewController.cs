@@ -22,7 +22,7 @@ namespace CodeStash.iOS.ViewControllers.Commits
                     var element = new NameTimeStringElement
                     { 
                         Name = x.Author.Name, 
-                        Time = new DateTime(x.AuthorTimestamp, DateTimeKind.Utc).ToDaysAgo(), 
+                        Time = AtlassianStashSharp.Helpers.UnixDateTimeHelper.FromUnixTime(x.AuthorTimestamp).ToDaysAgo(), 
                         String = x.Message, 
                         Lines = 4 
                     };
@@ -35,8 +35,10 @@ namespace CodeStash.iOS.ViewControllers.Commits
             });
 
             ViewModel.GoToCommitCommand.OfType<Commit>().Subscribe(x => 
-                NavigationController.PushViewController(
-                    new CommitViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug, x.Id), true));
+            {
+                var ctrl = new CommitViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug, x.Id);
+                NavigationController.PushViewController(ctrl, true);
+            });
         }
     }
 }

@@ -32,11 +32,17 @@ namespace CodeStash.iOS.ViewControllers.Source
                 Root = new RootElement(Title) { sec};
             });
 
-            ViewModel.GoToSourceCommand.OfType<Tag>().Subscribe(x => NavigationController.PushViewController(
-                new FilesViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug, x.LatestChangeset), true));
+            ViewModel.GoToSourceCommand.OfType<Tag>().Subscribe(x => 
+            {
+                var ctrl = new FilesViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug, x.LatestChangeset) { Title = x.DisplayId };
+                NavigationController.PushViewController(ctrl, true);
+            });
 
-            ViewModel.GoToSourceCommand.OfType<Branch>().Subscribe(x => NavigationController.PushViewController(
-                new FilesViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug, x.LatestChangeset), true));
+            ViewModel.GoToSourceCommand.OfType<Branch>().Subscribe(x => 
+            {
+                var ctrl = new FilesViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug, x.LatestChangeset) { Title = x.DisplayId };
+                NavigationController.PushViewController(ctrl, true);
+            });
         }
 
         public override void ViewDidLoad()

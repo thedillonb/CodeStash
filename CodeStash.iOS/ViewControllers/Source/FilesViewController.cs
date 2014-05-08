@@ -28,8 +28,19 @@ namespace CodeStash.iOS.ViewControllers.Source
                 Root = new RootElement(Title) { sec};
             });
 
-            ViewModel.GoToSourceCommand.OfType<Content>().Subscribe(x => NavigationController.PushViewController(
-                new FilesViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug, ViewModel.Branch, ViewModel.Path + "/" + x.Path.Name), true));
+            ViewModel.GoToSourceCommand.OfType<Content>().Subscribe(x => 
+            {
+                if (string.Equals(x.Type, "FILE", StringComparison.OrdinalIgnoreCase))
+                {
+                    var ctrl = new FileViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug, ViewModel.Branch, ViewModel.Path + "/" + x.Path.Name) { Title = x.Path.Name };
+                    NavigationController.PushViewController(ctrl, true);
+                }
+                else
+                {
+                    var ctrl = new FilesViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug, ViewModel.Branch, ViewModel.Path + "/" + x.Path.Name) { Title = x.Path.Name };
+                    NavigationController.PushViewController(ctrl, true);
+                }
+            });
         }
     }
 }

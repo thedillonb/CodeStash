@@ -29,9 +29,7 @@ namespace CodeStash.iOS.ViewControllers.Repositories
 
             ViewModel.GoToRepositoryCommand.OfType<Repository>().Subscribe(x =>
             {
-                var ctrl = new RepositoryViewController();
-                ctrl.ViewModel.ProjectKey = x.Project.Key;
-                ctrl.ViewModel.RepositorySlug = x.Slug;
+                var ctrl = new RepositoryViewController(x.Project.Key, x.Slug);
                 NavigationController.PresentViewController(ctrl, true, null);
             });
         }

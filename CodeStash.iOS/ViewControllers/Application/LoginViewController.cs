@@ -29,9 +29,12 @@ namespace CodeStash.iOS.ViewControllers.Application
             ViewModel.WhenAnyValue(x => x.Password).Subscribe(x => Password.Text = x);
             ViewModel.WhenAnyValue(x => x.Domain).Subscribe(x => Domain.Text = x);
 
-            User.ValueChanged += (sender, args) => ViewModel.Username = User.Text;
-            Password.ValueChanged += (sender, args) => ViewModel.Password = Password.Text;
-            Domain.ValueChanged += (sender, args) => ViewModel.Domain = Domain.Text;
+            User.EditingChanged += (sender, args) => 
+                ViewModel.Username = User.Text;
+            Password.EditingChanged += (sender, args) => 
+                ViewModel.Password = Password.Text;
+            Domain.EditingChanged += (sender, args) => 
+                ViewModel.Domain = Domain.Text;
 
             LoginButton.TouchUpInside += (sender, args) => ViewModel.LoginCommand.Execute(null);
 

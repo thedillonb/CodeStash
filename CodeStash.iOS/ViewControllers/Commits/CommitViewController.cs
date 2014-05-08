@@ -9,6 +9,11 @@ namespace CodeStash.iOS.ViewControllers.Commits
     {
         public CommitViewController(string projectKey, string repositorySlug, string node)
         {
+            if (string.IsNullOrEmpty(node) || node.Length < 7)
+                Title = "Commit";
+            else
+                Title = node.Substring(0, 7);
+
             ViewModel.ProjectKey = projectKey;
             ViewModel.RepositorySlug = repositorySlug;
             ViewModel.Node = node;

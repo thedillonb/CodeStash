@@ -11,6 +11,8 @@ namespace CodeStash.iOS.ViewControllers.Commits
     {
         public CommitsBranchViewController(string projectKey, string repositorySlug)
         {
+            Title = "Commits";
+
             ViewModel.ProjectKey = projectKey;
             ViewModel.RepositorySlug = repositorySlug;
 
@@ -21,9 +23,11 @@ namespace CodeStash.iOS.ViewControllers.Commits
                 Root = new RootElement(Title) { sec};
             });
 
-
-            ViewModel.GoToCommitsCommand.OfType<Branch>().Subscribe(x => NavigationController.PushViewController(
-                new CommitsViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug, x.Id), true));
+            ViewModel.GoToCommitsCommand.OfType<Branch>().Subscribe(x => 
+            {
+                var ctrl = new CommitsViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug, x.Id) { Title = x.DisplayId };
+                NavigationController.PushViewController(ctrl, true);
+            });
         }
     }
 }

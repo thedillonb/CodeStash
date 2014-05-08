@@ -121,6 +121,59 @@
     <BundleResource Include="Images\folder.png" />
     <BundleResource Include="Images\tag%402x.png" />
     <BundleResource Include="Images\tag.png" />
+    <BundleResource Include="Highlighter\styles\brown_papersq.png" />
+    <BundleResource Include="Highlighter\styles\pojoaque.jpg" />
+    <BundleResource Include="Highlighter\styles\school_book.png" />
+    <BundleResource Include="Highlighter\styles\arta.css" />
+    <BundleResource Include="Highlighter\styles\ascetic.css" />
+    <BundleResource Include="Highlighter\styles\atelier-dune.dark.css" />
+    <BundleResource Include="Highlighter\styles\atelier-dune.light.css" />
+    <BundleResource Include="Highlighter\styles\atelier-forest.dark.css" />
+    <BundleResource Include="Highlighter\styles\atelier-forest.light.css" />
+    <BundleResource Include="Highlighter\styles\atelier-heath.dark.css" />
+    <BundleResource Include="Highlighter\styles\atelier-heath.light.css" />
+    <BundleResource Include="Highlighter\styles\atelier-lakeside.dark.css" />
+    <BundleResource Include="Highlighter\styles\atelier-lakeside.light.css" />
+    <BundleResource Include="Highlighter\styles\atelier-seaside.dark.css" />
+    <BundleResource Include="Highlighter\styles\atelier-seaside.light.css" />
+    <BundleResource Include="Highlighter\styles\brown_paper.css" />
+    <BundleResource Include="Highlighter\styles\dark.css" />
+    <BundleResource Include="Highlighter\styles\default.css" />
+    <BundleResource Include="Highlighter\styles\docco.css" />
+    <BundleResource Include="Highlighter\styles\far.css" />
+    <BundleResource Include="Highlighter\styles\foundation.css" />
+    <BundleResource Include="Highlighter\styles\github.css" />
+    <BundleResource Include="Highlighter\styles\googlecode.css" />
+    <BundleResource Include="Highlighter\styles\idea.css" />
+    <BundleResource Include="Highlighter\styles\ir_black.css" />
+    <BundleResource Include="Highlighter\styles\magula.css" />
+    <BundleResource Include="Highlighter\styles\mono-blue.css" />
+    <BundleResource Include="Highlighter\styles\monokai.css" />
+    <BundleResource Include="Highlighter\styles\monokai_sublime.css" />
+    <BundleResource Include="Highlighter\styles\obsidian.css" />
+    <BundleResource Include="Highlighter\styles\paraiso.dark.css" />
+    <BundleResource Include="Highlighter\styles\paraiso.light.css" />
+    <BundleResource Include="Highlighter\styles\pojoaque.css" />
+    <BundleResource Include="Highlighter\styles\railscasts.css" />
+    <BundleResource Include="Highlighter\styles\rainbow.css" />
+    <BundleResource Include="Highlighter\styles\school_book.css" />
+    <BundleResource Include="Highlighter\styles\solarized_dark.css" />
+    <BundleResource Include="Highlighter\styles\solarized_light.css" />
+    <BundleResource Include="Highlighter\styles\sunburst.css" />
+    <BundleResource Include="Highlighter\styles\tomorrow-night-blue.css" />
+    <BundleResource Include="Highlighter\styles\tomorrow-night-bright.css" />
+    <BundleResource Include="Highlighter\styles\tomorrow-night-eighties.css" />
+    <BundleResource Include="Highlighter\styles\tomorrow-night.css" />
+    <BundleResource Include="Highlighter\styles\tomorrow.css" />
+    <BundleResource Include="Highlighter\styles\vs.css" />
+    <BundleResource Include="Highlighter\styles\xcode.css" />
+    <BundleResource Include="Highlighter\styles\zenburn.css" />
+    <BundleResource Include="Highlighter\highlight.pack.js" />
+    <BundleResource Include="Highlighter\highlight.html" />
+    <BundleResource Include="Images\back.png" />
+    <BundleResource Include="Images\back%402x.png" />
+    <BundleResource Include="Images\three_lines.png" />
+    <BundleResource Include="Images\three_lines%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -152,11 +205,12 @@
     <Compile Include="ViewControllers\ViewModelDialogViewController.cs" />
     <Compile Include="Images\Images.cs" />
     <Compile Include="ViewControllers\Commits\CommitsBranchViewController.cs" />
+    <Compile Include="Views\RepositoryHeaderView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\lib\MonoTouch.SlideoutNavigation\MonoTouch.SlideoutNavigation\MonoTouch.SlideoutNavigation.csproj">
-      <Project>{6d7b9b53-cfef-46be-a608-14a4a1381cf6}</Project>
+      <Project>{6D7B9B53-CFEF-46BE-A608-14A4A1381CF6}</Project>
       <Name>MonoTouch.SlideoutNavigation</Name>
     </ProjectReference>
     <ProjectReference Include="..\lib\Xamarin.Utilities\Xamarin.Utilities.iOS\Xamarin.Utilities.iOS.csproj">
@@ -182,6 +236,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Elements\" />
+    <Folder Include="Highlighter\" />
+    <Folder Include="Highlighter\styles\" />
+    <Folder Include="Views\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\grey_button%402x.png" />

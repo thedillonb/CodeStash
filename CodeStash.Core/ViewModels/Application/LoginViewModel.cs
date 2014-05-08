@@ -44,10 +44,15 @@ namespace CodeStash.Core.ViewModels.Application
 
             LoginCommand.RegisterAsyncTask(async x =>
             {
-                var client = AtlassianStashSharp.StashClient.CrateBasic(Domain, Username, Password);
+                var domain = Domain;
+                if (!domain.EndsWith("/", System.StringComparison.Ordinal))
+                    domain += "/";
+                domain += "rest/api/1.0";
+
+                var client = AtlassianStashSharp.StashClient.CrateBasic(domain, Username, Password);
                 await client.Projects.GetAll().ExecuteAsync();
 
-                var account = new Account {Username = Username, Password = Password, Domain = Domain};
+                var account = new Account {Username = Username, Password = Password, Domain = domain};
                 ApplicationService.Accounts.Insert(account);
                 ApplicationService.Account = account;
                 DismissCommand.Execute(null);

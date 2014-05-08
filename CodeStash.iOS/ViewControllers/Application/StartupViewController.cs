@@ -46,7 +46,7 @@ namespace CodeStash.iOS.ViewControllers.Application
                 };
                 slideout.MenuViewController.View.Add(toolbar);
 
-                var mainNavigationController = new MainNavigationController(new WelcomeViewController(), slideout, new UIBarButtonItem(UIBarButtonSystemItem.Action, (s, e) => slideout.Open(true)));
+                var mainNavigationController = new MainNavigationController(new WelcomeViewController(), slideout, new UIBarButtonItem(Images.MenuButton, UIBarButtonItemStyle.Plain, (s, e) => slideout.Open(true)));
                 slideout.MainViewController = mainNavigationController;
                 UIApplication.SharedApplication.Delegate.Window.RootViewController = slideout;
             });
@@ -158,20 +158,6 @@ namespace CodeStash.iOS.ViewControllers.Application
             _imgView.TintColor = UIColor.FromWhiteAlpha(0.34f, 1f);
         }
 
-
-        public override void ViewWillAppear(bool animated)
-        {
-            base.ViewWillAppear(animated);
-            _previousStatusbarStyle = UIApplication.SharedApplication.StatusBarStyle;
-            UIApplication.SharedApplication.SetStatusBarStyle(UIStatusBarStyle.Default, false);
-        }
-
-        public override void ViewWillDisappear(bool animated)
-        {
-            base.ViewWillDisappear(animated);
-            UIApplication.SharedApplication.SetStatusBarStyle(_previousStatusbarStyle, true);
-        }
-
         public override void ViewDidAppear(bool animated)
         {
             base.ViewDidAppear(animated);
@@ -212,7 +198,8 @@ namespace CodeStash.iOS.ViewControllers.Application
 
             public override void PresentViewController(UIViewController viewControllerToPresent, bool animated, NSAction completionHandler)
             {
-                var ctrl = new MainNavigationController(viewControllerToPresent, _slideoutNavigationController);
+                var openMenuButton = new UIBarButtonItem(Images.MenuButton, UIBarButtonItemStyle.Plain, (s, e) => _slideoutNavigationController.Open(true));
+                var ctrl = new MainNavigationController(viewControllerToPresent, _slideoutNavigationController, openMenuButton);
                 _slideoutNavigationController.SetMainViewController(ctrl, animated);
             }
         }

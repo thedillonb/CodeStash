@@ -84,5 +84,6 @@
     <Compile Include="ViewModels\Source\FilesViewModel.cs" />
     <Compile Include="ViewModels\Commits\CommitsBranchViewModel.cs" />
     <Compile Include="ViewModels\Commits\CommitViewModel.cs" />
+    <Compile Include="ViewModels\Source\FileViewModel.cs" />
   </ItemGroup>
 </Project>

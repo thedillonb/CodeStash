@@ -33,6 +33,8 @@ namespace CodeStash.iOS
 
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
+            Theme();
+
             System.Console.WriteLine("UI Thread: " + System.Threading.Thread.CurrentThread.ManagedThreadId);
             RxApp.MainThreadScheduler = new SynchronizationContextScheduler(SynchronizationContext.Current);
             RxApp.DefaultExceptionHandler = Observer.Create((Exception e) =>
@@ -47,10 +49,46 @@ namespace CodeStash.iOS
             IoC.RegisterAssemblyServicesAsSingletons(typeof(Core.Services.IApplicationService).Assembly);
             IoC.RegisterAssemblyServicesAsSingletons(GetType().Assembly);
 
+
             Window = new UIWindow(UIScreen.MainScreen.Bounds);
             Window.RootViewController = new StartupViewController();
             Window.MakeKeyAndVisible();
             return true;
+        }
+
+        private void Theme()
+        {
+            //UIApplication.SharedApplication.StatusBarStyle = UIStatusBarStyle.LightContent;
+
+            UINavigationBar.Appearance.TintColor = UIColor.White;
+            UINavigationBar.Appearance.BarTintColor = UIColor.FromRGB(45,80,148);
+            UINavigationBar.Appearance.SetTitleTextAttributes(new UITextAttributes { TextColor = UIColor.White, Font = UIFont.SystemFontOfSize(18f) });
+            UINavigationBar.Appearance.BackIndicatorImage = Images.BackButton;
+            UINavigationBar.Appearance.BackIndicatorTransitionMaskImage = Images.BackButton;
+
+            UIBarButtonItem.Appearance.SetBackButtonTitlePositionAdjustment(new UIOffset(0, -64), UIBarMetrics.LandscapePhone);
+            UIBarButtonItem.Appearance.SetBackButtonTitlePositionAdjustment(new UIOffset(0, -64), UIBarMetrics.Default);
+
+            //CodeFramework.iOS.Utils.Hud.BackgroundTint = UIColor.FromRGBA(228, 228, 228, 128);
+
+            //UISegmentedControl.Appearance.TintColor = UIColor.FromRGB(45,80,148);
+
+            UISegmentedControl.AppearanceWhenContainedIn(typeof(UINavigationController)).TintColor = UIColor.White;
+
+            UITableViewHeaderFooterView.Appearance.TintColor = UIColor.FromRGB(228, 228, 228);
+            UILabel.AppearanceWhenContainedIn(typeof(UITableViewHeaderFooterView)).TextColor = UIColor.FromRGB(136, 136, 136);
+            UILabel.AppearanceWhenContainedIn(typeof(UITableViewHeaderFooterView)).Font = UIFont.SystemFontOfSize(13f);
+
+            UIToolbar.Appearance.BarTintColor = UIColor.FromRGB(245, 245, 245);
+
+            UIBarButtonItem.AppearanceWhenContainedIn(typeof(UISearchBar)).SetTitleTextAttributes(new UITextAttributes()
+            {
+                TextColor = UIColor.White,
+            }, UIControlState.Normal);
+
+//            CodeFramework.iOS.Views.StartupView.TextColor = UIColor.FromWhiteAlpha(0.9f, 1.0f);
+//            CodeFramework.iOS.Views.StartupView.SpinnerColor = UIColor.FromWhiteAlpha(0.85f, 1.0f);
+//            CodeFramework.iOS.Views.StartupView.StatusBarStyle = UIStatusBarStyle.LightContent;
         }
     }
 }
