@@ -49,9 +49,6 @@
       <HintPath>..\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\lib\AtlassianStashSharp\AtlassianStashSharp.csproj">
@@ -66,11 +63,9 @@
   <ItemGroup>
     <Compile Include="Data\Account.cs" />
     <Compile Include="Data\Accounts.cs" />
-    <Compile Include="Data\Database.cs" />
     <Compile Include="ViewModels\Application\AccountsViewModel.cs" />
     <Compile Include="ViewModels\Application\LoginViewModel.cs" />
     <Compile Include="ViewModels\Application\SettingsViewModel.cs" />
-    <Compile Include="ViewModels\LoadableViewModel.cs" />
     <Compile Include="ViewModels\Application\StartupViewModel.cs" />
     <Compile Include="ViewModels\Projects\ProjectsViewModel.cs" />
     <Compile Include="ViewModels\PullRequests\PullRequestsViewModel.cs" />

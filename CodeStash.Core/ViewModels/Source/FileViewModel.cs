@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using CodeStash.Core.Services;
 using ReactiveUI;
 using System.Text;
+using Xamarin.Utilities.Core.ViewModels;
 
 namespace CodeStash.Core.ViewModels.Source
 {

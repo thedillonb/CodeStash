@@ -6,6 +6,7 @@ namespace CodeStash.iOS.ViewControllers.Application
     {
         public SettingsViewController()
         {
+            Title = "Settings";
         }
     }
 }

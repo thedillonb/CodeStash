@@ -1,23 +1,16 @@
-﻿using MonoTouch.Dialog;
-using MonoTouch.UIKit;
-using CodeStash.Core.ViewModels;
+﻿using MonoTouch.UIKit;
 using ReactiveUI;
 using Xamarin.Utilities.Core.ViewModels;
 
 namespace CodeStash.iOS.ViewControllers
 {
-    public abstract class ViewModelDialogViewController<TViewModel> : DialogViewController where TViewModel : ReactiveObject
+    public abstract class ViewModelViewController<TViewModel> : UIViewController where TViewModel : ReactiveObject
     {
         private readonly TViewModel _viewModel = IoC.Resolve<TViewModel>();
 
         public TViewModel ViewModel
         {
             get { return _viewModel; }
-        }
-
-        protected ViewModelDialogViewController(UITableViewStyle style = UITableViewStyle.Plain)
-            : base(style, null, true)
-        {
         }
 
         public override void ViewDidLoad()

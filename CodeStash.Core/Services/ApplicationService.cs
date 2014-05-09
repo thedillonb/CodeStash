@@ -3,6 +3,7 @@ using System.Linq;
 using AtlassianStashSharp;
 using CodeStash.Core.Data;
 using Xamarin.Utilities.Core.Services;
+using Xamarin.Utilities.Core.Persistence;
 
 namespace CodeStash.Core.Services
 {

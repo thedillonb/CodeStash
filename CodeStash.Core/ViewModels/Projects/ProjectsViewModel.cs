@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using CodeStash.Core.Services;
 using AtlassianStashSharp.Models;
+using Xamarin.Utilities.Core.ViewModels;
 
 namespace CodeStash.Core.ViewModels.Projects
 {

@@ -11,49 +11,22 @@ using ReactiveUI;
 
 namespace CodeStash.iOS.ViewControllers.Application
 {
-    public class StartupViewController : UIViewController, IImageUpdated
+    public class StartupViewController : ViewModelViewController<StartupViewModel>, IImageUpdated
     {
-        public readonly StartupViewModel ViewModel = IoC.Resolve<StartupViewModel>();
-
         const float ImageSize = 128f;
 
         private UIImageView _imgView;
         private UILabel _statusLabel;
         private UIActivityIndicatorView _activityView;
-        private UIStatusBarStyle _previousStatusbarStyle;
-
 
         public StartupViewController()
         {
-            ViewModel.GoToMainCommand.Subscribe(x =>
-            {
-                var slideout = new SimpleSlideoutNavigationController {MenuViewController = new UIViewController()};
-
-                var c = new CustomMenuNavigationController(new ProjectsViewController(), slideout);
-                slideout.MenuViewController.AddChildViewController(c);
-                c.View.Frame = new RectangleF(0, 0, slideout.MenuViewController.View.Bounds.Width, slideout.MenuViewController.View.Bounds.Height - 44f);
-                c.View.AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
-                slideout.MenuViewController.View.Add(c.View);
-
-                var toolbar = new UIToolbar(new RectangleF(0, slideout.MenuViewController.View.Bounds.Height - 44f, slideout.MenuViewController.View.Bounds.Width, 44f))
-                {
-                    AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleTopMargin,
-                    Items = new[]
-                    {
-                        new UIBarButtonItem(UIBarButtonSystemItem.Action,
-                            (s, e) => PresentViewController(new SettingsViewController(), true, null))
-                    }
-                };
-                slideout.MenuViewController.View.Add(toolbar);
-
-                var mainNavigationController = new MainNavigationController(new WelcomeViewController(), slideout, new UIBarButtonItem(Images.MenuButton, UIBarButtonItemStyle.Plain, (s, e) => slideout.Open(true)));
-                slideout.MainViewController = mainNavigationController;
-                UIApplication.SharedApplication.Delegate.Window.RootViewController = slideout;
-            });
+            ViewModel.GoToMainCommand.Subscribe(x => UIApplication.SharedApplication.Delegate.Window.RootViewController = new MainViewController());
 
             ViewModel.GoToAccountsCommand.Subscribe(_ =>
             {
                 var ctrl = new AccountsViewController();
+                ctrl.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(Images.Cancel, UIBarButtonItemStyle.Plain, (s, e) => ctrl.ViewModel.DismissCommand.Execute(null));
                 ctrl.ViewModel.DismissCommand.Subscribe(__ => DismissViewController(true, null));
                 PresentViewController(new UINavigationController(ctrl), true, null);
             });
@@ -181,50 +154,6 @@ namespace CodeStash.iOS.ViewControllers.Application
             return UIInterfaceOrientationMask.All;
         }
 
-        private class CustomMenuNavigationController : UINavigationController
-        {
-            private readonly SlideoutNavigationController _slideoutNavigationController;
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="MonoTouch.SlideoutNavigation.MenuNavigationController"/> class.
-            /// </summary>
-            /// <param name="rootViewController">Root view controller.</param>
-            /// <param name="slideoutNavigationController">Slideout navigation controller.</param>
-            public CustomMenuNavigationController(UIViewController rootViewController, SlideoutNavigationController slideoutNavigationController)
-                : base(rootViewController)
-            {
-                _slideoutNavigationController = slideoutNavigationController;
-            }
-
-            public override void PresentViewController(UIViewController viewControllerToPresent, bool animated, NSAction completionHandler)
-            {
-                var openMenuButton = new UIBarButtonItem(Images.MenuButton, UIBarButtonItemStyle.Plain, (s, e) => _slideoutNavigationController.Open(true));
-                var ctrl = new MainNavigationController(viewControllerToPresent, _slideoutNavigationController, openMenuButton);
-                _slideoutNavigationController.SetMainViewController(ctrl, animated);
-            }
-        }
-
-        /// <summary>
-        /// A custom navigation controller specifically for iOS6 that locks the orientations to what the StartupControler's is.
-        /// </summary>
-        protected class CustomNavigationController : UINavigationController
-        {
-            readonly UIViewController _parent;
-            public CustomNavigationController(UIViewController parent, UIViewController root) : base(root) 
-            { 
-                _parent = parent;
-            }
-
-            public override bool ShouldAutorotate()
-            {
-                return _parent.ShouldAutorotate();
-            }
-
-            public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations()
-            {
-                return _parent.GetSupportedInterfaceOrientations();
-            }
-        }
     }
 }
 

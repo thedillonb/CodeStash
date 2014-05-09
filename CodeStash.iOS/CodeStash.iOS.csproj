@@ -174,6 +174,10 @@
     <BundleResource Include="Images\back%402x.png" />
     <BundleResource Include="Images\three_lines.png" />
     <BundleResource Include="Images\three_lines%402x.png" />
+    <BundleResource Include="Images\gear%402x.png" />
+    <BundleResource Include="Images\gear.png" />
+    <BundleResource Include="Images\cancel%402x.png" />
+    <BundleResource Include="Images\cancel.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -207,7 +211,9 @@
     <Compile Include="ViewControllers\ViewModelDialogViewController.cs" />
     <Compile Include="Images\Images.cs" />
     <Compile Include="ViewControllers\Commits\CommitsBranchViewController.cs" />
-    <Compile Include="Views\RepositoryHeaderView.cs" />
+    <Compile Include="ViewControllers\ViewModelViewController.cs" />
+    <Compile Include="Views\ImageAndTitleHeaderView.cs" />
+    <Compile Include="ViewControllers\Application\MainViewController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>

@@ -12,7 +12,7 @@ namespace CodeStash.iOS.ViewControllers.Repositories
 {
     public class RepositoryViewController : ViewModelDialogViewController<RepositoryViewModel>
     {
-        private readonly RepositoryHeaderView _header;
+        private readonly ImageAndTitleHeaderView _header;
         private const float _spacing = 10f;
 
         public RepositoryViewController(string projectKey, string repositorySlug)
@@ -21,12 +21,11 @@ namespace CodeStash.iOS.ViewControllers.Repositories
             ViewModel.RepositorySlug = repositorySlug;
             Title = repositorySlug;
 
-            _header = new RepositoryHeaderView() { BackgroundColor = UIColor.Clear };
-            _header.ImageView.Image = Images.LoginUserUnknown;
-            _header.NameLabel.Text = repositorySlug;
+            _header = new ImageAndTitleHeaderView() { BackgroundColor = UIColor.Clear };
+            _header.Image = Images.LoginUserUnknown;
+            _header.Text = repositorySlug;
 
             var commitSection = new Section();
-            commitSection.Add(new SpacingElement(_spacing));
             commitSection.Add(new StyledStringElement("Commits", () => ViewModel.GoToCommitsCommand.Execute(null)));
 
             var sourceSection = new Section();

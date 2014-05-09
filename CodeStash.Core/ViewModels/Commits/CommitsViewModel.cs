@@ -2,6 +2,7 @@
 using CodeStash.Core.Services;
 using ReactiveUI;
 using AtlassianStashSharp.Models;
+using Xamarin.Utilities.Core.ViewModels;
 
 namespace CodeStash.Core.ViewModels.Commits
 {

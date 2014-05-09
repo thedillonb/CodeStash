@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CodeStash.Core.Data;
 using CodeStash.Core.Services;
 using ReactiveUI;
+using Xamarin.Utilities.Core.ViewModels;
 
 namespace CodeStash.Core.ViewModels.Application
 {

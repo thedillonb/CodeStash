@@ -4,6 +4,7 @@ using CodeStash.Core.Services;
 using System.Reactive.Linq;
 using ReactiveUI;
 using AtlassianStashSharp.Models;
+using Xamarin.Utilities.Core.ViewModels;
 
 namespace CodeStash.Core.ViewModels.Source
 {
