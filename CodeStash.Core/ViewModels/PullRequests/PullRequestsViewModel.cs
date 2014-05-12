@@ -33,10 +33,10 @@ namespace CodeStash.Core.ViewModels.PullRequests
             GoToPullRequestCommand = new ReactiveCommand();
             PullRequests = new ReactiveList<PullRequest>();
 
-            this.WhenAnyValue(x => x.SelectedView).Skip(1).Subscribe(_ => LoadCommand.Execute(null));
+            this.WhenAnyValue(x => x.SelectedView).Skip(1).Subscribe(_ => LoadCommand.ExecuteIfCan());
         }
 
-        public override async Task Load()
+        protected override async Task Load()
         {
             string state;
             switch (SelectedView)

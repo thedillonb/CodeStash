@@ -41,7 +41,7 @@ namespace CodeStash.Core.ViewModels.Application
                 GoToNewUserCommand.Execute(null);
         }
 
-        public override async Task Load()
+        protected override async Task Load()
         {
             Account = Application.DefaultAccount;
 

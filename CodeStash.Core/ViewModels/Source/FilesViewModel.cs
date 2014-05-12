@@ -37,7 +37,7 @@ namespace CodeStash.Core.ViewModels.Source
             Contents = new ReactiveList<Content>();
         }
 
-        public override async Task Load()
+        protected override async Task Load()
         {
             var response = await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].GetContents(Path, Branch, false).ExecuteAsync();
             ContentPath = response.Data.Path;

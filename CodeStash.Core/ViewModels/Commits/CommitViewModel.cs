@@ -31,7 +31,7 @@ namespace CodeStash.Core.ViewModels.Commits
             Changes = new ReactiveList<Change>();
         }
 
-        public override async Task Load()
+        protected override async Task Load()
         {
             Commit = (await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Commits[Node].Get().ExecuteAsync()).Data;
 

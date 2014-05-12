@@ -1,19 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using ReactiveUI;
+using Xamarin.Utilities.Core.ViewModels;
 
 namespace CodeStash.Core.ViewModels.Application
 {
-    public class SettingsViewModel : ReactiveObject
+    public class SettingsViewModel : BaseViewModel
     {
-        public IReactiveCommand DismissCommand { get; private set; }
-
         public SettingsViewModel()
         {
-            DismissCommand = new ReactiveCommand();
         }
     }
 }

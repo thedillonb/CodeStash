@@ -23,7 +23,7 @@ namespace CodeStash.Core.ViewModels.Repositories
             Repositories = new ReactiveList<Repository>();
         }
 
-        public override async Task Load()
+        protected override async Task Load()
         {
             var d = await ApplicationService.StashClient.Projects[ProjectKey].Repositories.GetAll().ExecuteAsync();
             Repositories.Reset(d.Data.Values);

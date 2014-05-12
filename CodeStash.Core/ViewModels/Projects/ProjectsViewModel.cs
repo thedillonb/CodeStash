@@ -21,7 +21,7 @@ namespace CodeStash.Core.ViewModels.Projects
             Projects = new ReactiveList<Project>();
         }
 
-        public override async Task Load()
+        protected override async Task Load()
         {
             Projects.Reset((await ApplicationService.StashClient.Projects.GetAll().ExecuteAsync()).Data.Values);
         }

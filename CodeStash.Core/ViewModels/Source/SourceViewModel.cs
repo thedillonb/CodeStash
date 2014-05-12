@@ -39,7 +39,7 @@ namespace CodeStash.Core.ViewModels.Source
             this.WhenAnyValue(x => x.SelectedView).Skip(1).Subscribe(_ => LoadCommand.Execute(null));
         }
 
-        public override async Task Load()
+        protected override async Task Load()
         {
             if (SelectedView == 0)
             {

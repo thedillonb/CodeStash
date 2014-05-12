@@ -31,7 +31,6 @@ namespace CodeStash.Core.ViewModels.PullRequests
 
         public ReactiveList<Comment> Comments { get; private set; } 
 
-
         public PullRequestViewModel(IApplicationService applicationService)
         {
             ApplicationService = applicationService;
@@ -41,8 +40,7 @@ namespace CodeStash.Core.ViewModels.PullRequests
             Comments = new ReactiveList<Comment>();
         }
 
-
-        public override async Task Load()
+        protected override async Task Load()
         {
             var pullRequest = ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].PullRequests[PullRequestId];
 

@@ -21,8 +21,6 @@ namespace CodeStash.Core.ViewModels.Application
             set { this.RaiseAndSetIfChanged(ref _selectedAccount, value); }
         }
 
-        public ReactiveCommand DismissCommand { get; private set; }
-
         public ReactiveCommand LoginCommand { get; private set; }
 
         public ReactiveCommand AddAccountCommand { get; private set; }
@@ -32,7 +30,6 @@ namespace CodeStash.Core.ViewModels.Application
             ApplicationService = applicationService;
 
             Accounts = new ReactiveList<Account>();
-            DismissCommand = new ReactiveCommand();
             LoginCommand = new ReactiveCommand();
             AddAccountCommand = new ReactiveCommand();
 
@@ -55,7 +52,7 @@ namespace CodeStash.Core.ViewModels.Application
             });
         }
 
-        public override Task Load()
+        protected override Task Load()
         {
             Accounts.Reset(ApplicationService.Accounts);
             return Task.FromResult(true);

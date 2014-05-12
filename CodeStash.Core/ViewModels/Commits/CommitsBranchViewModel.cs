@@ -25,7 +25,7 @@ namespace CodeStash.Core.ViewModels.Commits
             Branches = new ReactiveList<Branch>();
         }
 
-        public override async Task Load()
+        protected override async Task Load()
         {
             var response = await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Branches.GetAll().ExecuteAsync();
             Branches.Reset(response.Data.Values);

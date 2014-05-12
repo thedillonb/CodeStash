@@ -31,7 +31,7 @@ namespace CodeStash.Core.ViewModels.Source
             ApplicationService = applicationService;
         }
 
-        public override async Task Load()
+        protected override async Task Load()
         {
             var response = await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].GetFileContent(Path, Branch).ExecuteAsync();
             var content = new StringBuilder();

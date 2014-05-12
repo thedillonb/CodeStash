@@ -1,10 +1,11 @@
 using CodeStash.Core.Data;
 using CodeStash.Core.Services;
 using ReactiveUI;
+using Xamarin.Utilities.Core.ViewModels;
 
 namespace CodeStash.Core.ViewModels.Application
 {
-    public class LoginViewModel : ReactiveObject
+    public class LoginViewModel : BaseViewModel
     {
         protected readonly IApplicationService ApplicationService;
         private string _username;
@@ -31,13 +32,9 @@ namespace CodeStash.Core.ViewModels.Application
 
         public IReactiveCommand LoginCommand { get; private set; }
 
-        public IReactiveCommand DismissCommand { get; private set; }
-
         public LoginViewModel(IApplicationService applicationService)
         {
             ApplicationService = applicationService;
-
-            DismissCommand = new ReactiveCommand();
 
             LoginCommand = new ReactiveCommand(this.WhenAny(x => x.Username, x => x.Password, x => x.Domain, (u, p, d) => 
                 !string.IsNullOrEmpty(u.Value) && !string.IsNullOrEmpty(p.Value) && !string.IsNullOrEmpty(d.Value)));
@@ -55,7 +52,7 @@ namespace CodeStash.Core.ViewModels.Application
                 var account = new Account {Username = Username, Password = Password, Domain = domain};
                 ApplicationService.Accounts.Insert(account);
                 ApplicationService.Account = account;
-                DismissCommand.Execute(null);
+                DismissCommand.ExecuteIfCan();
             });
         }
 

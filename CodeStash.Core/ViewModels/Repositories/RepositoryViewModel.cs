@@ -36,7 +36,7 @@ namespace CodeStash.Core.ViewModels.Repositories
             GoToCommitsCommand = new ReactiveCommand();
         }
 
-        public override async Task Load()
+        protected override async Task Load()
         {
             var response = await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Get().ExecuteAsync();
             Repository = response.Data;
