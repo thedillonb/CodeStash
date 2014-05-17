@@ -16,6 +16,7 @@ namespace CodeStash.Core.Services
         {
             DefaultValueService = defaultValueService;
             Accounts = new Accounts(Database.Instance.SqlConnection);
+            System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
         }
 
         public StashClient StashClient { get; set; }

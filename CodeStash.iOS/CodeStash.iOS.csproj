@@ -214,6 +214,8 @@
     <Compile Include="ViewControllers\ViewModelViewController.cs" />
     <Compile Include="Views\ImageAndTitleHeaderView.cs" />
     <Compile Include="ViewControllers\Application\MainViewController.cs" />
+    <Compile Include="ViewControllers\Users\ProfileViewController.cs" />
+    <Compile Include="Elements\ProfileElement.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
@@ -244,6 +246,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Elements\" />
+    <Folder Include="ViewControllers\Users\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\grey_button%402x.png" />

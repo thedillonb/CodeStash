@@ -7,6 +7,9 @@ using CodeStash.iOS.ViewControllers.PullRequests;
 using CodeStash.iOS.Views;
 using MonoTouch.UIKit;
 using MonoTouch.Dialog.Elements;
+using ReactiveUI;
+using System.Reactive.Linq;
+using System.Linq;
 
 namespace CodeStash.iOS.ViewControllers.Repositories
 {
@@ -60,6 +63,15 @@ namespace CodeStash.iOS.ViewControllers.Repositories
             {
                 var ctrl = new PullRequestsViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug);
                 NavigationController.PushViewController(ctrl, true);
+            });
+
+            ViewModel.WhenAnyValue(x => x.Repository).Where(x => x != null).Subscribe(x =>
+            {
+                var selfLink = x.Project.Links["self"].FirstOrDefault();
+                if (selfLink == null || string.IsNullOrEmpty(selfLink.Href))
+                    return;
+
+                _header.ImageUri = selfLink.Href + "/avatar.png";
             });
         }
 

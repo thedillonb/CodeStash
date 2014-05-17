@@ -14,7 +14,9 @@ namespace CodeStash.iOS.Views
         {
             set
             {
-                _imageView.Image = ImageLoader.DefaultRequestImage(new Uri(value), this);
+                var img = ImageLoader.DefaultRequestImage(new Uri(value), this);
+                if (img != null)
+                    _imageView.Image = img;
             }
         }
 

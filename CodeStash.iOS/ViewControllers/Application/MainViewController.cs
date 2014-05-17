@@ -4,6 +4,8 @@ using MonoTouch.UIKit;
 using System.Drawing;
 using CodeStash.iOS.ViewControllers.Projects;
 using MonoTouch.Foundation;
+using CodeStash.iOS.ViewControllers.Users;
+using CodeStash.Core.Services;
 
 namespace CodeStash.iOS.ViewControllers.Application
 {
@@ -26,7 +28,8 @@ namespace CodeStash.iOS.ViewControllers.Application
             toolbar.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleTopMargin;
             MenuViewController.View.Add(toolbar);
 
-            var mainNavigationController = new MainNavigationController(new WelcomeViewController(), this, new UIBarButtonItem(Images.MenuButton, UIBarButtonItemStyle.Plain, (s, e) => Open(true)));
+            var applicationService = IoC.Resolve<IApplicationService>();
+            var mainNavigationController = new MainNavigationController(new ProfileViewController(applicationService.Account.Username), this, new UIBarButtonItem(Images.MenuButton, UIBarButtonItemStyle.Plain, (s, e) => Open(true)));
             MainViewController = mainNavigationController;
         }
 

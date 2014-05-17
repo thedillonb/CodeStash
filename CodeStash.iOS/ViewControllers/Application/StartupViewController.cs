@@ -3,9 +3,6 @@ using System.Reactive.Linq;
 using MonoTouch.UIKit;
 using CodeStash.Core.ViewModels.Application;
 using MonoTouch.Dialog.Utilities;
-using MonoTouch.SlideoutNavigation;
-using CodeStash.iOS.ViewControllers.Projects;
-using MonoTouch.Foundation;
 using System.Drawing;
 using ReactiveUI;
 
@@ -21,12 +18,14 @@ namespace CodeStash.iOS.ViewControllers.Application
 
         public StartupViewController()
         {
+            ManualLoad = true;
+
             ViewModel.GoToMainCommand.Subscribe(x => UIApplication.SharedApplication.Delegate.Window.RootViewController = new MainViewController());
 
             ViewModel.GoToAccountsCommand.Subscribe(_ =>
             {
                 var ctrl = new AccountsViewController();
-                ctrl.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(Images.Cancel, UIBarButtonItemStyle.Plain, (s, e) => ctrl.ViewModel.DismissCommand.Execute(null));
+                //ctrl.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(Images.Cancel, UIBarButtonItemStyle.Plain, (s, e) => ctrl.ViewModel.DismissCommand.Execute(null));
                 ctrl.ViewModel.DismissCommand.Subscribe(__ => DismissViewController(true, null));
                 PresentViewController(new UINavigationController(ctrl), true, null);
             });

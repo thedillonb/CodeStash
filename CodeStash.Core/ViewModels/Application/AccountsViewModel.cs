@@ -21,9 +21,11 @@ namespace CodeStash.Core.ViewModels.Application
             set { this.RaiseAndSetIfChanged(ref _selectedAccount, value); }
         }
 
-        public ReactiveCommand LoginCommand { get; private set; }
+        public IReactiveCommand LoginCommand { get; private set; }
 
-        public ReactiveCommand AddAccountCommand { get; private set; }
+        public IReactiveCommand AddAccountCommand { get; private set; }
+
+        public IReactiveCommand DeleteAccountCommand { get; private set; }
 
         public AccountsViewModel(IApplicationService applicationService)
         {
@@ -32,6 +34,7 @@ namespace CodeStash.Core.ViewModels.Application
             Accounts = new ReactiveList<Account>();
             LoginCommand = new ReactiveCommand();
             AddAccountCommand = new ReactiveCommand();
+            DeleteAccountCommand = new ReactiveCommand();
 
             this.WhenAnyValue(x => x.SelectedAccount).Where(x => x != null).Subscribe(x =>
             {
@@ -49,6 +52,19 @@ namespace CodeStash.Core.ViewModels.Application
                 await client.Projects.GetAll().ExecuteAsync();
                 ApplicationService.Account = account;
                 DismissCommand.Execute(null);
+            });
+
+            DeleteAccountCommand.OfType<Account>().Subscribe(x =>
+            {
+                if (ApplicationService.Account != null && x.Id == ApplicationService.Account.Id)
+                {
+                    //Removing the current Account
+                    ApplicationService.Account = null;
+                    ApplicationService.StashClient = null;
+                }
+
+                //ApplicationService.Accounts.Remove(x);
+                Accounts.Remove(x);
             });
         }
 
