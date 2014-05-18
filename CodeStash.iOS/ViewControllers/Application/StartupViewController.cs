@@ -48,10 +48,11 @@ namespace CodeStash.iOS.ViewControllers.Application
 
             try
             {
-                //View.BackgroundColor = MonoTouch.Utilities.CreateRepeatingBackground();
+                View.BackgroundColor = Xamarin.Utilities.Images.BackgroundHelper.CreateRepeatingBackground();
             }
-            catch (Exception e)
+            catch (Exception)
             {
+                View.BackgroundColor = UIColor.FromRGB(0xeb, 0xeb, 0xeb);
             }
         }
 
