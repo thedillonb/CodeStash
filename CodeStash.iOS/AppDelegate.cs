@@ -68,8 +68,8 @@ namespace CodeStash.iOS
             UINavigationBar.Appearance.BackIndicatorImage = Images.BackButton;
             UINavigationBar.Appearance.BackIndicatorTransitionMaskImage = Images.BackButton;
 
-            UIBarButtonItem.Appearance.SetBackButtonTitlePositionAdjustment(new UIOffset(0, -64), UIBarMetrics.LandscapePhone);
-            UIBarButtonItem.Appearance.SetBackButtonTitlePositionAdjustment(new UIOffset(0, -64), UIBarMetrics.Default);
+            UIBarButtonItem.Appearance.SetBackButtonTitlePositionAdjustment(new UIOffset(-30, 0), UIBarMetrics.LandscapePhone);
+            UIBarButtonItem.Appearance.SetBackButtonTitlePositionAdjustment(new UIOffset(-30, -0), UIBarMetrics.Default);
 
             //CodeFramework.iOS.Utils.Hud.BackgroundTint = UIColor.FromRGBA(228, 228, 228, 128);
 

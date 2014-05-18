@@ -23,6 +23,11 @@ namespace CodeStash.iOS.ViewControllers
         /// <value><c>true</c> if manual load; otherwise, <c>false</c>.</value>
         protected bool ManualLoad { get; set; }
 
+        protected ViewModelViewController()
+        {
+            NavigationItem.BackBarButtonItem = new UIBarButtonItem() { Title = string.Empty };
+        }
+
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();

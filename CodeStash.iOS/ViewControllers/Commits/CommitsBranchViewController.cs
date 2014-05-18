@@ -19,7 +19,12 @@ namespace CodeStash.iOS.ViewControllers.Commits
             ViewModel.Branches.Changed.Subscribe(_ =>
             {
                 var sec = new Section();
-                sec.AddAll(ViewModel.Branches.Select(x => new StyledStringElement(x.DisplayId, () => ViewModel.GoToCommitsCommand.Execute(x))));
+                sec.AddAll(ViewModel.Branches.Select(x => 
+                {
+                    var element = new StyledStringElement(x.DisplayId, () => ViewModel.GoToCommitsCommand.Execute(x));
+                    element.Image = Images.Branch;
+                    return element;
+                }));
                 Root = new RootElement(Title) { sec};
             });
 

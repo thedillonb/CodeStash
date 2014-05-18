@@ -23,6 +23,7 @@ namespace CodeStash.iOS.ViewControllers
         protected ViewModelDialogViewController(UITableViewStyle style = UITableViewStyle.Plain)
             : base(style, null, true)
         {
+            NavigationItem.BackBarButtonItem = new UIBarButtonItem() { Title = string.Empty };
         }
 
         public override void ViewDidLoad()
