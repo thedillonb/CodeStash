@@ -14,6 +14,7 @@ namespace CodeStash.iOS.ViewControllers.Application
         public MainViewController()
         {
             MenuViewController = new UIViewController();
+            MenuViewController.View.BackgroundColor = UIColor.White;
 
             var c = new CustomMenuNavigationController(new ProjectsViewController(), this);
             MenuViewController.AddChildViewController(c);
@@ -21,7 +22,7 @@ namespace CodeStash.iOS.ViewControllers.Application
             c.View.AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
             MenuViewController.View.Add(c.View);
 
-            var toolbar = new CustomToolbar();
+            var toolbar = new MenuToolbar();
             toolbar.AccountsButton.TouchUpInside += (s, e) => OpenAccounts();
             toolbar.SettingsButton.TouchUpInside += (s, e) => OpenSettings();
             toolbar.Frame = new RectangleF(0, MenuViewController.View.Bounds.Height - 44f, MenuViewController.View.Bounds.Width, 44f);
@@ -35,10 +36,11 @@ namespace CodeStash.iOS.ViewControllers.Application
 
         private void OpenAccounts()
         {
+            var rootNav = (UINavigationController)UIApplication.SharedApplication.Delegate.Window.RootViewController;
             var ctrl = new AccountsViewController();
             ctrl.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(Images.Cancel, UIBarButtonItemStyle.Plain, (s, e) => ctrl.ViewModel.DismissCommand.Execute(null));
             ctrl.ViewModel.DismissCommand.Subscribe(__ => DismissViewController(true, null));
-            PresentViewController(new UINavigationController(ctrl), true, null);
+            rootNav.PresentViewController(new UINavigationController(ctrl), true, null);
         }
 
         private void OpenSettings()
@@ -73,12 +75,12 @@ namespace CodeStash.iOS.ViewControllers.Application
             }
         }
 
-        private class CustomToolbar : UIToolbar
+        private class MenuToolbar : UIToolbar
         {
             public readonly UIButton AccountsButton;
             public readonly UIButton SettingsButton;
 
-            public CustomToolbar()
+            public MenuToolbar()
             {
                 AccountsButton = new UIButton(UIButtonType.Custom);
                 AccountsButton.Layer.CornerRadius = 4f;

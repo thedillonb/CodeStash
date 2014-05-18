@@ -5,6 +5,7 @@ using CodeStash.Core.Data;
 using CodeStash.Core.Services;
 using ReactiveUI;
 using Xamarin.Utilities.Core.ViewModels;
+using CodeStash.Core.Messages;
 
 namespace CodeStash.Core.ViewModels.Application
 {
@@ -42,15 +43,9 @@ namespace CodeStash.Core.ViewModels.Application
                 DismissCommand.Execute(null);
             });
 
-            LoginCommand.RegisterAsyncTask(async t =>
+            LoginCommand.OfType<Account>().Subscribe(x =>
             {
-                var account = t as Account;
-                if (account == null)
-                    return;
-
-                var client = AtlassianStashSharp.StashClient.CrateBasic(new Uri(account.Domain), account.Username, account.Password);
-                await client.Projects.GetAll().ExecuteAsync();
-                ApplicationService.Account = account;
+                MessageBus.Current.SendMessage(new AccountChangeMessage(x));
                 DismissCommand.Execute(null);
             });
 
@@ -63,7 +58,7 @@ namespace CodeStash.Core.ViewModels.Application
                     ApplicationService.StashClient = null;
                 }
 
-                //ApplicationService.Accounts.Remove(x);
+                ApplicationService.Accounts.Remove(x);
                 Accounts.Remove(x);
             });
         }

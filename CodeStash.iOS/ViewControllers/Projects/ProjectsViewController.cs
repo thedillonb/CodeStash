@@ -21,7 +21,7 @@ namespace CodeStash.iOS.ViewControllers.Projects
                 var sec = new Section();
                 sec.AddAll(ViewModel.Projects.Select(x => 
                 {
-                    var el = new StyledStringElement(x.Key, x.Description, UITableViewCellStyle.Subtitle);
+                    var el = new StyledStringElement(x.Name, x.Description, UITableViewCellStyle.Subtitle);
                     el.Accessory = UITableViewCellAccessory.DisclosureIndicator;
                     el.Tapped += () => ViewModel.GoToProjectCommand.Execute(x);
                     return el;

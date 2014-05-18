@@ -20,12 +20,17 @@ namespace CodeStash.iOS.ViewControllers.Application
         {
             ManualLoad = true;
 
-            ViewModel.GoToMainCommand.Subscribe(x => UIApplication.SharedApplication.Delegate.Window.RootViewController = new MainViewController());
+            ViewModel.GoToMainCommand.Subscribe(x =>
+            {
+                var ctrl = new MainViewController();
+                var nav = ((UINavigationController)UIApplication.SharedApplication.Delegate.Window.RootViewController);
+                UIView.Transition(nav.View, 0.1, UIViewAnimationOptions.BeginFromCurrentState | UIViewAnimationOptions.TransitionCrossDissolve, 
+                    () => nav.PushViewController(ctrl, false), null);
+            });
 
             ViewModel.GoToAccountsCommand.Subscribe(_ =>
             {
                 var ctrl = new AccountsViewController();
-                //ctrl.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(Images.Cancel, UIBarButtonItemStyle.Plain, (s, e) => ctrl.ViewModel.DismissCommand.Execute(null));
                 ctrl.ViewModel.DismissCommand.Subscribe(__ => DismissViewController(true, null));
                 PresentViewController(new UINavigationController(ctrl), true, null);
             });
@@ -36,6 +41,9 @@ namespace CodeStash.iOS.ViewControllers.Application
                 ctrl.ViewModel.DismissCommand.Subscribe(__ => DismissViewController(true, null));
                 PresentViewController(new UINavigationController(ctrl), true, null);
             });
+
+            ViewModel.BecomeActiveWindowCommand.Subscribe(_ => 
+                NavigationController.PopToRootViewController(false));
         }
 
         public override void ViewWillLayoutSubviews()
@@ -43,7 +51,7 @@ namespace CodeStash.iOS.ViewControllers.Application
             base.ViewWillLayoutSubviews();
 
             _imgView.Frame = new RectangleF(View.Bounds.Width / 2 - ImageSize / 2, View.Bounds.Height / 2 - ImageSize / 2 - 30f, ImageSize, ImageSize);
-            _statusLabel.Frame = new RectangleF(0, _imgView.Frame.Bottom + 10f, View.Bounds.Width, 15f);
+            _statusLabel.Frame = new RectangleF(0, _imgView.Frame.Bottom + 10f, View.Bounds.Width, 18f);
             _activityView.Center = new PointF(View.Bounds.Width / 2, _statusLabel.Frame.Bottom + 16f + 16F);
 
             try

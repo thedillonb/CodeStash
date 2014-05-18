@@ -3,17 +3,18 @@ using ReactiveUI;
 using Xamarin.Utilities.Core.ViewModels;
 using CodeStash.Core.Services;
 using System.Reactive.Linq;
+using Xamarin.Utilities.Core.Services;
 
 namespace CodeStash.Core.ViewModels.Application
 {
     public class SettingsViewModel : BaseViewModel
     {
         protected readonly IApplicationService ApplicationService;
+        protected readonly IEnvironmentalService EnvironmentalService;
 
         public string Version
         {
-            get;
-            set;
+            get { return EnvironmentalService.ApplicationVersion; }
         }
 
         private bool _saveCredientials;
@@ -25,9 +26,10 @@ namespace CodeStash.Core.ViewModels.Application
 
         public IReactiveCommand DeleteCacheCommand { get; private set; }
 
-        public SettingsViewModel(IApplicationService applicationService)
+        public SettingsViewModel(IApplicationService applicationService, IEnvironmentalService environmentalService)
         {
             ApplicationService = applicationService;
+            EnvironmentalService = environmentalService;
             DeleteCacheCommand = new ReactiveCommand();
             SaveCredentials = ApplicationService.Account.SaveCredentials;
 

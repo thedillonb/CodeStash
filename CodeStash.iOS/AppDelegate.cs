@@ -51,7 +51,7 @@ namespace CodeStash.iOS
 
 
             Window = new UIWindow(UIScreen.MainScreen.Bounds);
-            Window.RootViewController = new StartupViewController();
+            Window.RootViewController = new UINavigationController(new StartupViewController()) { NavigationBarHidden = true };
             Window.MakeKeyAndVisible();
             return true;
         }
@@ -68,9 +68,6 @@ namespace CodeStash.iOS
             UINavigationBar.Appearance.BackIndicatorImage = Images.BackButton;
             UINavigationBar.Appearance.BackIndicatorTransitionMaskImage = Images.BackButton;
 
-            UIBarButtonItem.Appearance.SetBackButtonTitlePositionAdjustment(new UIOffset(-30, 0), UIBarMetrics.LandscapePhone);
-            UIBarButtonItem.Appearance.SetBackButtonTitlePositionAdjustment(new UIOffset(-30, -0), UIBarMetrics.Default);
-
             //CodeFramework.iOS.Utils.Hud.BackgroundTint = UIColor.FromRGBA(228, 228, 228, 128);
 
             //UISegmentedControl.Appearance.TintColor = UIColor.FromRGB(45,80,148);
@@ -81,7 +78,7 @@ namespace CodeStash.iOS
             UILabel.AppearanceWhenContainedIn(typeof(UITableViewHeaderFooterView)).TextColor = UIColor.FromRGB(136, 136, 136);
             UILabel.AppearanceWhenContainedIn(typeof(UITableViewHeaderFooterView)).Font = UIFont.SystemFontOfSize(13f);
 
-            UIToolbar.Appearance.BarTintColor = UIColor.FromRGB(245, 245, 245);
+            //UIToolbar.Appearance.BarTintColor = UIColor.FromRGB(245, 245, 245);
 
             UIBarButtonItem.AppearanceWhenContainedIn(typeof(UISearchBar)).SetTitleTextAttributes(new UITextAttributes()
             {
