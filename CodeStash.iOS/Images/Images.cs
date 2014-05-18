@@ -9,6 +9,7 @@ namespace CodeStash.iOS
         public static UIImage File { get { return UIImage.FromBundle("Images/file"); } }
         public static UIImage Gear { get { return UIImage.FromBundle("Images/gear"); } }
         public static UIImage Tag { get { return UIImage.FromBundle("Images/tag"); } }
+        public static UIImage Branch { get { return UIImage.FromBundle("Images/branch"); } }
         public static UIImage BackButton { get { return UIImage.FromBundle("Images/back"); } }
         public static UIImage MenuButton { get { return UIImage.FromBundle("Images/three_lines"); } }
         public static UIImage Cancel { get { return UIImage.FromBundle("Images/cancel"); } }

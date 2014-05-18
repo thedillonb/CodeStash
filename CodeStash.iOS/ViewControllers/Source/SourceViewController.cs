@@ -16,7 +16,11 @@ namespace CodeStash.iOS.ViewControllers.Source
             ViewModel.Branches.Changed.Where(_ => ViewModel.SelectedView == 0).Subscribe(_ =>
             {
                 var sec = new Section();
-                sec.AddAll(ViewModel.Branches.Select(x => new StyledStringElement(x.DisplayId, () => ViewModel.GoToSourceCommand.Execute(x))));
+                sec.AddAll(ViewModel.Branches.Select(x => {
+                    var element = new StyledStringElement(x.DisplayId, () => ViewModel.GoToSourceCommand.Execute(x));
+                    element.Image = Images.Branch;
+                    return element;
+                }));
                 Root = new RootElement(Title) { sec};
             });
 

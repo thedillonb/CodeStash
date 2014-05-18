@@ -197,6 +197,7 @@
     <BundleResource Include="Resources\Default-Portrait.png" />
     <BundleResource Include="Resources\Default%402x.png" />
     <BundleResource Include="Resources\Default.png" />
+    <BundleResource Include="Images\branch%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
