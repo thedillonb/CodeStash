@@ -55,16 +55,10 @@ namespace CodeStash.iOS.ViewControllers.Application
         {
             Title = "Accounts";
             NavigationItem.RightBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Add, (s, e) => ViewModel.AddAccountCommand.Execute(null));
-            base.ViewDidLoad();
-
             TableView.RowHeight = 74f;
             TableView.SeparatorInset = new UIEdgeInsets(0, TableView.RowHeight, 0, 0);
-        }
 
-        public override void ViewWillAppear(bool animated)
-        {
-            base.ViewWillAppear(animated);
-            ViewModel.LoadCommand.Execute(null);
+            base.ViewDidLoad();
         }
 
         public override Source CreateSizingSource(bool unevenRows)

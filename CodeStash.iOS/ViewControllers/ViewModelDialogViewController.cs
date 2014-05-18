@@ -12,6 +12,7 @@ namespace CodeStash.iOS.ViewControllers
         private readonly TViewModel _viewModel = IoC.Resolve<TViewModel>();
         protected readonly INetworkActivityService NetworkActivityService = IoC.Resolve<INetworkActivityService>();
         private UIRefreshControl _refreshControl;
+        private bool _loaded;
 
 
         public TViewModel ViewModel
@@ -47,8 +48,19 @@ namespace CodeStash.iOS.ViewControllers
                         _refreshControl.EndRefreshing(); 
                     }
                 });
+            }
+        }
 
-                loadableViewModel.LoadCommand.ExecuteIfCan();
+        public override void ViewWillAppear(bool animated)
+        {
+            base.ViewWillAppear(animated);
+
+            if (!_loaded)
+            {
+                _loaded = true;
+                var loadableViewModel = _viewModel as LoadableViewModel;
+                if (loadableViewModel != null)
+                    loadableViewModel.LoadCommand.ExecuteIfCan();
             }
         }
     }

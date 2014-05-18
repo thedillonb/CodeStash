@@ -48,7 +48,7 @@ namespace CodeStash.Core.ViewModels.Application
                 if (account == null)
                     return;
 
-                var client = AtlassianStashSharp.StashClient.CrateBasic(account.Domain, account.Username, account.Password);
+                var client = AtlassianStashSharp.StashClient.CrateBasic(new Uri(account.Domain), account.Username, account.Password);
                 await client.Projects.GetAll().ExecuteAsync();
                 ApplicationService.Account = account;
                 DismissCommand.Execute(null);

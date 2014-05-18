@@ -19,6 +19,7 @@ namespace CodeStash.iOS.ViewControllers.Repositories
         private const float _spacing = 10f;
 
         public RepositoryViewController(string projectKey, string repositorySlug)
+            : base(UITableViewStyle.Grouped)
         {
             ViewModel.ProjectKey = projectKey;
             ViewModel.RepositorySlug = repositorySlug;
@@ -32,11 +33,9 @@ namespace CodeStash.iOS.ViewControllers.Repositories
             commitSection.Add(new StyledStringElement("Commits", () => ViewModel.GoToCommitsCommand.Execute(null)));
 
             var sourceSection = new Section();
-            sourceSection.Add(new SpacingElement(_spacing));
             sourceSection.Add(new StyledStringElement("Source Code", () => ViewModel.GoToSourceCommand.Execute(null)));
 
             var pullRequestsSection = new Section();
-            pullRequestsSection.Add(new SpacingElement(_spacing));
             pullRequestsSection.Add(new StyledStringElement("Pull Requests", () => ViewModel.GoToPullRequestsCommand.Execute(null)));
 
             var root = new RootElement(Title);

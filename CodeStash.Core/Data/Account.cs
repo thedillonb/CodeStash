@@ -21,6 +21,12 @@ namespace CodeStash.Core.Data
         [MaxLength(256)]
         public string AvatarUrl { get; set; }
 
+        public bool SaveCredentials { get; set; }
+
+        public Account()
+        {
+            SaveCredentials = true;
+        }
 
         public override bool Equals(object obj)
         {
@@ -31,20 +37,16 @@ namespace CodeStash.Core.Data
             if (obj.GetType() != typeof(Account))
                 return false;
             Account other = (Account)obj;
-            return Id == other.Id && Domain == other.Domain && Username == other.Username && Password == other.Password && AvatarUrl == other.AvatarUrl;
+            return Id == other.Id && Domain == other.Domain && Username == other.Username && Password == other.Password && AvatarUrl == other.AvatarUrl && SaveCredentials == other.SaveCredentials;
         }
-        
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return Id.GetHashCode() ^ 
-                    (Domain != null ? Domain.GetHashCode() : 0) ^ 
-                    (Username != null ? Username.GetHashCode() : 0) ^ 
-                    (Password != null ? Password.GetHashCode() : 0) ^ 
-                    (AvatarUrl != null ? AvatarUrl.GetHashCode() : 0);
+                return Id.GetHashCode() ^ (Domain != null ? Domain.GetHashCode() : 0) ^ (Username != null ? Username.GetHashCode() : 0) ^ (Password != null ? Password.GetHashCode() : 0) ^ (AvatarUrl != null ? AvatarUrl.GetHashCode() : 0) ^ SaveCredentials.GetHashCode();
             }
         }
+        
     }
 }

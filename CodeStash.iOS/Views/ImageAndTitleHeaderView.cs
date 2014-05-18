@@ -16,7 +16,7 @@ namespace CodeStash.iOS.Views
             {
                 var img = ImageLoader.DefaultRequestImage(new Uri(value), this);
                 if (img != null)
-                    _imageView.Image = img;
+                    UIView.Transition(_imageView, 0.25f, UIViewAnimationOptions.TransitionCrossDissolve, () => _imageView.Image = img, null);
             }
         }
 
@@ -69,7 +69,8 @@ namespace CodeStash.iOS.Views
 
         public void UpdatedImage(Uri uri)
         {
-            _imageView.Image = ImageLoader.DefaultRequestImage(uri, this);
+            var img = ImageLoader.DefaultRequestImage(uri, this);
+            UIView.Transition(_imageView, 0.25f, UIViewAnimationOptions.TransitionCrossDissolve, () => _imageView.Image = img, null);
         }
     }
 }

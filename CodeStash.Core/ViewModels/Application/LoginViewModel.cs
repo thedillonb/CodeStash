@@ -2,6 +2,7 @@ using CodeStash.Core.Data;
 using CodeStash.Core.Services;
 using ReactiveUI;
 using Xamarin.Utilities.Core.ViewModels;
+using System;
 
 namespace CodeStash.Core.ViewModels.Application
 {
@@ -46,7 +47,7 @@ namespace CodeStash.Core.ViewModels.Application
                     domain += "/";
                 domain += "rest/api/1.0";
 
-                var client = AtlassianStashSharp.StashClient.CrateBasic(domain, Username, Password);
+                var client = AtlassianStashSharp.StashClient.CrateBasic(new Uri(domain), Username, Password);
                 await client.Projects.GetAll().ExecuteAsync();
 
                 var account = new Account {Username = Username, Password = Password, Domain = domain};

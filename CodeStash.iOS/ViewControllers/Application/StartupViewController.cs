@@ -83,7 +83,10 @@ namespace CodeStash.iOS.ViewControllers.Application
 
             ViewModel.WhenAnyValue(x => x.Account).Where(x => x != null).Subscribe(x =>
             {
-                UpdatedImage(null);
+                Uri avatarUri;
+                if (Uri.TryCreate(x.AvatarUrl, UriKind.Absolute, out avatarUri))
+                    UpdatedImage(avatarUri);
+
                 _statusLabel.Text = "Logging in " + x.Username;
                 _activityView.Hidden = false;
                 _statusLabel.Hidden = false;

@@ -60,6 +60,8 @@ namespace CodeStash.iOS
         {
             //UIApplication.SharedApplication.StatusBarStyle = UIStatusBarStyle.LightContent;
 
+            UISwitch.Appearance.OnTintColor = UIColor.FromRGB(45,80,148);
+
             UINavigationBar.Appearance.TintColor = UIColor.White;
             UINavigationBar.Appearance.BarTintColor = UIColor.FromRGB(45,80,148);
             UINavigationBar.Appearance.SetTitleTextAttributes(new UITextAttributes { TextColor = UIColor.White, Font = UIFont.SystemFontOfSize(18f) });

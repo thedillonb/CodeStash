@@ -53,12 +53,20 @@ namespace CodeStash.Core.ViewModels.Application
             else
             {
                 // Attempt a login
-                var client = AtlassianStashSharp.StashClient.CrateBasic(Account.Domain, Account.Username, Account.Password);
-                var info = await client.ApplicationProperties.Get().ExecuteAsync();
+                var client = AtlassianStashSharp.StashClient.CrateBasic(new Uri(Account.Domain), Account.Username, Account.Password);
+                var info = await client.Users[Account.Username].Get().ExecuteAsync();
 
                 // Maybe attempt to get the avatar image?
 
-                Console.WriteLine("Attempted login found: " + info.Data.DisplayName);
+                if (string.IsNullOrEmpty(Account.AvatarUrl))
+                {
+                    var selfLink = info.Data.Links["self"].FirstOrDefault();
+                    if (selfLink != null && !string.IsNullOrEmpty(selfLink.Href))
+                    {
+                        Account.AvatarUrl = selfLink.Href + "/avatar.png";
+                        Application.Accounts.Update(Account);
+                    }
+                }
 
                 Application.StashClient = client;
                 Application.Account = Account;
