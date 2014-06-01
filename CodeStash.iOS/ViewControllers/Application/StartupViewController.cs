@@ -5,6 +5,7 @@ using CodeStash.Core.ViewModels.Application;
 using MonoTouch.Dialog.Utilities;
 using System.Drawing;
 using ReactiveUI;
+using Xamarin.Utilities.ViewControllers;
 
 namespace CodeStash.iOS.ViewControllers.Application
 {
@@ -19,31 +20,6 @@ namespace CodeStash.iOS.ViewControllers.Application
         public StartupViewController()
         {
             ManualLoad = true;
-
-            ViewModel.GoToMainCommand.Subscribe(x =>
-            {
-                var ctrl = new MainViewController();
-                var nav = ((UINavigationController)UIApplication.SharedApplication.Delegate.Window.RootViewController);
-                UIView.Transition(nav.View, 0.1, UIViewAnimationOptions.BeginFromCurrentState | UIViewAnimationOptions.TransitionCrossDissolve, 
-                    () => nav.PushViewController(ctrl, false), null);
-            });
-
-            ViewModel.GoToAccountsCommand.Subscribe(_ =>
-            {
-                var ctrl = new AccountsViewController();
-                ctrl.ViewModel.DismissCommand.Subscribe(__ => DismissViewController(true, null));
-                PresentViewController(new UINavigationController(ctrl), true, null);
-            });
-
-            ViewModel.GoToNewUserCommand.Subscribe(_ =>
-            {
-                var ctrl = new LoginViewController();
-                ctrl.ViewModel.DismissCommand.Subscribe(__ => DismissViewController(true, null));
-                PresentViewController(new UINavigationController(ctrl), true, null);
-            });
-
-            ViewModel.BecomeActiveWindowCommand.Subscribe(_ => 
-                NavigationController.PopToRootViewController(false));
         }
 
         public override void ViewWillLayoutSubviews()
@@ -104,15 +80,12 @@ namespace CodeStash.iOS.ViewControllers.Application
             ViewModel.LoadCommand.IsExecuting.Subscribe(x =>
             {
                 if (x)
-                {
                     _activityView.StartAnimating();
-                }
                 else
-                {
                     _activityView.StopAnimating();
-                }
             });
 
+            ViewModel.BecomeActiveWindowCommand.Subscribe(_ => NavigationController.PopToRootViewController(false));
         }
 
         public void UpdatedImage(Uri uri)

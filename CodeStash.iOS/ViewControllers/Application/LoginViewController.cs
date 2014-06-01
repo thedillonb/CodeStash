@@ -5,24 +5,22 @@ using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using ReactiveUI;
 using Xamarin.Utilities.Core.Services;
+using Xamarin.Utilities.ViewControllers;
 
 namespace CodeStash.iOS.ViewControllers.Application
 {
-    public partial class LoginViewController : UIViewController
+    public partial class LoginViewController : ViewModelViewController<LoginViewModel>
     {
-        public readonly LoginViewModel ViewModel = IoC.Resolve<LoginViewModel>();
         protected readonly IStatusIndicatorService StatusIndicatorService = IoC.Resolve<IStatusIndicatorService>();
 
         public LoginViewController()
             : base("AddAccountView", null)
         {
-
+            Title = "Login";
         }
 
         public override void ViewDidLoad()
         {
-            Title = "Login";
-
             base.ViewDidLoad();
 
             ViewModel.WhenAnyValue(x => x.Username).Subscribe(x => User.Text = x);

@@ -5,24 +5,18 @@ using ReactiveUI;
 using System.Reactive.Linq;
 using MonoTouch.Foundation;
 using Xamarin.Utilities.Core.Services;
+using Xamarin.Utilities.ViewControllers;
 
 namespace CodeStash.iOS.ViewControllers.Source
 {
-    public class FileViewController : UIViewController
+    public class FileViewController : ViewModelViewController<FileViewModel>
     {
-        public readonly FileViewModel ViewModel = IoC.Resolve<FileViewModel>();
         private UIWebView _webView;
-
-        public FileViewController(string projectKey, string repositorySlug, string branch, string path)
-        {
-            ViewModel.ProjectKey = projectKey;
-            ViewModel.RepositorySlug = repositorySlug;
-            ViewModel.Path = path;
-            ViewModel.Branch = branch;
-        }
 
         public override void ViewDidLoad()
         {
+            Title = ViewModel.FileName;
+
             base.ViewDidLoad();
 
             View.BackgroundColor = UIColor.White;
@@ -41,8 +35,6 @@ namespace CodeStash.iOS.ViewControllers.Source
                 var json = IoC.Resolve<IJsonSerializationService>().Serialize(new { text = x });
                 _webView.EvaluateJavascript("render(" + json + ".text);");
             });
-
-            ViewModel.LoadCommand.Execute(null);
         }
     }
 }

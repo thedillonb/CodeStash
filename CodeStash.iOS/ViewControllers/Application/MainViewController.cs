@@ -1,56 +1,57 @@
-﻿using System;
-using MonoTouch.SlideoutNavigation;
+﻿using MonoTouch.SlideoutNavigation;
 using MonoTouch.UIKit;
 using System.Drawing;
-using CodeStash.iOS.ViewControllers.Projects;
 using MonoTouch.Foundation;
-using CodeStash.iOS.ViewControllers.Users;
-using CodeStash.Core.Services;
+using ReactiveUI;
+using CodeStash.Core.ViewModels.Application;
+using CodeStash.Core.ViewModels.Projects;
 
 namespace CodeStash.iOS.ViewControllers.Application
 {
-    public class MainViewController : SimpleSlideoutNavigationController
+    public class MainViewController : SimpleSlideoutNavigationController, IViewFor<MainViewModel>
     {
-        public MainViewController()
+        public MainViewModel ViewModel { get; set; }
+
+        object IViewFor.ViewModel
         {
+            get { return ViewModel; }
+            set { ViewModel = (MainViewModel)value; }
+        }
+
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
+
             MenuViewController = new UIViewController();
             MenuViewController.View.BackgroundColor = UIColor.White;
 
-            var c = new CustomMenuNavigationController(new ProjectsViewController(), this);
+            var c = new CustomMenuNavigationController((UIViewController)this.CreateView<ProjectsViewModel>(), this);
             MenuViewController.AddChildViewController(c);
             c.View.Frame = new RectangleF(0, 0, MenuViewController.View.Bounds.Width, MenuViewController.View.Bounds.Height - 44f);
             c.View.AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
             MenuViewController.View.Add(c.View);
 
-            var toolbar = new MenuToolbar();
-            toolbar.AccountsButton.TouchUpInside += (s, e) => OpenAccounts();
-            toolbar.SettingsButton.TouchUpInside += (s, e) => OpenSettings();
+            var toolbar = new MenuToolbar(); 
+            toolbar.AccountsButton.TouchUpInside += (s, e) => ViewModel.GoToAccountsCommand.ExecuteIfCan();
+            toolbar.SettingsButton.TouchUpInside += (s, e) => ViewModel.GoToSettingsCommand.ExecuteIfCan();
             toolbar.Frame = new RectangleF(0, MenuViewController.View.Bounds.Height - 44f, MenuViewController.View.Bounds.Width, 44f);
             toolbar.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleTopMargin;
             MenuViewController.View.Add(toolbar);
 
-            var applicationService = IoC.Resolve<IApplicationService>();
-            var mainNavigationController = new MainNavigationController(new ProfileViewController(applicationService.Account.Username), this, new UIBarButtonItem(Images.MenuButton, UIBarButtonItemStyle.Plain, (s, e) => Open(true)));
-            MainViewController = mainNavigationController;
+//            ViewModel.GoToViewCommand.OfType<ProfileViewModel>().Subscribe(x =>
+//            {
+//                var view = this.CreateView<ProfileViewController>(x);
+//
+//                if (MainViewController == null)
+//                {
+//                    MainViewController = new MainNavigationController(view, this, new UIBarButtonItem(Images.MenuButton, UIBarButtonItemStyle.Plain, (s, e) => Open(true)));
+//                }
+//                else
+//                {
+//                    NavigationController.PresentViewController(view, true, null);
+//                }
+//            });
         }
-
-        private void OpenAccounts()
-        {
-            var rootNav = (UINavigationController)UIApplication.SharedApplication.Delegate.Window.RootViewController;
-            var ctrl = new AccountsViewController();
-            ctrl.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(Images.Cancel, UIBarButtonItemStyle.Plain, (s, e) => ctrl.ViewModel.DismissCommand.Execute(null));
-            ctrl.ViewModel.DismissCommand.Subscribe(__ => DismissViewController(true, null));
-            rootNav.PresentViewController(new UINavigationController(ctrl), true, null);
-        }
-
-        private void OpenSettings()
-        {
-            var ctrl = new SettingsViewController();
-            ctrl.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(Images.Cancel, UIBarButtonItemStyle.Plain, (s, e) => ctrl.ViewModel.DismissCommand.Execute(null));
-            ctrl.ViewModel.DismissCommand.Subscribe(__ => DismissViewController(true, null));
-            PresentViewController(new UINavigationController(ctrl), true, null);
-        }
-
 
         private class CustomMenuNavigationController : UINavigationController
         {

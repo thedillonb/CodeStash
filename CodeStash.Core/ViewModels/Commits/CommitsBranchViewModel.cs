@@ -1,15 +1,14 @@
-﻿using CodeStash.Core.Services;
+﻿using System;
+using CodeStash.Core.Services;
 using ReactiveUI;
 using AtlassianStashSharp.Models;
-using System.Threading.Tasks;
 using Xamarin.Utilities.Core.ViewModels;
+using System.Reactive.Linq;
 
 namespace CodeStash.Core.ViewModels.Commits
 {
     public class CommitsBranchViewModel : LoadableViewModel
     {
-        protected readonly IApplicationService ApplicationService;
-
         public string ProjectKey { get; set; }
 
         public string RepositorySlug { get; set; }
@@ -20,15 +19,24 @@ namespace CodeStash.Core.ViewModels.Commits
 
         public CommitsBranchViewModel(IApplicationService applicationService)
         {
-            ApplicationService = applicationService;
             GoToCommitsCommand = new ReactiveCommand();
             Branches = new ReactiveList<Branch>();
-        }
 
-        protected override async Task Load()
-        {
-            var response = await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Branches.GetAll().ExecuteAsync();
-            Branches.Reset(response.Data.Values);
+            LoadCommand.RegisterAsyncTask(async x =>
+            {
+                var response = await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Branches.GetAll().ExecuteAsync();
+                Branches.Reset(response.Data.Values);
+            });
+
+            GoToCommitsCommand.OfType<Branch>().Subscribe(x =>
+            {
+                var vm = CreateViewModel<CommitsViewModel>();
+                vm.ProjectKey = ProjectKey;
+                vm.RepositorySlug = RepositorySlug;
+                vm.Branch = x.Id;
+                vm.Title = x.DisplayId;
+                ShowViewModel(vm);
+            });
         }
     }
 }

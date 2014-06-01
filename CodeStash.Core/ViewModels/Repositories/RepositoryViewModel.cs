@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 using CodeStash.Core.Services;
 using AtlassianStashSharp.Models;
 using Xamarin.Utilities.Core.ViewModels;
+using CodeStash.Core.ViewModels.Source;
+using CodeStash.Core.ViewModels.PullRequests;
+using CodeStash.Core.ViewModels.Commits;
 
 namespace CodeStash.Core.ViewModels.Repositories
 {
@@ -38,15 +41,37 @@ namespace CodeStash.Core.ViewModels.Repositories
         public RepositoryViewModel(IApplicationService applicationService)
         {
             ApplicationService = applicationService;
-            GoToSourceCommand = new ReactiveCommand();
-            GoToPullRequestsCommand = new ReactiveCommand();
-            GoToCommitsCommand = new ReactiveCommand();
-        }
+            LoadCommand.RegisterAsyncTask(async _ => 
+            {
+                Repository = (await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Get().ExecuteAsync()).Data;
+            });
 
-        protected override async Task Load()
-        {
-            Repository = (await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Get().ExecuteAsync()).Data;
-            //AvatarPath = await LoadAvatar();
+            GoToSourceCommand = new ReactiveCommand();
+            GoToSourceCommand.Subscribe(_ =>
+            {
+                var vm = CreateViewModel<SourceViewModel>();
+                vm.ProjectKey = ProjectKey;
+                vm.RepositorySlug = RepositorySlug;
+                ShowViewModel(vm);
+            });
+
+            GoToPullRequestsCommand = new ReactiveCommand();
+            GoToPullRequestsCommand.Subscribe(_ =>
+            {
+                var vm = CreateViewModel<PullRequestsViewModel>();
+                vm.ProjectKey = ProjectKey;
+                vm.RepositorySlug = RepositorySlug;
+                ShowViewModel(vm);
+            });
+
+            GoToCommitsCommand = new ReactiveCommand();
+            GoToCommitsCommand.Subscribe(_ =>
+            {
+                var vm = CreateViewModel<CommitsBranchViewModel>();
+                vm.ProjectKey = ProjectKey;
+                vm.RepositorySlug = RepositorySlug;
+                ShowViewModel(vm);
+            });
         }
 
         private async Task<string> LoadAvatar()

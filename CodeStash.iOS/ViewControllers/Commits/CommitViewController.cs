@@ -13,21 +13,16 @@ namespace CodeStash.iOS.ViewControllers.Commits
     {
         private ImageAndTitleHeaderView _header;
 
-        public CommitViewController(string projectKey, string repositorySlug, string node)
+        public override void ViewDidLoad()
         {
-            if (string.IsNullOrEmpty(node) || node.Length < 7)
-                Title = "Commit";
-            else
-                Title = node.Substring(0, 7);
+            Title = ViewModel.Title;
 
-            ViewModel.ProjectKey = projectKey;
-            ViewModel.RepositorySlug = repositorySlug;
-            ViewModel.Node = node;
+            base.ViewDidLoad();
 
             _header = new ImageAndTitleHeaderView();
             _header.Image = Images.LoginUserUnknown;
-            _header.Text = repositorySlug;
-
+            _header.Text = ViewModel.RepositorySlug;
+            TableView.TableHeaderView = _header;
 
             ViewModel.WhenAnyValue(x => x.Commit).Where(x => x != null).Subscribe(x =>
             {
@@ -54,12 +49,6 @@ namespace CodeStash.iOS.ViewControllers.Commits
 
                 Root = root;
             });
-        }
-
-        public override void ViewDidLoad()
-        {
-            base.ViewDidLoad();
-            TableView.TableHeaderView = _header;
         }
     }
 }

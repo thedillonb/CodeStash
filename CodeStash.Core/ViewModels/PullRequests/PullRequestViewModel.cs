@@ -8,7 +8,6 @@ namespace CodeStash.Core.ViewModels.PullRequests
 {
     public class PullRequestViewModel : LoadableViewModel
     {
-        protected readonly IApplicationService ApplicationService;
         private PullRequest _pullRequest;
 
         public string ProjectKey { get; set; }
@@ -33,22 +32,20 @@ namespace CodeStash.Core.ViewModels.PullRequests
 
         public PullRequestViewModel(IApplicationService applicationService)
         {
-            ApplicationService = applicationService;
             Commits = new ReactiveList<Commit>();
             Participants = new ReactiveList<PullRequestParticipant>();
             Changes = new ReactiveList<Change>();
             Comments = new ReactiveList<Comment>();
-        }
 
-        protected override async Task Load()
-        {
-            var pullRequest = ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].PullRequests[PullRequestId];
-
-            PullRequest = (await pullRequest.Get().ExecuteAsync()).Data;
-            Commits.Reset((await pullRequest.GetAllCommits().ExecuteAsync()).Data.Values);
-            Participants.Reset((await pullRequest.GetAllParticipates().ExecuteAsync()).Data.Values);
-            Changes.Reset((await pullRequest.GetAllChanges().ExecuteAsync()).Data.Values);
-            Comments.Reset((await pullRequest.GetAllComments().ExecuteAsync()).Data.Values);
+            LoadCommand.RegisterAsyncTask(async _ =>
+            {
+                var pullRequest = applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].PullRequests[PullRequestId];
+                PullRequest = (await pullRequest.Get().ExecuteAsync()).Data;
+                Commits.Reset((await pullRequest.GetAllCommits().ExecuteAsync()).Data.Values);
+                Participants.Reset((await pullRequest.GetAllParticipates().ExecuteAsync()).Data.Values);
+                Changes.Reset((await pullRequest.GetAllChanges().ExecuteAsync()).Data.Values);
+                Comments.Reset((await pullRequest.GetAllComments().ExecuteAsync()).Data.Values);
+            });
         }
     }
 }

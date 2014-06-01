@@ -5,68 +5,53 @@ using CodeStash.Core.Data;
 using CodeStash.Core.Services;
 using ReactiveUI;
 using Xamarin.Utilities.Core.ViewModels;
-using CodeStash.Core.Messages;
 
 namespace CodeStash.Core.ViewModels.Application
 {
     public class AccountsViewModel : LoadableViewModel
     {
-        protected readonly IApplicationService ApplicationService;
-
         public ReactiveList<Account> Accounts { get; private set; } 
-
-        private Account _selectedAccount;
-        public Account SelectedAccount
-        {
-            get { return _selectedAccount; }
-            set { this.RaiseAndSetIfChanged(ref _selectedAccount, value); }
-        }
 
         public IReactiveCommand LoginCommand { get; private set; }
 
-        public IReactiveCommand AddAccountCommand { get; private set; }
+        public IReactiveCommand GoToAddAccountCommand { get; private set; }
 
         public IReactiveCommand DeleteAccountCommand { get; private set; }
 
         public AccountsViewModel(IApplicationService applicationService)
         {
-            ApplicationService = applicationService;
-
             Accounts = new ReactiveList<Account>();
             LoginCommand = new ReactiveCommand();
-            AddAccountCommand = new ReactiveCommand();
+            GoToAddAccountCommand = new ReactiveCommand();
             DeleteAccountCommand = new ReactiveCommand();
-
-            this.WhenAnyValue(x => x.SelectedAccount).Where(x => x != null).Subscribe(x =>
-            {
-                ApplicationService.Account = x;
-                DismissCommand.Execute(null);
-            });
 
             LoginCommand.OfType<Account>().Subscribe(x =>
             {
-                MessageBus.Current.SendMessage(new AccountChangeMessage(x));
-                DismissCommand.Execute(null);
+                applicationService.Account = x;
+                DismissCommand.ExecuteIfCan();
             });
 
             DeleteAccountCommand.OfType<Account>().Subscribe(x =>
             {
-                if (ApplicationService.Account != null && x.Id == ApplicationService.Account.Id)
+                if (applicationService.Account != null && x.Id == applicationService.Account.Id)
                 {
                     //Removing the current Account
-                    ApplicationService.Account = null;
-                    ApplicationService.StashClient = null;
+                    applicationService.Account = null;
+                    applicationService.StashClient = null;
                 }
 
-                ApplicationService.Accounts.Remove(x);
+                applicationService.Accounts.Remove(x);
                 Accounts.Remove(x);
             });
-        }
 
-        protected override Task Load()
-        {
-            Accounts.Reset(ApplicationService.Accounts);
-            return Task.FromResult(true);
+            GoToAddAccountCommand.Subscribe(_ =>
+            {
+                var vm = CreateViewModel<LoginViewModel>();
+                vm.WhenAnyValue(x => x.LoggedInAcconut).Skip(1).Subscribe(x => LoadCommand.ExecuteIfCan());
+                ShowViewModel(vm);
+            });
+
+            LoadCommand.Subscribe(x => Accounts.Reset(applicationService.Accounts));
         }
     }
 

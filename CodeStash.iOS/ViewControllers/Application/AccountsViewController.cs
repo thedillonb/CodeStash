@@ -12,53 +12,39 @@ namespace CodeStash.iOS.ViewControllers.Application
 {
     public class AccountsViewController : ViewModelDialogViewController<AccountsViewModel>
     {
-        public AccountsViewController()
-        {
-            ViewModel.Accounts.ItemsRemoved.Where(x => Root != null && Root.Count > 0).Subscribe(x =>
-            {
-                foreach (var element in Root[0].Elements.ToList())
-                {
-                    if (element is ProfileElement && object.Equals(((ProfileElement)element).Tag, x))
-                        Root[0].Remove(element);
-                }
-            });
-
-            ViewModel.Accounts.Changed.Where(x => x.Action != System.Collections.Specialized.NotifyCollectionChangedAction.Remove).Subscribe(_ =>
-            {
-                var sec = new Section();
-                sec.AddAll(ViewModel.Accounts.Select(x =>
-                {
-                    var shortenedDomain = new Uri(x.Domain);
-                    var element = new ProfileElement(x.Username, shortenedDomain.Host) 
-                    { 
-                        Accessory = UITableViewCellAccessory.DisclosureIndicator,
-                        Tag = x
-                    };
-                    element.Image = Images.LoginUserUnknown;
-                    element.ImageUri = x.AvatarUrl;
-                    element.Tapped += () => ViewModel.LoginCommand.ExecuteIfCan(x);
-                    return element;
-                }));
-
-                Root = new RootElement(Title) {sec};
-            });
-
-            ViewModel.AddAccountCommand.Subscribe(_ =>
-            {
-                var ctrl = new LoginViewController();
-                ctrl.ViewModel.DismissCommand.Subscribe(__ => NavigationController.PopViewControllerAnimated(true));
-                NavigationController.PushViewController(ctrl, true);
-            });
-        }
-
         public override void ViewDidLoad()
         {
             Title = "Accounts";
-            NavigationItem.RightBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Add, (s, e) => ViewModel.AddAccountCommand.Execute(null));
+            NavigationItem.RightBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Add, (s, e) => ViewModel.GoToAddAccountCommand.Execute(null));
             TableView.RowHeight = 74f;
             TableView.SeparatorInset = new UIEdgeInsets(0, TableView.RowHeight, 0, 0);
 
             base.ViewDidLoad();
+
+            var sec = new Section();
+            Root = new RootElement(Title) { sec };
+
+            ViewModel.Accounts.ItemsRemoved.Where(x => Root != null && Root.Count > 0).Subscribe(x =>
+            {
+                foreach (var element in sec.Elements.OfType<ProfileElement>().Where(e => object.Equals(e.Tag, x)).ToList())
+                    sec.Remove(element);
+            });
+
+            ViewModel.Accounts.Changed
+                .Where(x => x.Action != System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+                .Subscribe(_ => sec.Reset(ViewModel.Accounts.Select(x =>
+            {
+                var shortenedDomain = new Uri(x.Domain);
+                var element = new ProfileElement(x.Username, shortenedDomain.Host)
+                {
+                    Accessory = UITableViewCellAccessory.DisclosureIndicator,
+                    Tag = x
+                };
+                element.Image = Images.LoginUserUnknown;
+                element.ImageUri = x.AvatarUrl;
+                element.Tapped += () => ViewModel.LoginCommand.ExecuteIfCan(x);
+                return element;
+            })));
         }
 
         public override Source CreateSizingSource(bool unevenRows)

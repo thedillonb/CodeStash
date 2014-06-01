@@ -17,11 +17,7 @@ namespace CodeStash.iOS
     public partial class AppDelegate : UIApplicationDelegate
     {
         // class-level declarations
-        public override UIWindow Window
-        {
-            get;
-            set;
-        }
+        public override UIWindow Window { get; set; }
 
         // This is the main entry point of the application.
         static void Main(string[] args)
@@ -35,8 +31,6 @@ namespace CodeStash.iOS
         {
             Theme();
 
-            System.Console.WriteLine("UI Thread: " + System.Threading.Thread.CurrentThread.ManagedThreadId);
-            RxApp.MainThreadScheduler = new SynchronizationContextScheduler(SynchronizationContext.Current);
             RxApp.DefaultExceptionHandler = Observer.Create((Exception e) =>
             {
                 IoC.Resolve<IAlertDialogService>().Alert("Unhandled Exception", e.Message);
@@ -49,9 +43,14 @@ namespace CodeStash.iOS
             IoC.RegisterAssemblyServicesAsSingletons(typeof(Core.Services.IApplicationService).Assembly);
             IoC.RegisterAssemblyServicesAsSingletons(GetType().Assembly);
 
+            var viewModelViewService = IoC.Resolve<IViewModelViewService>();
+            viewModelViewService.RegisterViewModels(GetType().Assembly);
+
+            var startupViewController = new StartupViewController { ViewModel = IoC.Resolve<CodeStash.Core.ViewModels.Application.StartupViewModel>() };
+            startupViewController.ViewModel.View = startupViewController;
 
             Window = new UIWindow(UIScreen.MainScreen.Bounds);
-            Window.RootViewController = new UINavigationController(new StartupViewController()) { NavigationBarHidden = true };
+            Window.RootViewController = new UINavigationController(startupViewController) { NavigationBarHidden = true };
             Window.MakeKeyAndVisible();
             return true;
         }

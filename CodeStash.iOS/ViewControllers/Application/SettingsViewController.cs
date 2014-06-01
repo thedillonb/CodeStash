@@ -12,6 +12,11 @@ namespace CodeStash.iOS.ViewControllers.Application
             : base(UITableViewStyle.Grouped)
         {
             Title = "Settings";
+        }
+
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
 
             var sectionAccount = new Section("Account");
             sectionAccount.Add(new TrueFalseElement("Save Credentials", ViewModel.SaveCredentials, e => ViewModel.SaveCredentials = e.Value));

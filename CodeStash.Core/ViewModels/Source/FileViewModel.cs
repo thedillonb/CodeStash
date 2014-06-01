@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using CodeStash.Core.Services;
+﻿using CodeStash.Core.Services;
 using ReactiveUI;
 using System.Text;
 using Xamarin.Utilities.Core.ViewModels;
@@ -9,9 +7,6 @@ namespace CodeStash.Core.ViewModels.Source
 {
     public class FileViewModel : LoadableViewModel
     {
-        protected readonly IApplicationService ApplicationService;
-        private string _content;
-
         public string ProjectKey { get; set; }
 
         public string RepositorySlug { get; set; }
@@ -20,6 +15,9 @@ namespace CodeStash.Core.ViewModels.Source
 
         public string Branch { get; set; }
 
+        public string FileName { get; set; }
+
+        private string _content;
         public string Content
         {
             get { return _content; }
@@ -28,16 +26,14 @@ namespace CodeStash.Core.ViewModels.Source
 
         public FileViewModel(IApplicationService applicationService)
         {
-            ApplicationService = applicationService;
-        }
-
-        protected override async Task Load()
-        {
-            var response = await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].GetFileContent(Path, Branch).ExecuteAsync();
-            var content = new StringBuilder();
-            foreach (var line in response.Data.Lines)
-                content.AppendLine(line.Text);
-            Content = content.ToString();
+            LoadCommand.RegisterAsyncTask(async _ =>
+            {
+                var response = await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].GetFileContent(Path, Branch).ExecuteAsync();
+                var content = new StringBuilder();
+                foreach (var line in response.Data.Lines)
+                    content.AppendLine(line.Text);
+                Content = content.ToString();
+            });
         }
     }
 }

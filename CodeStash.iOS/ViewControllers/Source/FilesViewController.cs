@@ -3,44 +3,24 @@ using CodeStash.Core.ViewModels.Source;
 using MonoTouch.Dialog;
 using System.Linq;
 using System.Reactive.Linq;
-using AtlassianStashSharp.Models;
 
 namespace CodeStash.iOS.ViewControllers.Source
 {
     public class FilesViewController : ViewModelDialogViewController<FilesViewModel>
     {
-        public FilesViewController(string projectKey, string repositorySlug, string branch, string path = null)
+        public override void ViewDidLoad()
         {
-            ViewModel.ProjectKey = projectKey;
-            ViewModel.RepositorySlug = repositorySlug;
-            ViewModel.Branch = branch;
-            ViewModel.Path = path;
+            base.ViewDidLoad();
 
-            ViewModel.Contents.Changed.Subscribe(_ =>
-            {
-                var sec = new Section();
-                sec.AddAll(ViewModel.Contents.Select(x => 
-                {
-                    var element = new StyledStringElement(x.Path.ToString, () => ViewModel.GoToSourceCommand.Execute(x));
-                    element.Image = string.Equals(x.Type, "FILE", StringComparison.OrdinalIgnoreCase) ? Images.File : Images.Folder;
-                    return element;
-                }));
-                Root = new RootElement(Title) { sec};
-            });
+            var sec = new Section();
+            Root = new RootElement(ViewModel.Folder) { sec };
 
-            ViewModel.GoToSourceCommand.OfType<Content>().Subscribe(x => 
+            ViewModel.Contents.Changed.Subscribe(_ => sec.Reset(ViewModel.Contents.Select(x =>
             {
-                if (string.Equals(x.Type, "FILE", StringComparison.OrdinalIgnoreCase))
-                {
-                    var ctrl = new FileViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug, ViewModel.Branch, ViewModel.Path + "/" + x.Path.Name) { Title = x.Path.Name };
-                    NavigationController.PushViewController(ctrl, true);
-                }
-                else
-                {
-                    var ctrl = new FilesViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug, ViewModel.Branch, ViewModel.Path + "/" + x.Path.Name) { Title = x.Path.Name };
-                    NavigationController.PushViewController(ctrl, true);
-                }
-            });
+                var element = new StyledStringElement(x.Path.ToString, () => ViewModel.GoToSourceCommand.Execute(x));
+                element.Image = string.Equals(x.Type, "FILE", StringComparison.OrdinalIgnoreCase) ? Images.File : Images.Folder;
+                return element;
+            })));
         }
     }
 }

@@ -10,9 +10,6 @@ namespace CodeStash.Core.ViewModels.Source
 {
     public class SourceViewModel : LoadableViewModel
     {
-        protected readonly IApplicationService ApplicationService;
-        private int _selectedView;
-
         public string ProjectKey { get; set; }
 
         public string RepositorySlug { get; set; }
@@ -23,6 +20,7 @@ namespace CodeStash.Core.ViewModels.Source
 
         public IReactiveCommand GoToSourceCommand { get; private set; }
 
+        private int _selectedView;
         public int SelectedView
         {
             get { return _selectedView; }
@@ -31,24 +29,45 @@ namespace CodeStash.Core.ViewModels.Source
 
         public SourceViewModel(IApplicationService applicationService)
         {
-            ApplicationService = applicationService;
             GoToSourceCommand = new ReactiveCommand();
             Tags = new ReactiveList<Tag>();
             Branches = new ReactiveList<Branch>();
 
+            LoadCommand.RegisterAsyncTask(_ => Load(applicationService));
+
             this.WhenAnyValue(x => x.SelectedView).Skip(1).Subscribe(_ => LoadCommand.Execute(null));
+
+            GoToSourceCommand.OfType<Tag>().Subscribe(x => 
+            {
+                var vm = CreateViewModel<FilesViewModel>();
+                vm.ProjectKey = ProjectKey;
+                vm.RepositorySlug = RepositorySlug;
+                vm.Branch = x.LatestChangeset;
+                vm.Folder = x.DisplayId;
+                ShowViewModel(vm);
+            });
+
+            GoToSourceCommand.OfType<Branch>().Subscribe(x => 
+            {
+                var vm = CreateViewModel<FilesViewModel>();
+                vm.ProjectKey = ProjectKey;
+                vm.RepositorySlug = RepositorySlug;
+                vm.Branch = x.LatestChangeset;
+                vm.Folder = x.DisplayId;
+                ShowViewModel(vm);
+            });
         }
 
-        protected override async Task Load()
+        private async Task Load(IApplicationService applicationService)
         {
             if (SelectedView == 0)
             {
-                var response = await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Branches.GetAll().ExecuteAsync();
+                var response = await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Branches.GetAll().ExecuteAsync();
                 Branches.Reset(response.Data.Values);
             }
             else
             {
-                var response = await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Tags.GetAll().ExecuteAsync();
+                var response = await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Tags.GetAll().ExecuteAsync();
                 Tags.Reset(response.Data.Values);
             }
         }

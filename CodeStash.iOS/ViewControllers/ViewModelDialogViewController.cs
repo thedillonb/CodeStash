@@ -4,20 +4,22 @@ using ReactiveUI;
 using Xamarin.Utilities.Core.ViewModels;
 using Xamarin.Utilities.Core.Services;
 using System;
+using System.Reactive.Linq;
 
 namespace CodeStash.iOS.ViewControllers
 {
-    public abstract class ViewModelDialogViewController<TViewModel> : DialogViewController where TViewModel : ReactiveObject
+    public abstract class ViewModelDialogViewController<TViewModel> : DialogViewController, IViewFor<TViewModel> where TViewModel : ReactiveObject
     {
-        private readonly TViewModel _viewModel = IoC.Resolve<TViewModel>();
         protected readonly INetworkActivityService NetworkActivityService = IoC.Resolve<INetworkActivityService>();
         private UIRefreshControl _refreshControl;
         private bool _loaded;
 
+        public TViewModel ViewModel { get; set; }
 
-        public TViewModel ViewModel
+        object IViewFor.ViewModel
         {
-            get { return _viewModel; }
+            get { return ViewModel; }
+            set { ViewModel = (TViewModel)value; }
         }
 
         protected ViewModelDialogViewController(UITableViewStyle style = UITableViewStyle.Plain)
@@ -30,25 +32,13 @@ namespace CodeStash.iOS.ViewControllers
         {
             base.ViewDidLoad();
 
-            var loadableViewModel = _viewModel as LoadableViewModel;
+            var loadableViewModel = ViewModel as LoadableViewModel;
             if (loadableViewModel != null)
             {
                 _refreshControl = new UIRefreshControl();
                 RefreshControl = _refreshControl;
                 _refreshControl.ValueChanged += (s, e) => loadableViewModel.LoadCommand.ExecuteIfCan();
-
-                loadableViewModel.LoadCommand.IsExecuting.Subscribe(x =>
-                {
-                    if (x)
-                    {
-                        NetworkActivityService.PushNetworkActive();
-                    }
-                    else
-                    {
-                        NetworkActivityService.PopNetworkActive();
-                        _refreshControl.EndRefreshing(); 
-                    }
-                });
+                loadableViewModel.LoadCommand.IsExecuting.Where(x => !x).Subscribe(x => _refreshControl.EndRefreshing());
             }
         }
 
@@ -59,7 +49,7 @@ namespace CodeStash.iOS.ViewControllers
             if (!_loaded)
             {
                 _loaded = true;
-                var loadableViewModel = _viewModel as LoadableViewModel;
+                var loadableViewModel = ViewModel as LoadableViewModel;
                 if (loadableViewModel != null)
                     loadableViewModel.LoadCommand.ExecuteIfCan();
             }

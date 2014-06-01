@@ -6,28 +6,34 @@ using CodeStash.iOS.ViewControllers.Source;
 using CodeStash.iOS.ViewControllers.PullRequests;
 using CodeStash.iOS.Views;
 using MonoTouch.UIKit;
-using MonoTouch.Dialog.Elements;
 using ReactiveUI;
 using System.Reactive.Linq;
 using System.Linq;
+using CodeStash.Core.ViewModels.Commits;
+using CodeStash.Core.ViewModels.Source;
+using CodeStash.Core.ViewModels.PullRequests;
 
 namespace CodeStash.iOS.ViewControllers.Repositories
 {
     public class RepositoryViewController : ViewModelDialogViewController<RepositoryViewModel>
     {
-        private readonly ImageAndTitleHeaderView _header;
         private const float _spacing = 10f;
 
-        public RepositoryViewController(string projectKey, string repositorySlug)
-            : base(UITableViewStyle.Grouped)
+        public override void ViewDidLoad()
         {
-            ViewModel.ProjectKey = projectKey;
-            ViewModel.RepositorySlug = repositorySlug;
-            Title = repositorySlug;
+            Style = UITableViewStyle.Grouped;
+            Title = ViewModel.RepositorySlug;
 
-            _header = new ImageAndTitleHeaderView() { BackgroundColor = UIColor.Clear };
-            _header.Image = Images.LoginUserUnknown;
-            _header.Text = repositorySlug;
+            base.ViewDidLoad();
+
+            var header = new ImageAndTitleHeaderView() { BackgroundColor = UIColor.Clear };
+            header.Image = Images.LoginUserUnknown;
+            header.Text = ViewModel.RepositorySlug;
+
+            TableView.TableHeaderView = header;
+            TableView.TableFooterView = new UIView();
+            TableView.SeparatorInset = UIEdgeInsets.Zero;
+            TableView.BackgroundColor = UIColor.GroupTableViewBackgroundColor;
 
             var commitSection = new Section();
             commitSection.Add(new StyledStringElement("Commits", () => ViewModel.GoToCommitsCommand.Execute(null)));
@@ -44,43 +50,14 @@ namespace CodeStash.iOS.ViewControllers.Repositories
             root.Add(pullRequestsSection);
             Root = root;
 
-            ViewModel.GoToCommitsCommand.Subscribe(_ =>
-            {
-                var ctrl = new CommitsBranchViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug);
-                NavigationController.PushViewController(ctrl, true);
-            });
-
-            ViewModel.GoToSourceCommand.Subscribe(_ =>
-            {
-                var ctrl = new SourceViewController();
-                ctrl.ViewModel.ProjectKey = ViewModel.ProjectKey;
-                ctrl.ViewModel.RepositorySlug = ViewModel.RepositorySlug;
-                NavigationController.PushViewController(ctrl, true);
-            });
-
-            ViewModel.GoToPullRequestsCommand.Subscribe(_ =>
-            {
-                var ctrl = new PullRequestsViewController(ViewModel.ProjectKey, ViewModel.RepositorySlug);
-                NavigationController.PushViewController(ctrl, true);
-            });
-
             ViewModel.WhenAnyValue(x => x.Repository).Where(x => x != null).Subscribe(x =>
             {
                 var selfLink = x.Project.Links["self"].FirstOrDefault();
                 if (selfLink == null || string.IsNullOrEmpty(selfLink.Href))
                     return;
 
-                _header.ImageUri = selfLink.Href + "/avatar.png";
+                header.ImageUri = selfLink.Href + "/avatar.png";
             });
-        }
-
-        public override void ViewDidLoad()
-        {
-            base.ViewDidLoad();
-            TableView.TableHeaderView = _header;
-            TableView.TableFooterView = new UIView();
-            TableView.SeparatorInset = UIEdgeInsets.Zero;
-            TableView.BackgroundColor = UIColor.GroupTableViewBackgroundColor;
         }
     }
 }

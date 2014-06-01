@@ -3,35 +3,25 @@ using MonoTouch.Dialog;
 using MonoTouch.UIKit;
 using CodeStash.Core.ViewModels.Repositories;
 using System.Linq;
-using System.Reactive.Linq;
-using AtlassianStashSharp.Models;
 
 namespace CodeStash.iOS.ViewControllers.Repositories
 {
     public class RepositoriesViewController : ViewModelDialogViewController<RepositoriesViewModel>
     {
-        public RepositoriesViewController()
+        public override void ViewDidLoad()
         {
-            ViewModel.Repositories.Changed.Subscribe(_ =>
-            {
-                var root = new RootElement(Title);
-                var sec = new Section();
-                sec.AddAll(ViewModel.Repositories.Select(x => 
-                {
-                    var el = new StyledStringElement(x.Name);
-                    el.Accessory = UITableViewCellAccessory.DisclosureIndicator;
-                    el.Tapped += () => ViewModel.GoToRepositoryCommand.Execute(x);
-                    return el;
-                }));
-                root.Add(sec);
-                Root = root;
-            });
+            base.ViewDidLoad();
 
-            ViewModel.GoToRepositoryCommand.OfType<Repository>().Subscribe(x =>
+            var sec = new Section();
+            Root = new RootElement(ViewModel.Name) { sec };
+
+            ViewModel.Repositories.Changed.Subscribe(_ => sec.Reset(ViewModel.Repositories.Select(x =>
             {
-                var ctrl = new RepositoryViewController(x.Project.Key, x.Slug);
-                NavigationController.PresentViewController(ctrl, true, null);
-            });
+                var el = new StyledStringElement(x.Name);
+                el.Accessory = UITableViewCellAccessory.DisclosureIndicator;
+                el.Tapped += () => ViewModel.GoToRepositoryCommand.Execute(x);
+                return el;
+            })));
         }
     }
 }

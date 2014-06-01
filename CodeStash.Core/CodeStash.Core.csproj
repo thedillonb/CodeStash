@@ -81,7 +81,7 @@
     <Compile Include="ViewModels\Commits\CommitViewModel.cs" />
     <Compile Include="ViewModels\Source\FileViewModel.cs" />
     <Compile Include="ViewModels\Users\ProfileViewModel.cs" />
-    <Compile Include="Messages\AccountChangeMessage.cs" />
+    <Compile Include="ViewModels\Application\MainViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\Users\" />

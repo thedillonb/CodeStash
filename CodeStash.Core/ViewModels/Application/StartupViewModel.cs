@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using CodeStash.Core.Data;
 using ReactiveUI;
 using CodeStash.Core.Services;
 using Xamarin.Utilities.Core.ViewModels;
-using CodeStash.Core.Messages;
 
 namespace CodeStash.Core.ViewModels.Application
 {
@@ -35,11 +35,15 @@ namespace CodeStash.Core.ViewModels.Application
             GoToAccountsCommand = new ReactiveCommand();
             GoToNewUserCommand = new ReactiveCommand();
             BecomeActiveWindowCommand = new ReactiveCommand();
+            LoadCommand.RegisterAsyncTask(x => Load());
 
-            MessageBus.Current.Listen<AccountChangeMessage>().Subscribe(x =>
+            GoToAccountsCommand.Subscribe(_ => ShowViewModel(CreateViewModel<AccountsViewModel>()));
+            GoToMainCommand.Subscribe(_ => ShowViewModel(CreateViewModel<MainViewModel>()));
+            GoToNewUserCommand.Subscribe(_ =>
             {
-                ApplicationService.Account = x.Account;
-                BecomeActiveWindowCommand.ExecuteIfCan();
+                var vm = CreateViewModel<LoginViewModel>();
+                vm.WhenAnyValue(x => x.LoggedInAcconut).Skip(1).Subscribe(x => application.Account = x);
+                ShowViewModel(vm);
             });
         }
 
@@ -51,7 +55,7 @@ namespace CodeStash.Core.ViewModels.Application
                 GoToNewUserCommand.Execute(null);
         }
 
-        protected override async Task Load()
+        private async Task Load()
         {
             Account = ApplicationService.DefaultAccount;
 
