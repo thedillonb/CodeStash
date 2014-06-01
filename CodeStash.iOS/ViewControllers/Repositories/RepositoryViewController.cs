@@ -20,7 +20,12 @@ namespace CodeStash.iOS.ViewControllers.Repositories
 
             base.ViewDidLoad();
 
-            var header = new ImageAndTitleHeaderView() { BackgroundColor = UIColor.Clear };
+            var header = new ImageAndTitleHeaderView() 
+            { 
+                BackgroundColor = UIColor.Clear,
+                EnableSeperator = true,
+                SeperatorColor = TableView.SeparatorColor
+            };
             header.Image = Images.LoginUserUnknown;
             header.Text = ViewModel.RepositorySlug;
 
@@ -28,6 +33,12 @@ namespace CodeStash.iOS.ViewControllers.Repositories
             TableView.TableFooterView = new UIView();
             TableView.SeparatorInset = UIEdgeInsets.Zero;
             TableView.BackgroundColor = UIColor.GroupTableViewBackgroundColor;
+
+            var settingsSection = new Section();
+            var splitElement = new SplitButtonElement();
+            var forksButton = splitElement.AddButton("Forks", "0", () => ViewModel.GoToForksCommand.ExecuteIfCan());
+            var releatedButton = splitElement.AddButton("Related", "0", () => ViewModel.GoToRelatedCommand.ExecuteIfCan());
+            settingsSection.Add(splitElement);
 
             var commitSection = new Section();
             commitSection.Add(new StyledStringElement("Commits", () => ViewModel.GoToCommitsCommand.Execute(null)));
@@ -39,6 +50,7 @@ namespace CodeStash.iOS.ViewControllers.Repositories
             pullRequestsSection.Add(new StyledStringElement("Pull Requests", () => ViewModel.GoToPullRequestsCommand.Execute(null)));
 
             var root = new RootElement(Title);
+            root.Add(settingsSection);
             root.Add(commitSection);
             root.Add(sourceSection);
             root.Add(pullRequestsSection);
@@ -52,6 +64,9 @@ namespace CodeStash.iOS.ViewControllers.Repositories
 
                 header.ImageUri = selfLink.Href + "/avatar.png";
             });
+
+            ViewModel.WhenAnyValue(x => x.ForkedRepositories).Subscribe(x => forksButton.Text = x.ToString());
+            ViewModel.WhenAnyValue(x => x.RelatedRepositories).Subscribe(x => releatedButton.Text = x.ToString());
         }
     }
 }

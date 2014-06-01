@@ -1,6 +1,4 @@
 ﻿using System;
-using MonoTouch.Dialog;
-using MonoTouch.UIKit;
 using CodeStash.Core.ViewModels.Repositories;
 using System.Linq;
 using CodeStash.iOS.Views;
@@ -9,17 +7,11 @@ using System.Reactive.Linq;
 
 namespace CodeStash.iOS.ViewControllers.Repositories
 {
-    public class RepositoriesViewController : ViewModelDialogViewController<RepositoriesViewModel>
+    public class RepositoriesViewController : BaseRepositoriesViewController<RepositoriesViewModel>
     {
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-
-            TableView.SeparatorInset = UIEdgeInsets.Zero;
-
-            var sec = new Section();
-            Root = new RootElement(ViewModel.Name) { sec };
-
 
             ViewModel.WhenAnyValue(x => x.Project).Where(x => x != null).Subscribe(x =>
             {
@@ -37,14 +29,6 @@ namespace CodeStash.iOS.ViewControllers.Repositories
 
                 TableView.TableHeaderView = header;
             });
-
-            ViewModel.Repositories.Changed.Subscribe(_ => sec.Reset(ViewModel.Repositories.Select(x =>
-            {
-                var el = new StyledStringElement(x.Name);
-                el.Accessory = UITableViewCellAccessory.DisclosureIndicator;
-                el.Tapped += () => ViewModel.GoToRepositoryCommand.Execute(x);
-                return el;
-            })));
         }
     }
 }
