@@ -5,6 +5,7 @@ using CodeStash.Core.Data;
 using CodeStash.Core.Services;
 using ReactiveUI;
 using Xamarin.Utilities.Core.ViewModels;
+using CodeStash.Core.Messages;
 
 namespace CodeStash.Core.ViewModels.Application
 {
@@ -27,8 +28,14 @@ namespace CodeStash.Core.ViewModels.Application
 
             LoginCommand.OfType<Account>().Subscribe(x =>
             {
-                applicationService.Account = x;
-                DismissCommand.ExecuteIfCan();
+                if (object.Equals(applicationService.Account, x))
+                    DismissCommand.ExecuteIfCan();
+                else
+                {
+                    applicationService.Account = x;
+                    MessageBus.Current.SendMessage(new LogoutMessage());
+                    DismissCommand.ExecuteIfCan();
+                }
             });
 
             DeleteAccountCommand.OfType<Account>().Subscribe(x =>

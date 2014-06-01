@@ -5,6 +5,7 @@ using MonoTouch.Foundation;
 using ReactiveUI;
 using CodeStash.Core.ViewModels.Application;
 using CodeStash.Core.ViewModels.Projects;
+using CodeStash.Core.ViewModels.Users;
 
 namespace CodeStash.iOS.ViewControllers.Application
 {
@@ -38,19 +39,8 @@ namespace CodeStash.iOS.ViewControllers.Application
             toolbar.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleTopMargin;
             MenuViewController.View.Add(toolbar);
 
-//            ViewModel.GoToViewCommand.OfType<ProfileViewModel>().Subscribe(x =>
-//            {
-//                var view = this.CreateView<ProfileViewController>(x);
-//
-//                if (MainViewController == null)
-//                {
-//                    MainViewController = new MainNavigationController(view, this, new UIBarButtonItem(Images.MenuButton, UIBarButtonItemStyle.Plain, (s, e) => Open(true)));
-//                }
-//                else
-//                {
-//                    NavigationController.PresentViewController(view, true, null);
-//                }
-//            });
+            // Profile is default.
+            ViewModel.GoToProfileCommand.ExecuteIfCan();
         }
 
         private class CustomMenuNavigationController : UINavigationController

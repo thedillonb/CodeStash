@@ -1,17 +1,11 @@
 ﻿using System;
 using CodeStash.Core.ViewModels.Repositories;
 using MonoTouch.Dialog;
-using CodeStash.iOS.ViewControllers.Commits;
-using CodeStash.iOS.ViewControllers.Source;
-using CodeStash.iOS.ViewControllers.PullRequests;
 using CodeStash.iOS.Views;
 using MonoTouch.UIKit;
 using ReactiveUI;
 using System.Reactive.Linq;
 using System.Linq;
-using CodeStash.Core.ViewModels.Commits;
-using CodeStash.Core.ViewModels.Source;
-using CodeStash.Core.ViewModels.PullRequests;
 
 namespace CodeStash.iOS.ViewControllers.Repositories
 {

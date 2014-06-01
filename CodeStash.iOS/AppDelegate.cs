@@ -7,6 +7,7 @@ using Xamarin.Utilities.Core.Services;
 using System;
 using System.Reactive;
 using System.Threading;
+using CodeStash.Core.Messages;
 
 namespace CodeStash.iOS
 {
@@ -49,8 +50,11 @@ namespace CodeStash.iOS
             var startupViewController = new StartupViewController { ViewModel = IoC.Resolve<CodeStash.Core.ViewModels.Application.StartupViewModel>() };
             startupViewController.ViewModel.View = startupViewController;
 
+            var mainNavigationController = new UINavigationController(startupViewController) { NavigationBarHidden = true };
+            MessageBus.Current.Listen<LogoutMessage>().Subscribe(_ => mainNavigationController.PopToRootViewController(false));
+
             Window = new UIWindow(UIScreen.MainScreen.Bounds);
-            Window.RootViewController = new UINavigationController(startupViewController) { NavigationBarHidden = true };
+            Window.RootViewController = mainNavigationController;
             Window.MakeKeyAndVisible();
             return true;
         }

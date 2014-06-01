@@ -5,6 +5,7 @@ using Xamarin.Utilities.Core.Services;
 using CodeStash.iOS.ViewControllers.Repositories;
 using CodeStash.iOS.ViewControllers.Application;
 using Xamarin.Utilities.Core.ViewModels;
+using MonoTouch.SlideoutNavigation;
 
 namespace CodeStash.iOS
 {
@@ -16,7 +17,6 @@ namespace CodeStash.iOS
             var toViewController = (UIViewController)toView;
             var toViewDismissCommand = ((BaseViewModel)toView.ViewModel).DismissCommand;
 
-            //Root
             if (toViewController is SettingsViewController)
             {
                 toViewController.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(Images.Cancel, UIBarButtonItemStyle.Plain, (s, e) => toViewDismissCommand.Execute(null));
@@ -27,11 +27,13 @@ namespace CodeStash.iOS
             {
                 var rootNav = (UINavigationController)UIApplication.SharedApplication.Delegate.Window.RootViewController;
                 toViewController.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(Images.Cancel, UIBarButtonItemStyle.Plain, (s, e) => toViewDismissCommand.Execute(null));
-                toViewDismissCommand.Subscribe(_ => toViewController.DismissViewController(true, null));
+                toViewDismissCommand.Subscribe(_ => rootNav.DismissViewController(true, null));
                 rootNav.PresentViewController(new UINavigationController(toViewController), true, null);
             }
             else if (fromViewController is RepositoriesViewController)
+            {
                 fromViewController.NavigationController.PresentViewController(toViewController, true, null);
+            }
             else if (toViewController is MainViewController)
             {
                 var nav = ((UINavigationController)UIApplication.SharedApplication.Delegate.Window.RootViewController);
@@ -42,6 +44,11 @@ namespace CodeStash.iOS
             {
                 toViewDismissCommand.Subscribe(_ => fromViewController.DismissViewController(true, null));
                 fromViewController.PresentViewController(new UINavigationController(toViewController), true, null);
+            }
+            else if (fromViewController is MainViewController)
+            {
+                var slideout = ((MainViewController)fromViewController);
+                slideout.MainViewController = new MainNavigationController(toViewController, slideout, new UIBarButtonItem(Images.MenuButton, UIBarButtonItemStyle.Plain, (s, e) => slideout.Open(true)));
             }
             else
             {

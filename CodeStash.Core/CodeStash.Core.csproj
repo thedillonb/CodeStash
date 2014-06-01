@@ -82,6 +82,7 @@
     <Compile Include="ViewModels\Source\FileViewModel.cs" />
     <Compile Include="ViewModels\Users\ProfileViewModel.cs" />
     <Compile Include="ViewModels\Application\MainViewModel.cs" />
+    <Compile Include="Messages\LogoutMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\Users\" />

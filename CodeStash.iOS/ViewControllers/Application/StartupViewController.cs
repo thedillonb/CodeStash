@@ -40,6 +40,7 @@ namespace CodeStash.iOS.ViewControllers.Application
             }
         }
 
+
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
@@ -119,6 +120,18 @@ namespace CodeStash.iOS.ViewControllers.Application
         {
             base.ViewDidAppear(animated);
             ViewModel.LoadCommand.Execute(null);
+        }
+
+        public override void ViewWillAppear(bool animated)
+        {
+            base.ViewWillAppear(animated);
+            UIApplication.SharedApplication.SetStatusBarHidden(true, UIStatusBarAnimation.Fade);
+        }
+
+        public override void ViewWillDisappear(bool animated)
+        {
+            base.ViewWillDisappear(animated);
+            UIApplication.SharedApplication.SetStatusBarHidden(false, UIStatusBarAnimation.Fade);
         }
 
         public override bool ShouldAutorotate()

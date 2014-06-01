@@ -12,8 +12,6 @@ namespace CodeStash.Core.ViewModels.Repositories
 {
     public class RepositoryViewModel : LoadableViewModel
     {
-        protected readonly IApplicationService ApplicationService;
-
         public string ProjectKey { get; set; }
 
         public string RepositorySlug { get; set; }
@@ -40,10 +38,9 @@ namespace CodeStash.Core.ViewModels.Repositories
 
         public RepositoryViewModel(IApplicationService applicationService)
         {
-            ApplicationService = applicationService;
             LoadCommand.RegisterAsyncTask(async _ => 
             {
-                Repository = (await ApplicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Get().ExecuteAsync()).Data;
+                Repository = (await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Get().ExecuteAsync()).Data;
             });
 
             GoToSourceCommand = new ReactiveCommand();
@@ -74,7 +71,7 @@ namespace CodeStash.Core.ViewModels.Repositories
             });
         }
 
-        private async Task<string> LoadAvatar()
+        private async Task<string> LoadAvatar(IApplicationService applicationService)
         {
             var documents = Environment.GetFolderPath (Environment.SpecialFolder.MyDocuments);
             var avatarPath = System.IO.Path.Combine (documents, "..", "Library", "Caches", "Avatars");
@@ -84,7 +81,7 @@ namespace CodeStash.Core.ViewModels.Repositories
             avatarPath = System.IO.Path.Combine(avatarPath, "avatar." + ProjectKey + ".png");
             if (!System.IO.File.Exists(avatarPath))
             {
-                var image = await ApplicationService.StashClient.Projects[ProjectKey].GetAvatar("128").ExecuteAsync();
+                var image = await applicationService.StashClient.Projects[ProjectKey].GetAvatar("128").ExecuteAsync();
                 Console.WriteLine("Length: " + image.Data.Length);
                 await Task.Run(() => System.IO.File.WriteAllBytes(avatarPath, System.Text.Encoding.UTF8.GetBytes(image.Data)));
             }
