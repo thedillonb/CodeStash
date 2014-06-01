@@ -9,6 +9,7 @@ namespace CodeStash.iOS.Views
     {
         private readonly UIImageView _imageView;
         private readonly UILabel _label;
+        private readonly UIView _seperatorView;
 
         public string ImageUri
         {
@@ -37,6 +38,30 @@ namespace CodeStash.iOS.Views
             }
         }
 
+        public bool EnableSeperator
+        {
+            get
+            {
+                return !_seperatorView.Hidden;
+            }
+            set
+            {
+                _seperatorView.Hidden = !value;
+            }
+        }
+
+        public UIColor SeperatorColor
+        {
+            get
+            {
+                return _seperatorView.BackgroundColor;
+            }
+            set
+            {
+                _seperatorView.BackgroundColor = value;
+            }
+        }
+
         public ImageAndTitleHeaderView()
             : base(new RectangleF(0, 0, 320f, 100f))
         {
@@ -50,6 +75,12 @@ namespace CodeStash.iOS.Views
             _label.TextAlignment = UITextAlignment.Center;
             _label.Lines = 0;
             Add(_label);
+
+            _seperatorView = new UIView();
+            _seperatorView.BackgroundColor = UIColor.FromWhiteAlpha(214.0f / 255.0f, 1.0f);
+            Add(_seperatorView);
+
+            EnableSeperator = false;
         }
 
         public override void LayoutSubviews()
@@ -65,6 +96,8 @@ namespace CodeStash.iOS.Views
             var f = Frame;
             f.Height = _label.Frame.Bottom + 10f;
             Frame = f;
+
+            _seperatorView.Frame = new RectangleF(0, Frame.Height - 0.5f, Frame.Width, 0.5f);
         }
 
         public void UpdatedImage(Uri uri)
