@@ -18,6 +18,12 @@ namespace CodeStash.iOS
         public static UIImage GreyButton { get { return UIImageHelper.FromFileAuto("Images/grey_button"); } }
         public static UIImage StashLogo { get { return UIImage.FromFile("Images/logo.png"); } }
 
+        public static UIImage Build { get { return UIImageHelper.FromFileAuto("Images/build"); } }
+        public static UIImage Update { get { return UIImageHelper.FromFileAuto("Images/update"); } }
+        public static UIImage BuildOk { get { return UIImageHelper.FromFileAuto("Images/build_ok"); } }
+        public static UIImage Error { get { return UIImageHelper.FromFileAuto("Images/error"); } }
+        public static UIImage Commit { get { return UIImageHelper.FromFileAuto("Images/commit"); } }
+        public static UIImage Comment { get { return UIImageHelper.FromFileAuto("Images/comment"); } }
     }
 }
 

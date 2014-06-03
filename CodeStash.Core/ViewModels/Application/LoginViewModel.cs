@@ -45,11 +45,7 @@ namespace CodeStash.Core.ViewModels.Application
 
             LoginCommand.RegisterAsyncTask(async x =>
             {
-                var domain = Domain;
-                if (!domain.EndsWith("/", StringComparison.Ordinal))
-                    domain += "/";
-                domain += "rest/api/1.0";
-
+                var domain = Domain.TrimEnd('/');
                 var client = AtlassianStashSharp.StashClient.CrateBasic(new Uri(domain), Username, Password);
                 await client.Projects.GetAll().ExecuteAsync();
 

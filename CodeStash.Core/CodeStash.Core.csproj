@@ -86,6 +86,7 @@
     <Compile Include="ViewModels\Repositories\BaseRepositoriesViewModel.cs" />
     <Compile Include="ViewModels\Repositories\ForkedRepositoriesViewModel.cs" />
     <Compile Include="ViewModels\Repositories\RelatedRepositoriesViewModel.cs" />
+    <Compile Include="ViewModels\Commits\BuildStatusesViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\Users\" />

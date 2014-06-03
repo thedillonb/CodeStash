@@ -198,6 +198,17 @@
     <BundleResource Include="Resources\Default%402x.png" />
     <BundleResource Include="Resources\Default.png" />
     <BundleResource Include="Images\branch%402x.png" />
+    <BundleResource Include="Images\build%402x.png" />
+    <BundleResource Include="Images\error%402x.png" />
+    <BundleResource Include="Images\build_ok%402x.png" />
+    <BundleResource Include="Images\commit%402x.png" />
+    <BundleResource Include="Images\commit.png" />
+    <BundleResource Include="Images\build_ok.png" />
+    <BundleResource Include="Images\error.png" />
+    <BundleResource Include="Images\update%402x.png" />
+    <BundleResource Include="Images\update.png" />
+    <BundleResource Include="Images\comment%402x.png" />
+    <BundleResource Include="Images\comment.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -237,6 +248,7 @@
     <Compile Include="ViewControllers\Repositories\ForkedRepositoriesViewController.cs" />
     <Compile Include="ViewControllers\Repositories\BaseRepositoriesViewController.cs" />
     <Compile Include="ViewControllers\Repositories\RelatedRepositoriesViewController.cs" />
+    <Compile Include="ViewControllers\Commits\BuildStatusesViewController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>

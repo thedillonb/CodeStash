@@ -34,7 +34,7 @@ namespace CodeStash.iOS
 
             RxApp.DefaultExceptionHandler = Observer.Create((Exception e) =>
             {
-                IoC.Resolve<IAlertDialogService>().Alert("Unhandled Exception", e.Message);
+                IoC.Resolve<IAlertDialogService>().Alert("Error", e.Message);
                 Console.WriteLine("Exception occured: " + e.Message + " at " + e.StackTrace);
             });
 
@@ -45,6 +45,7 @@ namespace CodeStash.iOS
             IoC.RegisterAssemblyServicesAsSingletons(GetType().Assembly);
 
             var viewModelViewService = IoC.Resolve<IViewModelViewService>();
+            viewModelViewService.RegisterViewModels(typeof(Xamarin.Utilities.Services.DefaultValueService).Assembly);
             viewModelViewService.RegisterViewModels(GetType().Assembly);
 
             var startupViewController = new StartupViewController { ViewModel = IoC.Resolve<CodeStash.Core.ViewModels.Application.StartupViewModel>() };
