@@ -256,6 +256,7 @@
     <Compile Include="ViewControllers\Repositories\BaseRepositoriesViewController.cs" />
     <Compile Include="ViewControllers\Repositories\RelatedRepositoriesViewController.cs" />
     <Compile Include="ViewControllers\Commits\BuildStatusesViewController.cs" />
+    <Compile Include="ViewControllers\Commits\CommitDiffViewController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
@@ -287,6 +288,7 @@
   <ItemGroup>
     <Folder Include="Elements\" />
     <Folder Include="ViewControllers\Users\" />
+    <Folder Include="Diff\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\grey_button%402x.png" />
@@ -294,6 +296,12 @@
     <Content Include="Images\login_user_unknown%402x.png" />
     <Content Include="Images\login_user_unknown.png" />
     <Content Include="Images\logo.png" />
+    <Content Include="Diff\app.js" />
+    <Content Include="Diff\diffindex.html" />
+    <Content Include="Diff\difflib.js" />
+    <Content Include="Diff\diffview.css" />
+    <Content Include="Diff\diffview.js" />
+    <Content Include="Diff\jquery.min.js" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

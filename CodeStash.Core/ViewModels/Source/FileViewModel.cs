@@ -36,7 +36,7 @@ namespace CodeStash.Core.ViewModels.Source
                 var content = new StringBuilder();
                 foreach (var line in response.Data.Lines)
                     content.AppendLine(line.Text);
-                Content = content.ToString();
+                Content = content.ToString().Trim();
             });
         }
     }

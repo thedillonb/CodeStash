@@ -6,6 +6,7 @@ using Xamarin.Utilities.Core.ViewModels;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Reactive.Linq;
+using AtlassianStashSharp.Helpers;
 
 namespace CodeStash.Core.ViewModels.Commits
 {
@@ -61,6 +62,8 @@ namespace CodeStash.Core.ViewModels.Commits
 
         public IReactiveCommand GoToCommentsCommand { get; private set; }
 
+        public IReactiveCommand GoToDiffCommand { get; private set; }
+
         public CommitViewModel(IApplicationService applicationService)
         {
             Changes = new ReactiveList<Change>();
@@ -75,8 +78,9 @@ namespace CodeStash.Core.ViewModels.Commits
                     .ExecuteAsync().ContinueInBackground(x => BuildStatus = x.Data.Values.ToArray());
 
                 Commit = (await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Commits[Node].Get().ExecuteAsync()).Data;
-                var data = await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Commits[Node].GetAllChanges().ExecuteAsync();
-                Changes.Reset(data.Data.Values);
+
+                var data = await PaginationHelper.GetAll(applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Commits[Node].GetAllChanges());
+                Changes.Reset(data);
             });
 
             GoToBuildStatusCommand = new ReactiveCommand(this.WhenAnyValue(x => x.BuildStatus, x => x != null && x.Length > 0));
@@ -125,6 +129,23 @@ namespace CodeStash.Core.ViewModels.Commits
             });
 
             GoToCommentsCommand = new ReactiveCommand();
+
+            GoToDiffCommand = new ReactiveCommand(this.WhenAnyValue(x => x.Commit, x => x != null));
+            GoToDiffCommand.OfType<Change>().Subscribe(x =>
+            {
+                var vm = CreateViewModel<CommitDiffViewModel>();
+                vm.ProjectKey = ProjectKey;
+                vm.RepositorySlug = RepositorySlug;
+                vm.Node = Node;
+                vm.Path = x.Path.ToString;
+                vm.Name = x.Path.Name;
+
+                var parentCommit = Commit.Parents.FirstOrDefault();
+                if (parentCommit != null)
+                    vm.NodeParent = parentCommit.Id;
+
+                ShowViewModel(vm);
+            });
         }
     }
 }

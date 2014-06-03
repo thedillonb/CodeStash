@@ -18,9 +18,9 @@ namespace CodeStash.iOS.ViewControllers.Application
         {
             base.ViewDidLoad();
 
-            var sectionAccount = new Section("Account");
-            sectionAccount.Add(new TrueFalseElement("Save Credentials", ViewModel.SaveCredentials, e => ViewModel.SaveCredentials = e.Value));
-
+//            var sectionAccount = new Section("Account");
+//            sectionAccount.Add(new TrueFalseElement("Save Credentials", ViewModel.SaveCredentials, e => ViewModel.SaveCredentials = e.Value));
+//
             var sectionApplication = new Section("Application");
             var deleteCacheElement = new StyledStringElement("Delete Cache", "0 MB", UITableViewCellStyle.Value1)
             {
@@ -37,7 +37,7 @@ namespace CodeStash.iOS.ViewControllers.Application
                 new StyledStringElement("App Version", ViewModel.Version)
             };
 
-            Root = new RootElement(Title) { sectionAccount, sectionApplication, sectionAbout };
+            Root = new RootElement(Title) { sectionApplication, sectionAbout };
         }
     }
 }
