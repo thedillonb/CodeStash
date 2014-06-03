@@ -72,6 +72,10 @@ namespace CodeStash.iOS
             UINavigationBar.Appearance.BackIndicatorImage = Images.BackButton;
             UINavigationBar.Appearance.BackIndicatorTransitionMaskImage = Images.BackButton;
 
+            UIImageView.AppearanceWhenContainedIn(typeof(UITableViewCell)).TintColor = UIColor.FromRGB(45, 80, 148);
+
+            MonoTouch.Dialog.SplitButtonElement.TextColor = UIColor.FromRGB(45, 80, 148);
+
             //CodeFramework.iOS.Utils.Hud.BackgroundTint = UIColor.FromRGBA(228, 228, 228, 128);
 
             //UISegmentedControl.Appearance.TintColor = UIColor.FromRGB(45,80,148);

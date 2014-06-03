@@ -13,9 +13,13 @@ namespace CodeStash.iOS.ViewControllers.Repositories
     {
         private const float _spacing = 10f;
 
+        public RepositoryViewController()
+            : base(UITableViewStyle.Grouped)
+        {
+        }
+
         public override void ViewDidLoad()
         {
-            Style = UITableViewStyle.Grouped;
             Title = ViewModel.RepositorySlug;
 
             base.ViewDidLoad();
@@ -23,8 +27,6 @@ namespace CodeStash.iOS.ViewControllers.Repositories
             var header = new ImageAndTitleHeaderView() 
             { 
                 BackgroundColor = UIColor.Clear,
-                EnableSeperator = true,
-                SeperatorColor = TableView.SeparatorColor
             };
             header.Image = Images.LoginUserUnknown;
             header.Text = ViewModel.RepositorySlug;
@@ -33,27 +35,28 @@ namespace CodeStash.iOS.ViewControllers.Repositories
             TableView.TableFooterView = new UIView();
             TableView.SeparatorInset = UIEdgeInsets.Zero;
             TableView.BackgroundColor = UIColor.GroupTableViewBackgroundColor;
+            TableView.SectionHeaderHeight = 0.3f;
 
             var settingsSection = new Section();
             var splitElement = new SplitButtonElement();
             var forksButton = splitElement.AddButton("Forks", "0", () => ViewModel.GoToForksCommand.ExecuteIfCan());
             var releatedButton = splitElement.AddButton("Related", "0", () => ViewModel.GoToRelatedCommand.ExecuteIfCan());
             settingsSection.Add(splitElement);
-
-            var commitSection = new Section();
-            commitSection.Add(new StyledStringElement("Commits", () => ViewModel.GoToCommitsCommand.Execute(null)));
-
-            var sourceSection = new Section();
-            sourceSection.Add(new StyledStringElement("Source Code", () => ViewModel.GoToSourceCommand.Execute(null)));
-
-            var pullRequestsSection = new Section();
-            pullRequestsSection.Add(new StyledStringElement("Pull Requests", () => ViewModel.GoToPullRequestsCommand.Execute(null)));
+//
+//            var eventsElement = new StyledStringElement("Events", () => {}, Images.Megaphone.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate));
+//            settingsSection.Add(eventsElement);
+//
+//            var readmeElement = new StyledStringElement("Readme", () => {}, Images.Readme.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate));
+//            settingsSection.Add(readmeElement);
+//
+            var codeSection = new Section();
+            codeSection.Add(new StyledStringElement("Commits", () => ViewModel.GoToCommitsCommand.Execute(null), Images.Commit.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)));
+            codeSection.Add(new StyledStringElement("Source Code", () => ViewModel.GoToSourceCommand.Execute(null), Images.Build.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)));
+            codeSection.Add(new StyledStringElement("Pull Requests", () => ViewModel.GoToPullRequestsCommand.Execute(null), Images.Merge.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)));
 
             var root = new RootElement(Title);
             root.Add(settingsSection);
-            root.Add(commitSection);
-            root.Add(sourceSection);
-            root.Add(pullRequestsSection);
+            root.Add(codeSection);
             Root = root;
 
             ViewModel.WhenAnyValue(x => x.Repository).Where(x => x != null).Subscribe(x =>

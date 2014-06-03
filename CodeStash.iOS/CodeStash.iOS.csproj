@@ -209,6 +209,13 @@
     <BundleResource Include="Images\update.png" />
     <BundleResource Include="Images\comment%402x.png" />
     <BundleResource Include="Images\comment.png" />
+    <BundleResource Include="Images\megaphone%402x.png" />
+    <BundleResource Include="Images\megaphone.png" />
+    <BundleResource Include="Images\info%402x.png" />
+    <BundleResource Include="Images\info.png" />
+    <BundleResource Include="Images\readme%402x.png" />
+    <BundleResource Include="Images\readme.png" />
+    <BundleResource Include="Images\merge%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

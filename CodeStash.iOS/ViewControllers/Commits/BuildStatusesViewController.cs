@@ -14,6 +14,9 @@ namespace CodeStash.iOS.ViewControllers.Commits
 
             var sec = new Section();
             Root = new RootElement("Build Status") { sec };
+            var okIcon = Images.BuildOk.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
+            var failedIcon = Images.Error.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
+            var loadingIcon = Images.Update.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 
             ViewModel.BuildStatues.Changed.Subscribe(_ => sec.Reset(ViewModel.BuildStatues.Select(x =>
             {
@@ -21,17 +24,17 @@ namespace CodeStash.iOS.ViewControllers.Commits
 
                 if (string.Equals(x.State, "SUCCESSFUL", StringComparison.OrdinalIgnoreCase))
                 {
-                    element.Image = Images.BuildOk;
+                    element.Image = okIcon;
                     element.Value = "Successful";
                 }
                 else if (string.Equals(x.State, "FAILED", StringComparison.OrdinalIgnoreCase))
                 {
-                    element.Image = Images.Error;
+                    element.Image = failedIcon;
                     element.Value = "Failed";
                 }
                 else
                 {
-                    element.Image = Images.Update;
+                    element.Image = loadingIcon;
                     element.Value = "In Progress";
                 }
 

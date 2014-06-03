@@ -21,12 +21,14 @@ namespace CodeStash.iOS.ViewControllers.Source
 
             var sec = new Section();
             Root = new RootElement("Source") { sec };
+            var branchIcon = Images.Branch.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
+            var tagIcon = Images.Tag.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 
             ViewModel.Branches.Changed.Where(_ => ViewModel.SelectedView == 0).Subscribe(_ =>
             sec.Reset(ViewModel.Branches.Select(x =>
             {
                 var element = new StyledStringElement(x.DisplayId, () => ViewModel.GoToSourceCommand.Execute(x));
-                element.Image = Images.Branch;
+                element.Image = branchIcon;
                 return element;
             })));
 
@@ -34,7 +36,7 @@ namespace CodeStash.iOS.ViewControllers.Source
             sec.Reset(ViewModel.Tags.Select(x =>
             {
                 var element = new StyledStringElement(x.DisplayId, () => ViewModel.GoToSourceCommand.Execute(x));
-                element.Image = Images.Tag;
+                    element.Image = tagIcon;
                 return element;
             })));
         }
