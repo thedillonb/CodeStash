@@ -1,9 +1,6 @@
 [submodule "lib/MonoTouch.Dialog"]
 	path = lib/MonoTouch.Dialog
 	url = git@github.com:thedillonb/MonoTouch.Dialog.git
-[submodule "lib/Xamarin.Utilities"]
-	path = lib/Xamarin.Utilities
-	url = git@github.com:thedillonb/Xamarin.Utilities.git
 [submodule "lib/AtlassianStashSharp"]
 	path = lib/AtlassianStashSharp
 	url = git@github.com:thedillonb/AtlassianStashSharp.git
