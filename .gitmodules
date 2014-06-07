@@ -7,3 +7,6 @@
 [submodule "lib/MonoTouch.SlideoutNavigation"]
 	path = lib/MonoTouch.SlideoutNavigation
 	url = git@github.com:thedillonb/MonoTouch.SlideoutNavigation.git
+[submodule "lib/CodeFramework"]
+	path = lib/CodeFramework
+	url = git@github.com:thedillonb/CodeFramework.git
