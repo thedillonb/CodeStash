@@ -31,19 +31,12 @@
   <ItemGroup>
     <Reference Include="Monotouch" />
     <Reference Include="System" />
-    <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Reactive.Core">
       <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Core.dll</HintPath>
     </Reference>
-    <Reference Include="System.Reactive.Interfaces">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Interfaces.dll</HintPath>
-    </Reference>
     <Reference Include="System.Reactive.Linq">
       <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.PlatformServices">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.PlatformServices.dll</HintPath>
     </Reference>
     <Reference Include="ReactiveUI">
       <HintPath>..\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.dll</HintPath>
@@ -55,8 +48,12 @@
       <Project>{E70FFE95-0577-4BE0-9D1B-978AFE3B2464}</Project>
       <Name>AtlassianStashSharp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\lib\Xamarin.Utilities\Xamarin.Utilities.Core\Xamarin.Utilities.Core.iOS.csproj">
-      <Project>{EBBA1BD0-8430-4CC1-B636-B89C505C7D1C}</Project>
+    <ProjectReference Include="..\lib\CodeFramework\CodeFramework.Core\CodeFramework.Core.csproj">
+      <Project>{c99fe7e3-0985-48f1-9ebb-91680a795f0f}</Project>
+      <Name>CodeFramework.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\CodeFramework\lib\Xamarin.Utilities\Xamarin.Utilities.Core\Xamarin.Utilities.Core.iOS.csproj">
+      <Project>{ebba1bd0-8430-4cc1-b636-b89c505c7d1c}</Project>
       <Name>Xamarin.Utilities.Core.iOS</Name>
     </ProjectReference>
   </ItemGroup>
@@ -82,15 +79,11 @@
     <Compile Include="ViewModels\Source\FileViewModel.cs" />
     <Compile Include="ViewModels\Users\ProfileViewModel.cs" />
     <Compile Include="ViewModels\Application\MainViewModel.cs" />
-    <Compile Include="Messages\LogoutMessage.cs" />
     <Compile Include="ViewModels\Repositories\BaseRepositoriesViewModel.cs" />
     <Compile Include="ViewModels\Repositories\ForkedRepositoriesViewModel.cs" />
     <Compile Include="ViewModels\Repositories\RelatedRepositoriesViewModel.cs" />
     <Compile Include="ViewModels\Commits\BuildStatusesViewModel.cs" />
     <Compile Include="ViewModels\Commits\CommitDiffViewModel.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ViewModels\Users\" />
-    <Folder Include="Messages\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

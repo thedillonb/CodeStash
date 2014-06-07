@@ -31,13 +31,13 @@ namespace CodeStash.Core.ViewModels.Application
             ApplicationService = applicationService;
             EnvironmentalService = environmentalService;
             DeleteCacheCommand = new ReactiveCommand();
-            SaveCredentials = ApplicationService.Account.SaveCredentials;
-
-            this.WhenAnyValue(x => x.SaveCredentials).Skip(1).Subscribe(x =>
-            {
-                ApplicationService.Account.SaveCredentials = x;
-                ApplicationService.Accounts.Update(ApplicationService.Account);
-            });
+//            SaveCredentials = ApplicationService.Account.SaveCredentials;
+//
+//            this.WhenAnyValue(x => x.SaveCredentials).Skip(1).Subscribe(x =>
+//            {
+//                ApplicationService.Account.SaveCredentials = x;
+//                ApplicationService.Accounts.Update(ApplicationService.Account);
+//            });
         }
     }
 }
