@@ -7,10 +7,11 @@ using System.Reactive.Linq;
 using ReactiveUI;
 using MonoTouch.UIKit;
 using System.Collections.Generic;
+using CodeFramework.iOS.Views;
 
 namespace CodeStash.iOS.ViewControllers.Commits
 {
-    public class CommitViewController : ViewModelDialogViewController<CommitViewModel>
+    public class CommitViewController : ViewModelDialogView<CommitViewModel>
     {
         public CommitViewController()
             : base(UITableViewStyle.Grouped)
@@ -45,7 +46,7 @@ namespace CodeStash.iOS.ViewControllers.Commits
                 BackgroundColor = UIColor.GroupTableViewBackgroundColor
             };
 
-            header.Image = Images.LoginUserUnknown;
+            header.Image = CodeFramework.iOS.Images.LoginUserUnknown;
             header.Text = ViewModel.RepositorySlug;
             TableView.TableHeaderView = header;
             TableView.SectionFooterHeight = 0.3f;

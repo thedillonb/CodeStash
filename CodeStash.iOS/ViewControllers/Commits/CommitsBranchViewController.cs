@@ -1,26 +1,25 @@
-﻿using System;
-using System.Linq;
-using CodeStash.Core.ViewModels.Commits;
+﻿using CodeStash.Core.ViewModels.Commits;
 using MonoTouch.Dialog;
+using CodeFramework.iOS.Views;
+using ReactiveUI;
 
 namespace CodeStash.iOS.ViewControllers.Commits
 {
-    public class CommitsBranchViewController : ViewModelDialogViewController<CommitsBranchViewModel>
+    public class CommitsBranchViewController : ViewModelCollectionView<CommitsBranchViewModel>
     {
         public override void ViewDidLoad()
         {
-            base.ViewDidLoad();
-
-            var sec = new Section();
-            Root = new RootElement("Commits") { sec };
             var icon = Images.Branch.ImageWithRenderingMode(MonoTouch.UIKit.UIImageRenderingMode.AlwaysTemplate);
+            Title = "Commits";
 
-            ViewModel.Branches.Changed.Subscribe(_ => sec.Reset(ViewModel.Branches.Select(x =>
+            Bind(ViewModel.WhenAnyValue(x => x.Branches), x => 
             {
                 var element = new StyledStringElement(x.DisplayId, () => ViewModel.GoToCommitsCommand.Execute(x));
                 element.Image = icon;
                 return element;
-            })));
+            });
+
+            base.ViewDidLoad();
         }
     }
 }

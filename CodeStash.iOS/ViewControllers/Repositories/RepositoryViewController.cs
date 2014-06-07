@@ -6,10 +6,11 @@ using MonoTouch.UIKit;
 using ReactiveUI;
 using System.Reactive.Linq;
 using System.Linq;
+using CodeFramework.iOS.Views;
 
 namespace CodeStash.iOS.ViewControllers.Repositories
 {
-    public class RepositoryViewController : ViewModelDialogViewController<RepositoryViewModel>
+    public class RepositoryViewController : ViewModelDialogView<RepositoryViewModel>
     {
         private const float _spacing = 10f;
 
@@ -25,7 +26,7 @@ namespace CodeStash.iOS.ViewControllers.Repositories
             base.ViewDidLoad();
 
             var header = new ImageAndTitleHeaderView { BackgroundColor = UIColor.GroupTableViewBackgroundColor };
-            header.Image = Images.LoginUserUnknown;
+            header.Image = CodeFramework.iOS.Images.LoginUserUnknown;
             header.Text = ViewModel.RepositorySlug;
 
             TableView.TableHeaderView = header;

@@ -4,6 +4,7 @@ using ReactiveUI;
 using AtlassianStashSharp.Models;
 using Xamarin.Utilities.Core.ViewModels;
 using System.Reactive.Linq;
+using Xamarin.Utilities.Core.ReactiveAddons;
 
 namespace CodeStash.Core.ViewModels.Commits
 {
@@ -13,14 +14,14 @@ namespace CodeStash.Core.ViewModels.Commits
 
         public string RepositorySlug { get; set; }
 
-        public ReactiveList<Branch> Branches { get; private set; }
+        public ReactiveCollection<Branch> Branches { get; private set; }
 
         public IReactiveCommand GoToCommitsCommand { get; private set; }
 
         public CommitsBranchViewModel(IApplicationService applicationService)
         {
             GoToCommitsCommand = new ReactiveCommand();
-            Branches = new ReactiveList<Branch>();
+            Branches = new ReactiveCollection<Branch>();
 
             LoadCommand.RegisterAsyncTask(async x =>
             {

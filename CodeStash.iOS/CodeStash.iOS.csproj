@@ -89,28 +89,28 @@
     <Reference Include="System.Core" />
     <Reference Include="monotouch" />
     <Reference Include="ReactiveUI.Cocoa">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.Cocoa.dll</HintPath>
+      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.Cocoa.dll</HintPath>
     </Reference>
     <Reference Include="ReactiveUI.Events">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.Events.dll</HintPath>
+      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.Events.dll</HintPath>
     </Reference>
     <Reference Include="ReactiveUI.Mobile">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.Mobile.dll</HintPath>
+      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.Mobile.dll</HintPath>
     </Reference>
     <Reference Include="ReactiveUI">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.dll</HintPath>
+      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Core">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Core.dll</HintPath>
+      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Interfaces">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Interfaces.dll</HintPath>
+      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Linq">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Linq.dll</HintPath>
+      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.PlatformServices">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.PlatformServices.dll</HintPath>
+      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\System.Reactive.PlatformServices.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -120,63 +120,8 @@
     <BundleResource Include="Images\folder.png" />
     <BundleResource Include="Images\tag%402x.png" />
     <BundleResource Include="Images\tag.png" />
-    <BundleResource Include="Highlighter\styles\brown_papersq.png" />
-    <BundleResource Include="Highlighter\styles\pojoaque.jpg" />
-    <BundleResource Include="Highlighter\styles\school_book.png" />
-    <BundleResource Include="Highlighter\styles\arta.css" />
-    <BundleResource Include="Highlighter\styles\ascetic.css" />
-    <BundleResource Include="Highlighter\styles\atelier-dune.dark.css" />
-    <BundleResource Include="Highlighter\styles\atelier-dune.light.css" />
-    <BundleResource Include="Highlighter\styles\atelier-forest.dark.css" />
-    <BundleResource Include="Highlighter\styles\atelier-forest.light.css" />
-    <BundleResource Include="Highlighter\styles\atelier-heath.dark.css" />
-    <BundleResource Include="Highlighter\styles\atelier-heath.light.css" />
-    <BundleResource Include="Highlighter\styles\atelier-lakeside.dark.css" />
-    <BundleResource Include="Highlighter\styles\atelier-lakeside.light.css" />
-    <BundleResource Include="Highlighter\styles\atelier-seaside.dark.css" />
-    <BundleResource Include="Highlighter\styles\atelier-seaside.light.css" />
-    <BundleResource Include="Highlighter\styles\brown_paper.css" />
-    <BundleResource Include="Highlighter\styles\dark.css" />
-    <BundleResource Include="Highlighter\styles\default.css" />
-    <BundleResource Include="Highlighter\styles\docco.css" />
-    <BundleResource Include="Highlighter\styles\far.css" />
-    <BundleResource Include="Highlighter\styles\foundation.css" />
-    <BundleResource Include="Highlighter\styles\github.css" />
-    <BundleResource Include="Highlighter\styles\googlecode.css" />
-    <BundleResource Include="Highlighter\styles\idea.css" />
-    <BundleResource Include="Highlighter\styles\ir_black.css" />
-    <BundleResource Include="Highlighter\styles\magula.css" />
-    <BundleResource Include="Highlighter\styles\mono-blue.css" />
-    <BundleResource Include="Highlighter\styles\monokai.css" />
-    <BundleResource Include="Highlighter\styles\monokai_sublime.css" />
-    <BundleResource Include="Highlighter\styles\obsidian.css" />
-    <BundleResource Include="Highlighter\styles\paraiso.dark.css" />
-    <BundleResource Include="Highlighter\styles\paraiso.light.css" />
-    <BundleResource Include="Highlighter\styles\pojoaque.css" />
-    <BundleResource Include="Highlighter\styles\railscasts.css" />
-    <BundleResource Include="Highlighter\styles\rainbow.css" />
-    <BundleResource Include="Highlighter\styles\school_book.css" />
-    <BundleResource Include="Highlighter\styles\solarized_dark.css" />
-    <BundleResource Include="Highlighter\styles\solarized_light.css" />
-    <BundleResource Include="Highlighter\styles\sunburst.css" />
-    <BundleResource Include="Highlighter\styles\tomorrow-night-blue.css" />
-    <BundleResource Include="Highlighter\styles\tomorrow-night-bright.css" />
-    <BundleResource Include="Highlighter\styles\tomorrow-night-eighties.css" />
-    <BundleResource Include="Highlighter\styles\tomorrow-night.css" />
-    <BundleResource Include="Highlighter\styles\tomorrow.css" />
-    <BundleResource Include="Highlighter\styles\vs.css" />
-    <BundleResource Include="Highlighter\styles\xcode.css" />
-    <BundleResource Include="Highlighter\styles\zenburn.css" />
-    <BundleResource Include="Highlighter\highlight.pack.js" />
-    <BundleResource Include="Highlighter\highlight.html" />
-    <BundleResource Include="Images\back.png" />
-    <BundleResource Include="Images\back%402x.png" />
-    <BundleResource Include="Images\three_lines.png" />
-    <BundleResource Include="Images\three_lines%402x.png" />
     <BundleResource Include="Images\gear%402x.png" />
     <BundleResource Include="Images\gear.png" />
-    <BundleResource Include="Images\cancel%402x.png" />
-    <BundleResource Include="Images\cancel.png" />
     <BundleResource Include="Resources\Icon.png" />
     <BundleResource Include="Resources\Icon%402x.png" />
     <BundleResource Include="Resources\Icon-60%402x.png" />
@@ -230,11 +175,8 @@
     <Compile Include="ViewControllers\Application\LoginViewController.designer.cs">
       <DependentUpon>LoginViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="ViewControllers\Application\StartupViewController.cs" />
     <Compile Include="ViewControllers\Projects\ProjectsViewController.cs" />
     <Compile Include="ViewControllers\Repositories\RepositoriesViewController.cs" />
-    <Compile Include="ViewControllers\Application\WelcomeViewController.cs" />
-    <Compile Include="ViewControllers\Application\AccountsViewController.cs" />
     <Compile Include="ViewControllers\Application\SettingsViewController.cs" />
     <Compile Include="ViewControllers\Repositories\RepositoryViewController.cs" />
     <Compile Include="ViewControllers\Source\SourceViewController.cs" />
@@ -244,19 +186,16 @@
     <Compile Include="ViewControllers\Commits\CommitViewController.cs" />
     <Compile Include="ViewControllers\Source\FilesViewController.cs" />
     <Compile Include="ViewControllers\Source\FileViewController.cs" />
-    <Compile Include="ViewControllers\ViewModelDialogViewController.cs" />
     <Compile Include="Images\Images.cs" />
     <Compile Include="ViewControllers\Commits\CommitsBranchViewController.cs" />
-    <Compile Include="Views\ImageAndTitleHeaderView.cs" />
     <Compile Include="ViewControllers\Application\MainViewController.cs" />
     <Compile Include="ViewControllers\Users\ProfileViewController.cs" />
-    <Compile Include="Elements\ProfileElement.cs" />
     <Compile Include="TransitionOrchestrationService.cs" />
     <Compile Include="ViewControllers\Repositories\ForkedRepositoriesViewController.cs" />
     <Compile Include="ViewControllers\Repositories\BaseRepositoriesViewController.cs" />
     <Compile Include="ViewControllers\Repositories\RelatedRepositoriesViewController.cs" />
-    <Compile Include="ViewControllers\Commits\BuildStatusesViewController.cs" />
     <Compile Include="ViewControllers\Commits\CommitDiffViewController.cs" />
+    <Compile Include="ViewControllers\Build\BuildStatusesViewController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
@@ -284,6 +223,14 @@
       <Project>{3FFBFFF8-5560-4EDE-82E5-3FFDFBBA8A50}</Project>
       <Name>MonoTouch.Dialog</Name>
     </ProjectReference>
+    <ProjectReference Include="..\lib\CodeFramework\CodeFramework.Core\CodeFramework.Core.csproj">
+      <Project>{C99FE7E3-0985-48F1-9EBB-91680A795F0F}</Project>
+      <Name>CodeFramework.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\CodeFramework\CodeFramework.iOS\CodeFramework.iOS.csproj">
+      <Project>{2698B412-26A3-4269-AA01-AC3BC79A0F14}</Project>
+      <Name>CodeFramework.iOS</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -292,15 +239,12 @@
     <Content Include="Images\login_user_unknown%402x.png" />
     <Content Include="Images\login_user_unknown.png" />
     <Content Include="Images\logo.png" />
-    <Content Include="Diff\app.js" />
-    <Content Include="Diff\diffindex.html" />
-    <Content Include="Diff\difflib.js" />
-    <Content Include="Diff\diffview.css" />
-    <Content Include="Diff\diffview.js" />
-    <Content Include="Diff\jquery.min.js" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />
     <ITunesArtwork Include="iTunesArtwork%402x" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ViewControllers\Build\" />
   </ItemGroup>
 </Project>

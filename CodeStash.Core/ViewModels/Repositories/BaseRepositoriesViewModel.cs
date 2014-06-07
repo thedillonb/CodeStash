@@ -3,6 +3,7 @@ using Xamarin.Utilities.Core.ViewModels;
 using ReactiveUI;
 using AtlassianStashSharp.Models;
 using System.Reactive.Linq;
+using Xamarin.Utilities.Core.ReactiveAddons;
 
 namespace CodeStash.Core.ViewModels.Repositories
 {
@@ -14,12 +15,12 @@ namespace CodeStash.Core.ViewModels.Repositories
 
         public IReactiveCommand GoToRepositoryCommand { get; private set; }
 
-        public ReactiveList<Repository> Repositories { get; private set; }
+        public ReactiveCollection<Repository> Repositories { get; private set; }
 
         protected BaseRepositoriesViewModel()
         {
             GoToRepositoryCommand = new ReactiveCommand();
-            Repositories = new ReactiveList<Repository>();
+            Repositories = new ReactiveCollection<Repository>();
 
             ShowOwner = false;
 

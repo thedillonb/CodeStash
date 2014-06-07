@@ -4,6 +4,7 @@ using ReactiveUI;
 using CodeStash.Core.Services;
 using System.Reactive.Linq;
 using AtlassianStashSharp.Models;
+using Xamarin.Utilities.Core.ReactiveAddons;
 
 namespace CodeStash.Core.ViewModels.Build
 {
@@ -11,13 +12,13 @@ namespace CodeStash.Core.ViewModels.Build
     {
         public string Node { get; set; }
 
-        public ReactiveList<BuildStatus> BuildStatues { get; private set; }
+        public ReactiveCollection<BuildStatus> BuildStatues { get; private set; }
 
         public IReactiveCommand GoToBuildStatusCommand { get; private set; }
 
         public BuildStatusesViewModel(IApplicationService applicationService)
         {
-            BuildStatues = new ReactiveList<BuildStatus>();
+            BuildStatues = new ReactiveCollection<BuildStatus>();
             GoToBuildStatusCommand = new ReactiveCommand();
 
             GoToBuildStatusCommand.OfType<BuildStatus>().Subscribe(x =>

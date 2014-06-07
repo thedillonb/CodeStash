@@ -4,6 +4,7 @@ using ReactiveUI;
 using AtlassianStashSharp.Models;
 using Xamarin.Utilities.Core.ViewModels;
 using System.Reactive.Linq;
+using Xamarin.Utilities.Core.ReactiveAddons;
 
 namespace CodeStash.Core.ViewModels.Commits
 {
@@ -19,11 +20,11 @@ namespace CodeStash.Core.ViewModels.Commits
 
         public IReactiveCommand GoToCommitCommand { get; private set; }
 
-        public ReactiveList<Commit> Commits { get; private set; }
+        public ReactiveCollection<Commit> Commits { get; private set; }
 
         public CommitsViewModel(IApplicationService applicationService)
         {
-            Commits = new ReactiveList<Commit>();
+            Commits = new ReactiveCollection<Commit>();
 
             GoToCommitCommand = new ReactiveCommand();
             GoToCommitCommand.OfType<Commit>().Subscribe(x =>

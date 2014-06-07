@@ -4,6 +4,7 @@ using ReactiveUI;
 using AtlassianStashSharp.Models;
 using Xamarin.Utilities.Core.ViewModels;
 using System.Reactive.Linq;
+using Xamarin.Utilities.Core.ReactiveAddons;
 
 namespace CodeStash.Core.ViewModels.Source
 {
@@ -23,7 +24,7 @@ namespace CodeStash.Core.ViewModels.Source
 
         public IReactiveCommand GoToSourceCommand { get; private set; }
 
-        public ReactiveList<Content> Contents { get; private set; }
+        public ReactiveCollection<Content> Contents { get; private set; }
 
         public ContentPath ContentPath
         {
@@ -34,7 +35,7 @@ namespace CodeStash.Core.ViewModels.Source
         public FilesViewModel(IApplicationService applicationService)
         {
             GoToSourceCommand = new ReactiveCommand();
-            Contents = new ReactiveList<Content>();
+            Contents = new ReactiveCollection<Content>();
 
             LoadCommand.RegisterAsyncTask(async _ =>
             {

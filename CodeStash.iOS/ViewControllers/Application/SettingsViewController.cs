@@ -3,10 +3,11 @@ using MonoTouch.UIKit;
 using MonoTouch.Dialog;
 using MonoTouch.Foundation;
 using ReactiveUI;
+using CodeFramework.iOS.Views;
 
 namespace CodeStash.iOS.ViewControllers.Application
 {
-    public class SettingsViewController : ViewModelDialogViewController<SettingsViewModel>
+    public class SettingsViewController : ViewModelDialogView<SettingsViewModel>
     {
         public SettingsViewController()
             : base(UITableViewStyle.Grouped)

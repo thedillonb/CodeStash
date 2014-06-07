@@ -27,8 +27,7 @@ namespace CodeStash.Core.ViewModels.PullRequests
 
             LoadCommand.RegisterAsyncTask(async _ =>
             {
-                var data = await PaginationHelper.GetAll(applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].PullRequests[PullRequestId].GetAllChanges());
-                Changes.Reset(data);
+                Changes.Reset(await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].PullRequests[PullRequestId].GetAllChanges().ExecuteAsyncAll());
             });
          
             GoToDiffCommand = new ReactiveCommand();

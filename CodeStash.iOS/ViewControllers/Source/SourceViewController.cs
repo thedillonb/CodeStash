@@ -5,11 +5,17 @@ using ReactiveUI;
 using System.Linq;
 using System.Reactive.Linq;
 using MonoTouch.Dialog;
+using CodeFramework.iOS.Views;
 
 namespace CodeStash.iOS.ViewControllers.Source
 {
-    public class SourceViewController : ViewModelDialogViewController<SourceViewModel>
+    public class SourceViewController : ViewModelDialogView<SourceViewModel>
     {
+        public SourceViewController()
+            : base(UITableViewStyle.Plain)
+        {
+        }
+
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();

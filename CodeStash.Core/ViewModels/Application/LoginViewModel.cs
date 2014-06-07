@@ -1,12 +1,16 @@
-using CodeStash.Core.Data;
 using CodeStash.Core.Services;
 using ReactiveUI;
 using Xamarin.Utilities.Core.ViewModels;
 using System;
+using CodeFramework.Core.ViewModels.Application;
+using CodeFramework.Core.Data;
+using CodeFramework.Core.Services;
+using System.Linq;
+using CodeFramework.Core.Messages;
 
 namespace CodeStash.Core.ViewModels.Application
 {
-    public class LoginViewModel : BaseViewModel
+    public class LoginViewModel : BaseViewModel, IAddAccountViewModel
     {
         private string _username;
         public string Username
@@ -38,7 +42,7 @@ namespace CodeStash.Core.ViewModels.Application
 
         public IReactiveCommand LoginCommand { get; private set; }
 
-        public LoginViewModel(IApplicationService applicationService)
+        public LoginViewModel(IAccountsService accountsService)
         {
             LoginCommand = new ReactiveCommand(this.WhenAny(x => x.Username, x => x.Password, x => x.Domain, (u, p, d) => 
                 !string.IsNullOrEmpty(u.Value) && !string.IsNullOrEmpty(p.Value) && !string.IsNullOrEmpty(d.Value)));
@@ -47,13 +51,23 @@ namespace CodeStash.Core.ViewModels.Application
             {
                 var domain = Domain.TrimEnd('/');
                 var client = AtlassianStashSharp.StashClient.CrateBasic(new Uri(domain), Username, Password);
-                await client.Projects.GetAll().ExecuteAsync();
+                var info = await client.Users[Username].Get().ExecuteAsync();
 
                 var account = new Account {Username = Username, Password = Password, Domain = domain};
-                applicationService.Accounts.Insert(account);
-                applicationService.Account = account;
+                if (string.IsNullOrEmpty(account.AvatarUrl))
+                {
+                    var selfLink = info.Data.Links["self"].FirstOrDefault();
+                    if (selfLink != null && !string.IsNullOrEmpty(selfLink.Href))
+                    {
+                        account.AvatarUrl = selfLink.Href + "/avatar.png";
+                    }
+                }
+
+                accountsService.Insert(account);
+                accountsService.ActiveAccount = account;
                 LoggedInAcconut = account;
-                DismissCommand.ExecuteIfCan();
+                MessageBus.Current.SendMessage(new LogoutMessage());
+                //DismissCommand.ExecuteIfCan();
             });
         }
 

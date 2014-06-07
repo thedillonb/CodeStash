@@ -5,11 +5,17 @@ using System.Linq;
 using MonoTouch.UIKit;
 using ReactiveUI;
 using AtlassianStashSharp.Helpers;
+using CodeFramework.iOS.Views;
 
 namespace CodeStash.iOS.ViewControllers.PullRequests
 {
-    public class PullRequestsViewController : ViewModelDialogViewController<PullRequestsViewModel>
+    public class PullRequestsViewController : ViewModelDialogView<PullRequestsViewModel>
     {
+        public PullRequestsViewController()
+            : base(UITableViewStyle.Plain)
+        {
+        }
+
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();

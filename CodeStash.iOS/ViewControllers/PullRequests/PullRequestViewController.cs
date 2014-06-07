@@ -6,10 +6,11 @@ using MonoTouch.UIKit;
 using System.Reactive.Linq;
 using System.Linq;
 using MonoTouch.Dialog;
+using CodeFramework.iOS.Views;
 
 namespace CodeStash.iOS.ViewControllers.PullRequests
 {
-    public class PullRequestViewController : ViewModelDialogViewController<PullRequestViewModel>
+    public class PullRequestViewController : ViewModelDialogView<PullRequestViewModel>
     {
         public PullRequestViewController()
             : base(UITableViewStyle.Grouped)

@@ -1,48 +1,30 @@
 ﻿using System;
-using System.Linq;
 using AtlassianStashSharp;
-using CodeStash.Core.Data;
 using Xamarin.Utilities.Core.Services;
-using Xamarin.Utilities.Core.Persistence;
+using CodeFramework.Core.Services;
+using CodeFramework.Core.Data;
+using ReactiveUI;
+using System.Reactive.Linq;
 
 namespace CodeStash.Core.Services
 {
     public class ApplicationService : IApplicationService
     {
         protected readonly IDefaultValueService DefaultValueService;
-        private Account _account;
+        protected readonly IAccountsService AccountsService;
 
-        public ApplicationService(IDefaultValueService defaultValueService)
+        public StashClient StashClient { get; private set; }
+
+        public ApplicationService(IDefaultValueService defaultValueService, IAccountsService accountsService)
         {
             DefaultValueService = defaultValueService;
-            Accounts = new Accounts(Database.Instance.SqlConnection);
+            AccountsService = accountsService;
             System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
-        }
 
-        public StashClient StashClient { get; set; }
-
-        public Accounts Accounts { get; private set; }
-
-        public Account DefaultAccount
-        {
-            get
+            AccountsService.WhenAnyObservable(x => x.ActiveAccountChanged).StartWith(AccountsService.ActiveAccount).Subscribe(account =>
             {
-                int id;
-                Account account = null;
-                if (DefaultValueService.TryGet("DEFAULT_ACCOUNT_ID", out id))
-                    account = Accounts.FirstOrDefault(x => x.Id == id);
-                return account;
-            }
-        }
-
-        public Account Account
-        {
-            get { return _account; }
-            set
-            {
-                _account = value;
-                DefaultValueService.Set("DEFAULT_ACCOUNT_ID", value != null ? (object)value.Id : null);
-            }
+                StashClient = account != null ? AtlassianStashSharp.StashClient.CrateBasic(new Uri(account.Domain), account.Username, account.Password) : null;
+            });
         }
     }
 }

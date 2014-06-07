@@ -19,14 +19,17 @@ namespace CodeStash.iOS.ViewControllers.Repositories
             { 
                 EnableSeperator = true, 
                 SeperatorColor = TableView.SeparatorColor,
-                Image = Images.LoginUserUnknown, 
+                Image = CodeFramework.iOS.Images.LoginUserUnknown, 
                 BackgroundColor = UIColor.GroupTableViewBackgroundColor,
             };
             TableView.TableHeaderView = header;
 
             ViewModel.WhenAnyValue(x => x.Project).Where(x => x != null).Subscribe(x =>
             {
-                header.Text = x.Description;
+                if (x.IsPersonal)
+                    header.Text = x.Name + "'s Personal Repositories";
+                else
+                    header.Text = x.Description;
                 TableView.TableHeaderView = header;
                 var selfLink = x.Links["self"].FirstOrDefault();
                 if (selfLink != null && !string.IsNullOrEmpty(selfLink.Href))

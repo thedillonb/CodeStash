@@ -29,24 +29,20 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Monotouch" />
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
+    <Reference Include="ReactiveUI">
+      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.dll</HintPath>
+    </Reference>
     <Reference Include="System.Reactive.Core">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Core.dll</HintPath>
+      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Interfaces">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Interfaces.dll</HintPath>
+      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Linq">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.PlatformServices">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.PlatformServices.dll</HintPath>
-    </Reference>
-    <Reference Include="ReactiveUI">
-      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.dll</HintPath>
+      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Linq.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
@@ -65,12 +61,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Account.cs" />
-    <Compile Include="Data\Accounts.cs" />
-    <Compile Include="ViewModels\Application\AccountsViewModel.cs" />
     <Compile Include="ViewModels\Application\LoginViewModel.cs" />
     <Compile Include="ViewModels\Application\SettingsViewModel.cs" />
-    <Compile Include="ViewModels\Application\StartupViewModel.cs" />
     <Compile Include="ViewModels\Projects\ProjectsViewModel.cs" />
     <Compile Include="ViewModels\PullRequests\PullRequestsViewModel.cs" />
     <Compile Include="ViewModels\PullRequests\PullRequestViewModel.cs" />
@@ -90,6 +82,13 @@
     <Compile Include="ViewModels\Repositories\ForkedRepositoriesViewModel.cs" />
     <Compile Include="ViewModels\Repositories\RelatedRepositoriesViewModel.cs" />
     <Compile Include="ViewModels\Commits\CommitDiffViewModel.cs" />
+    <Compile Include="ViewModels\Build\BuildStatusesViewModel.cs" />
+    <Compile Include="ViewModels\PullRequests\PullRequestChangesViewModel.cs" />
+    <Compile Include="ViewModels\PullRequests\PullRequestCommitsViewModel.cs" />
+    <Compile Include="Services\AccountValidatorService.cs" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ViewModels\Build\" />
+  </ItemGroup>
 </Project>

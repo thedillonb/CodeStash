@@ -80,8 +80,7 @@ namespace CodeStash.Core.ViewModels.Commits
 
                 Commit = (await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Commits[Node].Get().ExecuteAsync()).Data;
 
-                var data = await PaginationHelper.GetAll(applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Commits[Node].GetAllChanges());
-                Changes.Reset(data);
+                Changes.Reset(await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Commits[Node].GetAllChanges().ExecuteAsyncAll());
             });
 
             GoToBuildStatusCommand = new ReactiveCommand(this.WhenAnyValue(x => x.BuildStatus, x => x != null && x.Length > 0));

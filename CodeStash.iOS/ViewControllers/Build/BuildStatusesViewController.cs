@@ -1,24 +1,22 @@
 ﻿using System;
 using MonoTouch.Dialog;
-using System.Linq;
 using MonoTouch.UIKit;
 using CodeStash.Core.ViewModels.Build;
+using CodeFramework.iOS.Views;
+using ReactiveUI;
 
 namespace CodeStash.iOS.ViewControllers.Build
 {
-    public class BuildStatusesViewController : ViewModelDialogViewController<BuildStatusesViewModel>
+    public class BuildStatusesViewController : ViewModelCollectionView<BuildStatusesViewModel>
     {
         public override void ViewDidLoad()
         {
-            base.ViewDidLoad();
-
-            var sec = new Section();
-            Root = new RootElement("Build Status") { sec };
+            Title = "Build Status";
             var okIcon = Images.BuildOk.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
             var failedIcon = Images.Error.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
             var loadingIcon = Images.Update.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 
-            ViewModel.BuildStatues.Changed.Subscribe(_ => sec.Reset(ViewModel.BuildStatues.Select(x =>
+            Bind(ViewModel.WhenAnyValue(x => x.BuildStatues), x =>
             {
                 var element = new StyledStringElement(x.Name, string.Empty, UITableViewCellStyle.Subtitle);
 
@@ -42,7 +40,10 @@ namespace CodeStash.iOS.ViewControllers.Build
 
                 element.Tapped += () => ViewModel.GoToBuildStatusCommand.Execute(x);
                 return element;
-            })));
+            });
+
+            base.ViewDidLoad();
+
         }
     }
 }

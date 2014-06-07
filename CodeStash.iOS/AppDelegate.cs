@@ -1,13 +1,12 @@
-﻿using MonoTouch.Foundation;
+﻿using System;
+using System.Reactive;
+using MonoTouch.Foundation;
 using MonoTouch.UIKit;
-using CodeStash.iOS.ViewControllers.Application;
-using System.Reactive.Concurrency;
 using ReactiveUI;
 using Xamarin.Utilities.Core.Services;
-using System;
-using System.Reactive;
-using System.Threading;
-using CodeStash.Core.Messages;
+using CodeFramework.iOS.Views.Application;
+using CodeFramework.Core.Messages;
+using CodeFramework.Core.ViewModels.Application;
 
 namespace CodeStash.iOS
 {
@@ -41,18 +40,27 @@ namespace CodeStash.iOS
             // Load the IoC
             IoC.RegisterAssemblyServicesAsSingletons(typeof(Xamarin.Utilities.Core.Services.IDefaultValueService).Assembly);
             IoC.RegisterAssemblyServicesAsSingletons(typeof(Xamarin.Utilities.Services.DefaultValueService).Assembly);
+            IoC.RegisterAssemblyServicesAsSingletons(typeof(CodeFramework.Core.Services.AccountsService).Assembly);
+            IoC.RegisterAssemblyServicesAsSingletons(typeof(CodeFramework.iOS.Theme).Assembly);
             IoC.RegisterAssemblyServicesAsSingletons(typeof(Core.Services.IApplicationService).Assembly);
             IoC.RegisterAssemblyServicesAsSingletons(GetType().Assembly);
+            IoC.RegisterAsInstance<IAddAccountViewModel, CodeStash.Core.ViewModels.Application.LoginViewModel>();
+            IoC.RegisterAsInstance<IMainViewModel, CodeStash.Core.ViewModels.Application.MainViewModel>();
 
             var viewModelViewService = IoC.Resolve<IViewModelViewService>();
             viewModelViewService.RegisterViewModels(typeof(Xamarin.Utilities.Services.DefaultValueService).Assembly);
+            viewModelViewService.RegisterViewModels(typeof(CodeFramework.iOS.Theme).Assembly);
             viewModelViewService.RegisterViewModels(GetType().Assembly);
 
-            var startupViewController = new StartupViewController { ViewModel = IoC.Resolve<CodeStash.Core.ViewModels.Application.StartupViewModel>() };
+            var startupViewController = new StartupView { ViewModel = IoC.Resolve<StartupViewModel>() };
             startupViewController.ViewModel.View = startupViewController;
 
             var mainNavigationController = new UINavigationController(startupViewController) { NavigationBarHidden = true };
-            MessageBus.Current.Listen<LogoutMessage>().Subscribe(_ => mainNavigationController.PopToRootViewController(false));
+            MessageBus.Current.Listen<LogoutMessage>().Subscribe(_ => 
+            {
+                mainNavigationController.PopToRootViewController(false);
+                mainNavigationController.DismissViewController(true, null);
+            });
 
             Window = new UIWindow(UIScreen.MainScreen.Bounds);
             Window.RootViewController = mainNavigationController;
@@ -69,8 +77,8 @@ namespace CodeStash.iOS
             UINavigationBar.Appearance.TintColor = UIColor.White;
             UINavigationBar.Appearance.BarTintColor = UIColor.FromRGB(45,80,148);
             UINavigationBar.Appearance.SetTitleTextAttributes(new UITextAttributes { TextColor = UIColor.White, Font = UIFont.SystemFontOfSize(18f) });
-            UINavigationBar.Appearance.BackIndicatorImage = Images.BackButton;
-            UINavigationBar.Appearance.BackIndicatorTransitionMaskImage = Images.BackButton;
+            UINavigationBar.Appearance.BackIndicatorImage = CodeFramework.iOS.Images.BackButton;
+            UINavigationBar.Appearance.BackIndicatorTransitionMaskImage = CodeFramework.iOS.Images.BackButton;
 
             UIImageView.AppearanceWhenContainedIn(typeof(UITableViewCell)).TintColor = UIColor.FromRGB(45, 80, 148);
 

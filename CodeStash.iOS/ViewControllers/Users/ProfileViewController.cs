@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Linq;
+using System.Reactive.Linq;
+using AtlassianStashSharp.Models;
+using CodeFramework.iOS.Views;
 using CodeStash.Core.ViewModels.Users;
 using CodeStash.iOS.Views;
+using MonoTouch.Dialog;
 using MonoTouch.UIKit;
 using ReactiveUI;
-using System.Reactive.Linq;
-using System.Linq;
-using MonoTouch.Dialog;
-using AtlassianStashSharp.Models;
 
 namespace CodeStash.iOS.ViewControllers.Users
 {
-    public class ProfileViewController : ViewModelDialogViewController<ProfileViewModel>
+    public class ProfileViewController : ViewModelDialogView<ProfileViewModel>
     {
         public override void ViewDidLoad()
         {
@@ -20,7 +21,7 @@ namespace CodeStash.iOS.ViewControllers.Users
             base.ViewDidLoad();
 
             var header = new ImageAndTitleHeaderView { BackgroundColor = UIColor.GroupTableViewBackgroundColor };
-            header.Image = Images.LoginUserUnknown;
+            header.Image = CodeFramework.iOS.Images.LoginUserUnknown;
             header.Text = ViewModel.UserSlug;
 
             var repositorySection = new Section();

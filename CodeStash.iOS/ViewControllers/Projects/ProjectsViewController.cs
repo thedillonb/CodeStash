@@ -1,35 +1,30 @@
-﻿using System;
-using MonoTouch.Dialog;
+﻿using MonoTouch.Dialog;
 using MonoTouch.UIKit;
 using CodeStash.Core.ViewModels.Projects;
-using System.Linq;
-using CodeStash.iOS.ViewControllers.Repositories;
-using System.Reactive.Linq;
-using CodeStash.Core.ViewModels.Repositories;
+using CodeFramework.iOS.Views;
+using ReactiveUI;
 
 namespace CodeStash.iOS.ViewControllers.Projects
 {
-    public class ProjectsViewController : ViewModelDialogViewController<ProjectsViewModel>
+    public class ProjectsViewController : ViewModelCollectionView<ProjectsViewModel>
     {
         public ProjectsViewController()
         {
             Title = "Projects";
+            EnableSearch = false;
         }
 
         public override void ViewDidLoad()
         {
-            base.ViewDidLoad();
-
-            var sec = new Section();
-            Root = new RootElement(Title) { sec };
-
-            ViewModel.Projects.Changed.Subscribe(_ => sec.Reset(ViewModel.Projects.Select(x =>
+            Bind(ViewModel.WhenAnyValue(x => x.Projects), x =>
             {
                 var el = new StyledStringElement(x.Name, x.Description, UITableViewCellStyle.Subtitle);
                 el.Accessory = UITableViewCellAccessory.DisclosureIndicator;
                 el.Tapped += () => ViewModel.GoToProjectCommand.Execute(x);
                 return el;
-            })));
+            });
+
+            base.ViewDidLoad();
         }
     }
 }
