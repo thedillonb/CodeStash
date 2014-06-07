@@ -260,18 +260,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\lib\MonoTouch.SlideoutNavigation\MonoTouch.SlideoutNavigation\MonoTouch.SlideoutNavigation.csproj">
-      <Project>{6D7B9B53-CFEF-46BE-A608-14A4A1381CF6}</Project>
-      <Name>MonoTouch.SlideoutNavigation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\lib\Xamarin.Utilities\Xamarin.Utilities.iOS\Xamarin.Utilities.iOS.csproj">
-      <Project>{5E7E39CA-0CCE-41FE-A868-EE0E567E069E}</Project>
-      <Name>Xamarin.Utilities.iOS</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\lib\Xamarin.Utilities\Xamarin.Utilities.Core\Xamarin.Utilities.Core.iOS.csproj">
-      <Project>{EBBA1BD0-8430-4CC1-B636-B89C505C7D1C}</Project>
-      <Name>Xamarin.Utilities.Core.iOS</Name>
-    </ProjectReference>
     <ProjectReference Include="..\CodeStash.Core\CodeStash.Core.csproj">
       <Project>{9E590A65-243F-4B53-83C8-D9FEF07B3DE6}</Project>
       <Name>CodeStash.Core</Name>
@@ -280,7 +268,19 @@
       <Project>{E70FFE95-0577-4BE0-9D1B-978AFE3B2464}</Project>
       <Name>AtlassianStashSharp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\lib\MonoTouch.Dialog\MonoTouch.Dialog\MonoTouch.Dialog.csproj">
+    <ProjectReference Include="..\lib\CodeFramework\CodeFramework.iOS\lib\MonoTouch.SlideoutNavigation\MonoTouch.SlideoutNavigation\MonoTouch.SlideoutNavigation.csproj">
+      <Project>{6D7B9B53-CFEF-46BE-A608-14A4A1381CF6}</Project>
+      <Name>MonoTouch.SlideoutNavigation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\CodeFramework\lib\Xamarin.Utilities\Xamarin.Utilities.iOS\Xamarin.Utilities.iOS.csproj">
+      <Project>{5E7E39CA-0CCE-41FE-A868-EE0E567E069E}</Project>
+      <Name>Xamarin.Utilities.iOS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\CodeFramework\lib\Xamarin.Utilities\Xamarin.Utilities.Core\Xamarin.Utilities.Core.iOS.csproj">
+      <Project>{EBBA1BD0-8430-4CC1-B636-B89C505C7D1C}</Project>
+      <Name>Xamarin.Utilities.Core.iOS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\CodeFramework\CodeFramework.iOS\lib\MonoTouch.Dialog\MonoTouch.Dialog\MonoTouch.Dialog.csproj">
       <Project>{3FFBFFF8-5560-4EDE-82E5-3FFDFBBA8A50}</Project>
       <Name>MonoTouch.Dialog</Name>
     </ProjectReference>
