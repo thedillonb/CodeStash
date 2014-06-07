@@ -1,12 +1,6 @@
-[submodule "lib/MonoTouch.Dialog"]
-	path = lib/MonoTouch.Dialog
-	url = git@github.com:thedillonb/MonoTouch.Dialog.git
 [submodule "lib/AtlassianStashSharp"]
 	path = lib/AtlassianStashSharp
 	url = git@github.com:thedillonb/AtlassianStashSharp.git
-[submodule "lib/MonoTouch.SlideoutNavigation"]
-	path = lib/MonoTouch.SlideoutNavigation
-	url = git@github.com:thedillonb/MonoTouch.SlideoutNavigation.git
 [submodule "lib/CodeFramework"]
 	path = lib/CodeFramework
 	url = git@github.com:thedillonb/CodeFramework.git
