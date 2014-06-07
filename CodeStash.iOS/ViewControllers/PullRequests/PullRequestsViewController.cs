@@ -4,7 +4,6 @@ using MonoTouch.Dialog;
 using System.Linq;
 using MonoTouch.UIKit;
 using ReactiveUI;
-using CodeStash.Core.Services;
 using AtlassianStashSharp.Helpers;
 
 namespace CodeStash.iOS.ViewControllers.PullRequests
@@ -14,8 +13,6 @@ namespace CodeStash.iOS.ViewControllers.PullRequests
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-
-            var applicationService = IoC.Resolve<IApplicationService>();
 
             var sec = new Section();
             var root = new RootElement("Pull Requests") { UnevenRows = true };
@@ -29,7 +26,6 @@ namespace CodeStash.iOS.ViewControllers.PullRequests
                     Name = x.Author.User.DisplayName,
                     String = x.Description,
                     Time = UnixDateTimeHelper.FromUnixTime(x.UpdatedDate).ToDaysAgo(),
-                    ImageUri = new Uri(applicationService.Account.Domain.Replace("/rest/api/1.0", "") + "/users/" + x.Author.User.Slug + "/avatar.png"),
                     Lines = 4
                 };
                 element.Tapped += () => ViewModel.GoToPullRequestCommand.Execute(x);

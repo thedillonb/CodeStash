@@ -31,12 +31,19 @@
   <ItemGroup>
     <Reference Include="Monotouch" />
     <Reference Include="System" />
+    <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Reactive.Core">
       <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Core.dll</HintPath>
     </Reference>
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
     <Reference Include="System.Reactive.Linq">
       <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices">
+      <HintPath>..\lib\Xamarin.Utilities\lib\iOS\System.Reactive.PlatformServices.dll</HintPath>
     </Reference>
     <Reference Include="ReactiveUI">
       <HintPath>..\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.dll</HintPath>
@@ -79,6 +86,7 @@
     <Compile Include="ViewModels\Source\FileViewModel.cs" />
     <Compile Include="ViewModels\Users\ProfileViewModel.cs" />
     <Compile Include="ViewModels\Application\MainViewModel.cs" />
+    <Compile Include="Messages\LogoutMessage.cs" />
     <Compile Include="ViewModels\Repositories\BaseRepositoriesViewModel.cs" />
     <Compile Include="ViewModels\Repositories\ForkedRepositoriesViewModel.cs" />
     <Compile Include="ViewModels\Repositories\RelatedRepositoriesViewModel.cs" />

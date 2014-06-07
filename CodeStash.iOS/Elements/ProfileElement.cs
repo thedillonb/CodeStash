@@ -3,6 +3,8 @@ using MonoTouch.Dialog;
 using MonoTouch.UIKit;
 using MonoTouch.Dialog.Utilities;
 using System.Drawing;
+using ReactiveUI;
+using System.Reactive.Linq;
 
 namespace CodeStash.iOS.Elements
 {
@@ -80,13 +82,38 @@ namespace CodeStash.iOS.Elements
                 cell.ImageView.Image = ImageLoader.DefaultRequestImage(uri, this);
         }
 
-        private class ProfileTableViewCell : UITableViewCell
+        public class ProfileTableViewCell : ReactiveUI.Cocoa.ReactiveTableViewCell, IViewFor<CodeStash.Core.Data.Account>
         {
-            public new readonly UIImageView ImageView;
-            public readonly UILabel TitleLabel;
-            public readonly UILabel SubtitleLabel;
+            public new UIImageView ImageView;
+            public UILabel TitleLabel;
+            public UILabel SubtitleLabel;
+            private CodeStash.Core.Data.Account _account;
+
+ 
+            public CodeStash.Core.Data.Account ViewModel
+            {
+                get { return _account; }
+                set { this.RaiseAndSetIfChanged(ref _account, value); }
+            }
+
+            object IViewFor.ViewModel
+            {
+                get { return ViewModel; }
+                set { ViewModel = (CodeStash.Core.Data.Account)value; }
+            }
 
             public ProfileTableViewCell()
+            {
+                Initialize();
+            }
+
+            public ProfileTableViewCell(IntPtr handle)
+                : base(handle)
+            {
+                Initialize();
+            }
+
+            private void Initialize()
             {
                 ImageView = new UIImageView();
                 ImageView.ContentMode = UIViewContentMode.ScaleAspectFit;
@@ -104,6 +131,13 @@ namespace CodeStash.iOS.Elements
                 ContentView.Add(ImageView);
                 ContentView.Add(TitleLabel);
                 ContentView.Add(SubtitleLabel);
+
+                this.WhenAnyValue(x => x.ViewModel).Where(x => x != null).Subscribe(x =>
+                {
+                    //ImageView.Image = ImageLoader.DefaultRequestImage(x.AvatarUrl, this);
+                    TitleLabel.Text = x.Username;
+                    SubtitleLabel.Text = x.Domain;
+                });
             }
 
             public override void LayoutSubviews()

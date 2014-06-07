@@ -30,12 +30,21 @@ namespace CodeStash.Core.ViewModels.PullRequests
         public PullRequestsViewModel(IApplicationService applicationService)
         {
             ApplicationService = applicationService;
-            GoToPullRequestCommand = new ReactiveCommand();
             PullRequests = new ReactiveList<PullRequest>();
 
             LoadCommand.RegisterAsyncTask(_ => Load());
 
             this.WhenAnyValue(x => x.SelectedView).Skip(1).Subscribe(_ => LoadCommand.ExecuteIfCan());
+
+            GoToPullRequestCommand = new ReactiveCommand();
+            GoToPullRequestCommand.OfType<PullRequest>().Subscribe(x =>
+            {
+                var vm = CreateViewModel<PullRequestViewModel>();
+                vm.ProjectKey = ProjectKey;
+                vm.RepositorySlug = RepositorySlug;
+                vm.PullRequestId = x.Id;
+                ShowViewModel(vm);
+            });
         }
 
         private async Task Load()

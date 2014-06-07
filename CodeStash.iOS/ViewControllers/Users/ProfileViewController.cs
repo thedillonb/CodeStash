@@ -6,9 +6,7 @@ using ReactiveUI;
 using System.Reactive.Linq;
 using System.Linq;
 using MonoTouch.Dialog;
-using CodeStash.iOS.ViewControllers.Repositories;
 using AtlassianStashSharp.Models;
-using CodeStash.Core.ViewModels.Repositories;
 
 namespace CodeStash.iOS.ViewControllers.Users
 {
@@ -21,7 +19,7 @@ namespace CodeStash.iOS.ViewControllers.Users
 
             base.ViewDidLoad();
 
-            var header = new ImageAndTitleHeaderView { BackgroundColor = UIColor.Clear };
+            var header = new ImageAndTitleHeaderView { BackgroundColor = UIColor.GroupTableViewBackgroundColor };
             header.Image = Images.LoginUserUnknown;
             header.Text = ViewModel.UserSlug;
 

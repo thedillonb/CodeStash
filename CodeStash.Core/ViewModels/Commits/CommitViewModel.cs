@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Reactive.Linq;
 using AtlassianStashSharp.Helpers;
+using CodeStash.Core.ViewModels.Build;
 
 namespace CodeStash.Core.ViewModels.Commits
 {

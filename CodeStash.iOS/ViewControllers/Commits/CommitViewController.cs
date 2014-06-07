@@ -12,8 +12,6 @@ namespace CodeStash.iOS.ViewControllers.Commits
 {
     public class CommitViewController : ViewModelDialogViewController<CommitViewModel>
     {
-        private ImageAndTitleHeaderView _header;
-
         public CommitViewController()
             : base(UITableViewStyle.Grouped)
         {
@@ -40,22 +38,22 @@ namespace CodeStash.iOS.ViewControllers.Commits
 
             Root.Add(new Section() { splitElement1, splitElement2 });
 
-            _header = new ImageAndTitleHeaderView
+            var header = new ImageAndTitleHeaderView
             {
 //                EnableSeperator = true,
 //                SeperatorColor = TableView.SeparatorColor
-                BackgroundColor = UIColor.Clear
+                BackgroundColor = UIColor.GroupTableViewBackgroundColor
             };
 
-            _header.Image = Images.LoginUserUnknown;
-            _header.Text = ViewModel.RepositorySlug;
-            TableView.TableHeaderView = _header;
+            header.Image = Images.LoginUserUnknown;
+            header.Text = ViewModel.RepositorySlug;
+            TableView.TableHeaderView = header;
             TableView.SectionFooterHeight = 0.3f;
 
             ViewModel.WhenAnyValue(x => x.Commit).Where(x => x != null).Subscribe(x =>
             {
-                _header.Text = x.Message;
-                TableView.TableHeaderView = _header;
+                header.Text = x.Message;
+                TableView.TableHeaderView = header;
                 var firstParent = x.Parents.FirstOrDefault();
                 if (firstParent != null)
                     splitElement1.Button1.Text = firstParent.DisplayId;

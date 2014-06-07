@@ -1,10 +1,10 @@
 ﻿using System;
-using CodeStash.Core.ViewModels.Commits;
 using MonoTouch.Dialog;
 using System.Linq;
 using MonoTouch.UIKit;
+using CodeStash.Core.ViewModels.Build;
 
-namespace CodeStash.iOS.ViewControllers.Commits
+namespace CodeStash.iOS.ViewControllers.Build
 {
     public class BuildStatusesViewController : ViewModelDialogViewController<BuildStatusesViewModel>
     {

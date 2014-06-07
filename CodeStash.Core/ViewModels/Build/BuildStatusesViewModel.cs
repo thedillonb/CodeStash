@@ -1,11 +1,11 @@
 ﻿using System;
 using Xamarin.Utilities.Core.ViewModels;
 using ReactiveUI;
-using AtlassianStashSharp.Models;
 using CodeStash.Core.Services;
 using System.Reactive.Linq;
+using AtlassianStashSharp.Models;
 
-namespace CodeStash.Core.ViewModels.Commits
+namespace CodeStash.Core.ViewModels.Build
 {
     public class BuildStatusesViewModel : LoadableViewModel
     {
