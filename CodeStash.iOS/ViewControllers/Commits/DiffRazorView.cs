@@ -24,7 +24,7 @@ public partial class DiffRazorView : DiffRazorViewBase
 #line hidden
 
 #line 1 "DiffRazorView.cshtml"
-public Diff Model { get; set; }
+public AtlassianStashSharp.Models.Diff Model { get; set; }
 
 #line default
 #line hidden

@@ -22,46 +22,19 @@ namespace CodeStash.Core.ViewModels.Commits
 
         public string Name { get; set; }
   
-        private string _newContent;
-        public string NewContent
+        private Diff _diff;
+        public Diff Diff
         {
-            get { return _newContent; }
-            private set { this.RaiseAndSetIfChanged(ref _newContent, value); }
-        }
-
-        private string _oldContent;
-        public string OldContent
-        {
-            get { return _oldContent; }
-            private set { this.RaiseAndSetIfChanged(ref _oldContent, value); }
+            get { return _diff; }
+            private set { this.RaiseAndSetIfChanged(ref _diff, value); }
         }
 
         public CommitDiffViewModel(IApplicationService applicationService)
         {
             LoadCommand.RegisterAsyncTask(async _ =>
             {
-                try
-                {
-                    if (!string.IsNullOrEmpty(Node))
-                        NewContent = await GetContent(applicationService, Node);
-                } 
-                catch (Exception e) 
-                {
-                    System.Diagnostics.Debug.WriteLine("Unable to diff against new content: {0}", e.Message);
-                }
-
-                try
-                {
-                    if (!string.IsNullOrEmpty(NodeParent))
-                        OldContent = await GetContent(applicationService, NodeParent);
-                }
-                catch (Exception e) 
-                {
-                    System.Diagnostics.Debug.WriteLine("Unable to diff against new content: {0}", e.Message);
-                }
-
-                if (NewContent == null && OldContent == null)
-                    throw new Exception("Unable to diff this type of file.");
+                var data = await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Commits[Node].GetDiff(Path).ExecuteAsync();
+                Diff = data.Data;
             });
         }
 
