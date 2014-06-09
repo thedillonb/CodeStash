@@ -1,22 +1,19 @@
 ﻿using System;
 using MonoTouch.Dialog;
 using CodeStash.Core.ViewModels.PullRequests;
-using System.Linq;
+using CodeFramework.iOS.Views;
+using ReactiveUI;
 
 namespace CodeStash.iOS.ViewControllers.PullRequests
 {
-    public class PullRequestCommitsViewController : ViewModelDialogViewController<PullRequestCommitsViewModel>
+    public class PullRequestCommitsViewController : ViewModelCollectionView<PullRequestCommitsViewModel>
     {
         public override void ViewDidLoad()
         {
-            base.ViewDidLoad();
+            Title = ViewModel.Title;
+            Root = new RootElement(ViewModel.Title) { UnevenRows = true };
 
-            var sec = new Section();
-            var root = new RootElement(ViewModel.Title) { UnevenRows = true };
-            root.Add(sec);
-            Root = root;
-
-            ViewModel.Commits.Changed.Subscribe(_ => sec.Reset(ViewModel.Commits.Select(x =>
+            Bind(ViewModel.WhenAnyValue(x => x.Commits), x =>
             {
                 var element = new NameTimeStringElement
                 {
@@ -27,7 +24,9 @@ namespace CodeStash.iOS.ViewControllers.PullRequests
                 };
                 element.Tapped += () => ViewModel.GoToCommitCommand.Execute(x);
                 return element;
-            })));
+            });
+
+            base.ViewDidLoad();
         }
     }
 }

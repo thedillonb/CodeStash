@@ -19,7 +19,7 @@ namespace CodeStash.iOS.ViewControllers.Repositories
             { 
                 EnableSeperator = true, 
                 SeperatorColor = TableView.SeparatorColor,
-                Image = CodeFramework.iOS.Images.LoginUserUnknown, 
+                Image = Images.ProjectAvatar, 
                 BackgroundColor = UIColor.GroupTableViewBackgroundColor,
             };
             TableView.TableHeaderView = header;

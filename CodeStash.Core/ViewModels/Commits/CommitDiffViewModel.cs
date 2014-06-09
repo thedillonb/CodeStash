@@ -44,13 +44,21 @@ namespace CodeStash.Core.ViewModels.Commits
                 {
                     if (!string.IsNullOrEmpty(Node))
                         NewContent = await GetContent(applicationService, Node);
-                } catch {}
+                } 
+                catch (Exception e) 
+                {
+                    System.Diagnostics.Debug.WriteLine("Unable to diff against new content: {0}", e.Message);
+                }
 
                 try
                 {
                     if (!string.IsNullOrEmpty(NodeParent))
                         OldContent = await GetContent(applicationService, NodeParent);
-                } catch {}
+                }
+                catch (Exception e) 
+                {
+                    System.Diagnostics.Debug.WriteLine("Unable to diff against new content: {0}", e.Message);
+                }
 
                 if (NewContent == null && OldContent == null)
                     throw new Exception("Unable to diff this type of file.");

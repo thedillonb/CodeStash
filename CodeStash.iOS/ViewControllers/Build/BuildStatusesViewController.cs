@@ -9,6 +9,11 @@ namespace CodeStash.iOS.ViewControllers.Build
 {
     public class BuildStatusesViewController : ViewModelCollectionView<BuildStatusesViewModel>
     {
+        public BuildStatusesViewController()
+        {
+            EnableSearch = false;
+        }
+
         public override void ViewDidLoad()
         {
             Title = "Build Status";

@@ -26,6 +26,12 @@ namespace CodeStash.iOS
         public static UIImage Merge { get { return UIImageHelper.FromFileAuto("Images/merge"); } }
         public static UIImage Readme { get { return UIImageHelper.FromFileAuto("Images/readme"); } }
 
+        public static UIImage ProjectAvatar { get { return UIImageHelper.FromFileAuto("Images/project_avatar"); } }
+        public static UIImage Avatar { get { return UIImageHelper.FromFileAuto("Images/avatar"); } }
+
+        public static UIImage Group { get { return UIImageHelper.FromFileAuto("Images/group"); } }
+        public static UIImage Status { get { return UIImageHelper.FromFileAuto("Images/status"); } }
+
     }
 }
 

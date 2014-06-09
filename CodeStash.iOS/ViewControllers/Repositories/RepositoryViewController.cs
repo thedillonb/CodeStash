@@ -25,9 +25,12 @@ namespace CodeStash.iOS.ViewControllers.Repositories
 
             base.ViewDidLoad();
 
-            var header = new ImageAndTitleHeaderView { BackgroundColor = UIColor.GroupTableViewBackgroundColor };
-            header.Image = CodeFramework.iOS.Images.LoginUserUnknown;
-            header.Text = ViewModel.RepositorySlug;
+            var header = new ImageAndTitleHeaderView 
+            { 
+                BackgroundColor = UIColor.GroupTableViewBackgroundColor,
+                Image = Images.ProjectAvatar,
+                Text = ViewModel.RepositorySlug
+            };
 
             TableView.TableHeaderView = header;
             TableView.TableFooterView = new UIView();

@@ -95,6 +95,7 @@ namespace CodeStash.Core.ViewModels.PullRequests
                 vm.ProjectKey = ProjectKey;
                 vm.RepositorySlug = RepositorySlug;
                 vm.PullRequestId = PullRequestId;
+                vm.PullRequestDestination = PullRequest.ToRef.Id; //.Replace("refs/heads/", string.Empty);
                 ShowViewModel(vm);
             });
 

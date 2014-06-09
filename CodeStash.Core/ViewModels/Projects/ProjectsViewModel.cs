@@ -9,6 +9,7 @@ using Xamarin.Utilities.Core.ReactiveAddons;
 using AtlassianStashSharp.Helpers;
 using CodeFramework.Core.Services;
 using CodeFramework.Core.Data;
+using System.Collections.Generic;
 
 namespace CodeStash.Core.ViewModels.Projects
 {
@@ -54,7 +55,7 @@ namespace CodeStash.Core.ViewModels.Projects
                 Id = 0,
                 Key = "~" + account.Username,
                 Description = account.Username + "'s Personal Repositories",
-                Name = account.Username,
+                Name = account.Username
             };
         }
     }

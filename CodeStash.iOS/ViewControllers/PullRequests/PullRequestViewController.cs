@@ -22,7 +22,11 @@ namespace CodeStash.iOS.ViewControllers.PullRequests
             base.ViewDidLoad();
 
             this.CreateTopBackground(UIColor.GroupTableViewBackgroundColor);
-            var header = new ImageAndTitleHeaderView { BackgroundColor = UIColor.GroupTableViewBackgroundColor };
+            var header = new ImageAndTitleHeaderView 
+            { 
+                BackgroundColor = UIColor.GroupTableViewBackgroundColor,
+                Image = Images.Avatar
+            };
             TableView.TableHeaderView = header;
 
             var root = new RootElement(string.Format("Pull Request #{0}", ViewModel.PullRequestId)) { UnevenRows = true };
@@ -32,8 +36,8 @@ namespace CodeStash.iOS.ViewControllers.PullRequests
 
             var statusElement = new SplitElement
             {
-                Button1 = new SplitElement.SplitButton(Images.BuildOk.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), "Open"),
-                Button2 = new SplitElement.SplitButton(Images.Comment.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), "-"),
+                Button1 = new SplitElement.SplitButton(Images.Status.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), "Open"),
+                Button2 = new SplitElement.SplitButton(Images.Group.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), "0 Participants"),
             };
 
             var buildElement = new SplitElement
@@ -62,6 +66,11 @@ namespace CodeStash.iOS.ViewControllers.PullRequests
                 var selfLink = x.Author.User.Links["self"].FirstOrDefault();
                 if (selfLink != null && !string.IsNullOrEmpty(selfLink.Href))
                     header.ImageUri = selfLink.Href + "/avatar.png";
+            });
+
+            ViewModel.Participants.Changed.Subscribe(_ =>
+            {
+                statusElement.Button2.Text = string.Format("{0} Participant{1}", ViewModel.Participants.Count, ViewModel.Participants.Count > 1 ? "s" : string.Empty);
             });
 
             ViewModel.WhenAnyValue(x => x.BuildStatus).Where(x => x != null && x.Length > 0).Subscribe(x =>

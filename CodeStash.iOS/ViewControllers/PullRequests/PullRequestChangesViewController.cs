@@ -5,11 +5,17 @@ using MonoTouch.Dialog;
 using System.Collections.Generic;
 using System.Linq;
 using ReactiveUI;
+using CodeFramework.iOS.Views;
 
 namespace CodeStash.iOS.ViewControllers.PullRequests
 {
-    public class PullRequestChangesViewController : ViewModelDialogViewController<PullRequestChangesViewModel>
+    public class PullRequestChangesViewController : ViewModelCollectionView<PullRequestChangesViewModel>
     {
+        public PullRequestChangesViewController()
+        {
+            EnableSearch = false;
+        }
+
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();

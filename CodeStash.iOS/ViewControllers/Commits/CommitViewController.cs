@@ -43,11 +43,11 @@ namespace CodeStash.iOS.ViewControllers.Commits
             {
 //                EnableSeperator = true,
 //                SeperatorColor = TableView.SeparatorColor
-                BackgroundColor = UIColor.GroupTableViewBackgroundColor
+                BackgroundColor = UIColor.GroupTableViewBackgroundColor,
+                Image = Images.Avatar,
+                Text = ViewModel.RepositorySlug
             };
 
-            header.Image = CodeFramework.iOS.Images.LoginUserUnknown;
-            header.Text = ViewModel.RepositorySlug;
             TableView.TableHeaderView = header;
             TableView.SectionFooterHeight = 0.3f;
 

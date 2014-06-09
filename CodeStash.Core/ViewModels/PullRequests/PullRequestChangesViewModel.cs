@@ -11,15 +11,20 @@ namespace CodeStash.Core.ViewModels.PullRequests
 {
     public class PullRequestChangesViewModel : LoadableViewModel
     {
+        private string _pullRequestDestinationSha;
+
         public string ProjectKey { get; set; }
 
         public string RepositorySlug { get; set; }
 
         public long PullRequestId { get; set; }
 
+        public string PullRequestDestination { get; set; }
+
         public ReactiveList<Change> Changes { get; private set; }
 
         public IReactiveCommand GoToDiffCommand { get; private set; }
+
 
         public PullRequestChangesViewModel(IApplicationService applicationService)
         {
@@ -27,6 +32,9 @@ namespace CodeStash.Core.ViewModels.PullRequests
 
             LoadCommand.RegisterAsyncTask(async _ =>
             {
+                var commit = await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Commits.GetAll(until: PullRequestDestination).ExecuteAsync();
+                if (commit.Data.Values.Count > 0)
+                    _pullRequestDestinationSha = commit.Data.Values[0].Id;
                 Changes.Reset(await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].PullRequests[PullRequestId].GetAllChanges().ExecuteAsyncAll());
             });
          
@@ -39,11 +47,8 @@ namespace CodeStash.Core.ViewModels.PullRequests
                 vm.Node = x.ContentId;
                 vm.Path = x.Path.ToString;
                 vm.Name = x.Path.Name;
-
-//                var parentCommit = Commit.Parents.FirstOrDefault();
-//                if (parentCommit != null)
-//                    vm.NodeParent = parentCommit.Id;
-//
+                if (!string.IsNullOrEmpty(_pullRequestDestinationSha))
+                    vm.NodeParent = _pullRequestDestinationSha;
                 ShowViewModel(vm);
             });
         }

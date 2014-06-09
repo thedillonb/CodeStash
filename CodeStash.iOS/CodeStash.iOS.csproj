@@ -161,6 +161,14 @@
     <BundleResource Include="Images\readme%402x.png" />
     <BundleResource Include="Images\readme.png" />
     <BundleResource Include="Images\merge%402x.png" />
+    <BundleResource Include="Images\avatar.png" />
+    <BundleResource Include="Images\avatar%402x.png" />
+    <BundleResource Include="Images\project_avatar%402x.png" />
+    <BundleResource Include="Images\project_avatar.png" />
+    <BundleResource Include="Images\status%402x.png" />
+    <BundleResource Include="Images\group%402x.png" />
+    <BundleResource Include="Images\group.png" />
+    <BundleResource Include="Images\status.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -168,6 +176,10 @@
     <InterfaceDefinition Include="ViewControllers\Application\AddAccountView.xib">
       <SubType>Designer</SubType>
     </InterfaceDefinition>
+    <None Include="ViewControllers\Commits\DiffRazorView.cshtml">
+      <Generator>RazorTemplatePreprocessor</Generator>
+      <LastGenOutput>DiffRazorView.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppDelegate.cs" />
@@ -196,6 +208,11 @@
     <Compile Include="ViewControllers\Repositories\RelatedRepositoriesViewController.cs" />
     <Compile Include="ViewControllers\Commits\CommitDiffViewController.cs" />
     <Compile Include="ViewControllers\Build\BuildStatusesViewController.cs" />
+    <Compile Include="ViewControllers\PullRequests\PullRequestChangesViewController.cs" />
+    <Compile Include="ViewControllers\PullRequests\PullRequestCommitsViewController.cs" />
+    <Compile Include="ViewControllers\Commits\DiffRazorView.cs">
+      <DependentUpon>DiffRazorView.cshtml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
@@ -236,8 +253,6 @@
   <ItemGroup>
     <Content Include="Images\grey_button%402x.png" />
     <Content Include="Images\grey_button.png" />
-    <Content Include="Images\login_user_unknown%402x.png" />
-    <Content Include="Images\login_user_unknown.png" />
     <Content Include="Images\logo.png" />
   </ItemGroup>
   <ItemGroup>

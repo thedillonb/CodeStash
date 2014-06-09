@@ -5,6 +5,7 @@ using CodeStash.Core.Services;
 using System.Reactive.Linq;
 using CodeStash.Core.ViewModels.Commits;
 using Xamarin.Utilities.Core.ViewModels;
+using Xamarin.Utilities.Core.ReactiveAddons;
 
 namespace CodeStash.Core.ViewModels.PullRequests
 {
@@ -20,11 +21,11 @@ namespace CodeStash.Core.ViewModels.PullRequests
 
         public IReactiveCommand GoToCommitCommand { get; private set; }
 
-        public ReactiveList<Commit> Commits { get; private set; }
+        public ReactiveCollection<Commit> Commits { get; private set; }
 
         public PullRequestCommitsViewModel(IApplicationService applicationService)
         {
-            Commits = new ReactiveList<Commit>();
+            Commits = new ReactiveCollection<Commit>();
 
             GoToCommitCommand = new ReactiveCommand();
             GoToCommitCommand.OfType<Commit>().Subscribe(x =>
