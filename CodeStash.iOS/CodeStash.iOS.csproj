@@ -46,6 +46,12 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchDebug>true</MtouchDebug>
     <CodesignKey>iPhone Developer</CodesignKey>
+    <BuildIpa>true</BuildIpa>
+    <IpaPackageName>
+    </IpaPackageName>
+    <MtouchI18n>
+    </MtouchI18n>
+    <MtouchArch>ARMv7</MtouchArch>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>
@@ -180,6 +186,10 @@
       <Generator>RazorTemplatePreprocessor</Generator>
       <LastGenOutput>DiffRazorView.cs</LastGenOutput>
     </None>
+    <None Include="ViewControllers\PullRequests\CommentCellView.cshtml">
+      <Generator>RazorTemplatePreprocessor</Generator>
+      <LastGenOutput>CommentCellView.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppDelegate.cs" />
@@ -213,6 +223,11 @@
     <Compile Include="ViewControllers\Commits\DiffRazorView.cs">
       <DependentUpon>DiffRazorView.cshtml</DependentUpon>
     </Compile>
+    <Compile Include="ViewControllers\PullRequests\PullRequestDiffViewController.cs" />
+    <Compile Include="ViewControllers\PullRequests\CommentCellView.cs">
+      <DependentUpon>CommentCellView.cshtml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\PullRequests\PullRequestParticipantsViewController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>

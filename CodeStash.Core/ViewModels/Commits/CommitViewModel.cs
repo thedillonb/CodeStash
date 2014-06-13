@@ -139,11 +139,6 @@ namespace CodeStash.Core.ViewModels.Commits
                 vm.Node = Node;
                 vm.Path = x.Path.ToString;
                 vm.Name = x.Path.Name;
-
-                var parentCommit = Commit.Parents.FirstOrDefault();
-                if (parentCommit != null)
-                    vm.NodeParent = parentCommit.Id;
-
                 ShowViewModel(vm);
             });
         }

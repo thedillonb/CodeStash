@@ -29,13 +29,10 @@ namespace CodeStash.iOS
 
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            Theme();
+            // Need it to startup!
+            CodeStash.Core.Bootstrap.Init();
 
-            RxApp.DefaultExceptionHandler = Observer.Create((Exception e) =>
-            {
-                IoC.Resolve<IAlertDialogService>().Alert("Error", e.Message);
-                Console.WriteLine("Exception occured: " + e.Message + " at " + e.StackTrace);
-            });
+            Theme();
 
             // Load the IoC
             IoC.RegisterAssemblyServicesAsSingletons(typeof(Xamarin.Utilities.Core.Services.IDefaultValueService).Assembly);
@@ -44,8 +41,6 @@ namespace CodeStash.iOS
             IoC.RegisterAssemblyServicesAsSingletons(typeof(CodeFramework.iOS.Theme).Assembly);
             IoC.RegisterAssemblyServicesAsSingletons(typeof(Core.Services.IApplicationService).Assembly);
             IoC.RegisterAssemblyServicesAsSingletons(GetType().Assembly);
-            IoC.RegisterAsInstance<IAddAccountViewModel, CodeStash.Core.ViewModels.Application.LoginViewModel>();
-            IoC.RegisterAsInstance<IMainViewModel, CodeStash.Core.ViewModels.Application.MainViewModel>();
 
             var viewModelViewService = IoC.Resolve<IViewModelViewService>();
             viewModelViewService.RegisterViewModels(typeof(Xamarin.Utilities.Services.DefaultValueService).Assembly);

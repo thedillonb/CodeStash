@@ -12,8 +12,8 @@ namespace CodeStash.iOS.ViewControllers.Projects
     public class ProjectsViewController : ViewModelCollectionView<ProjectsViewModel>
     {
         public ProjectsViewController()
+            : base("Projects")
         {
-            Title = "Projects";
             EnableSearch = false;
         }
 

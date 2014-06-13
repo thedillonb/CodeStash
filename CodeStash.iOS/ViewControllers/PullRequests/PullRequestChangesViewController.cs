@@ -32,7 +32,9 @@ namespace CodeStash.iOS.ViewControllers.PullRequests
                     foreach (var entry in @group)
                     {
                         var entryClosed = entry;
-                        var element = new StyledStringElement(entry.Path.Name, () => ViewModel.GoToDiffCommand.ExecuteIfCan(entryClosed));
+                        var element = new StyledStringElement(entry.Path.Name, FirstCharToUpper(entry.Type), UITableViewCellStyle.Subtitle);
+                        element.Tapped += () => ViewModel.GoToDiffCommand.ExecuteIfCan(entryClosed);
+                        element.Accessory = UITableViewCellAccessory.DisclosureIndicator;
                         element.Image = fileIcon;
                         sec.Add(element);
                     }
@@ -41,6 +43,14 @@ namespace CodeStash.iOS.ViewControllers.PullRequests
 
                 Root.Reset(sections);
             });
+        }
+
+        public static string FirstCharToUpper(string input)
+        {
+            if (String.IsNullOrEmpty(input))
+                return string.Empty;
+            input = input.ToLower();
+            return input[0].ToString().ToUpper() + String.Join("", input.Skip(1));
         }
     }
 }

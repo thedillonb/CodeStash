@@ -86,6 +86,9 @@
     <Compile Include="ViewModels\PullRequests\PullRequestChangesViewModel.cs" />
     <Compile Include="ViewModels\PullRequests\PullRequestCommitsViewModel.cs" />
     <Compile Include="Services\AccountValidatorService.cs" />
+    <Compile Include="ViewModels\PullRequests\PullRequestDiffViewModel.cs" />
+    <Compile Include="Bootstrap.cs" />
+    <Compile Include="ViewModels\PullRequests\PullRequestParticipantsViewModel.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

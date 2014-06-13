@@ -4,18 +4,20 @@ using CodeStash.Core.ViewModels.Commits;
 using ReactiveUI;
 using MonoTouch.Foundation;
 using System.Reactive.Linq;
+using CodeStash.Core.ViewModels.PullRequests;
+using CodeStash.iOS.ViewControllers.Commits;
 using Xamarin.Utilities.Core.Services;
 
-namespace CodeStash.iOS.ViewControllers.Commits
+namespace CodeStash.iOS.ViewControllers.PullRequests
 {
-    public class CommitDiffViewController : WebViewController, IViewFor<CommitDiffViewModel>
+    public class PullRequestDiffViewController : WebViewController, IViewFor<PullRequestDiffViewModel>
     {
-        public CommitDiffViewModel ViewModel { get; set; }
+        public PullRequestDiffViewModel ViewModel { get; set; }
 
         object IViewFor.ViewModel
         {
             get { return ViewModel; }
-            set { ViewModel = (CommitDiffViewModel)value; }
+            set { ViewModel = (PullRequestDiffViewModel)value; }
         }
 
         public override void ViewDidLoad()

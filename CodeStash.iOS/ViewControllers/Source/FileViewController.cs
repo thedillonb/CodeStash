@@ -4,7 +4,6 @@ using CodeStash.Core.ViewModels.Source;
 using ReactiveUI;
 using System.Reactive.Linq;
 using MonoTouch.Foundation;
-using Xamarin.Utilities.Core.Services;
 using Xamarin.Utilities.ViewControllers;
 
 namespace CodeStash.iOS.ViewControllers.Source
@@ -26,14 +25,10 @@ namespace CodeStash.iOS.ViewControllers.Source
             _webView.Frame = new System.Drawing.RectangleF(0, 0, View.Bounds.Width, View.Bounds.Height);
             View.Add(_webView);
 
-            var path = System.IO.Path.Combine(NSBundle.MainBundle.BundlePath, "Highlighter", "highlight.html");
-            var uri = Uri.EscapeUriString("file://" + path) + "#" + Environment.TickCount;
-            _webView.LoadRequest(new NSUrlRequest(new NSUrl(uri)));
-
             ViewModel.WhenAnyValue(x => x.Content).Skip(1).Subscribe(x =>
             {
-                var json = IoC.Resolve<IJsonSerializationService>().Serialize(new { text = x });
-                _webView.EvaluateJavascript("render(" + json + ".text);");
+                var view = new CodeFramework.iOS.SourceBrowser.SyntaxHighlighterView() { Model = x };
+                _webView.LoadHtmlString(view.GenerateString(), NSBundle.MainBundle.BundleUrl);
             });
         }
     }

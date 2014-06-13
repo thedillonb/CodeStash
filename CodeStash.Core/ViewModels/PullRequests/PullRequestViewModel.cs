@@ -32,13 +32,18 @@ namespace CodeStash.Core.ViewModels.PullRequests
             private set { this.RaiseAndSetIfChanged(ref _buildStatus, value); }
         }
 
+        private MergeResult _mergeResult;
+        public MergeResult MergeResult
+        {
+            get { return _mergeResult; }
+            private set { this.RaiseAndSetIfChanged(ref _mergeResult, value); }
+        }
+
         public ReactiveList<Commit> Commits { get; private set; }
 
         public ReactiveList<PullRequestParticipant> Participants { get; private set; }
 
-        public ReactiveList<Change> Changes { get; private set; }
-
-        public ReactiveList<Comment> Comments { get; private set; } 
+        public ReactiveList<Activity> Activities { get; private set; }
 
         public IReactiveCommand GoToChangesCommand { get; private set; }
 
@@ -48,12 +53,14 @@ namespace CodeStash.Core.ViewModels.PullRequests
 
         public IReactiveCommand GoToCommentsCommand { get; private set; }
 
+        public IReactiveCommand GoToParticipantsCommand { get; private set; }
+
+
         public PullRequestViewModel(IApplicationService applicationService)
         {
             Commits = new ReactiveList<Commit>();
             Participants = new ReactiveList<PullRequestParticipant>();
-            Changes = new ReactiveList<Change>();
-            Comments = new ReactiveList<Comment>();
+            Activities = new ReactiveList<Activity>();
             GoToChangesCommand = new ReactiveCommand();
             GoToCommitsCommand = new ReactiveCommand();
             GoToCommentsCommand = new ReactiveCommand();
@@ -62,21 +69,18 @@ namespace CodeStash.Core.ViewModels.PullRequests
             {
                 var pullRequest = applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].PullRequests[PullRequestId];
                 PullRequest = (await pullRequest.Get().ExecuteAsync()).Data;
-                Participants.Reset(PullRequest.Participants);
+                Participants.Reset(PullRequest.Participants.Concat(PullRequest.Reviewers));
                 Commits.Reset((await pullRequest.GetAllCommits().ExecuteAsync()).Data.Values);
-                //Participants.Reset((await pullRequest.GetAllParticipates().ExecuteAsync()).Data.Values);
-                Changes.Reset((await pullRequest.GetAllChanges().ExecuteAsync()).Data.Values);
 
+                pullRequest.GetAllActivities().ExecuteAsync().ContinueInBackground(x => Activities.Reset(x.Data.Values));
+                pullRequest.GetMergeResult().ExecuteAsync().ContinueInBackground(x => MergeResult = x.Data);
 
                 var firstCommit = Commits.FirstOrDefault();
                 if (firstCommit != null)
                 {
                     applicationService.StashClient.BuildStatus[firstCommit.Id].GetStatus()
-                        .ExecuteAsync().ContinueInBackground(x => 
-                            BuildStatus = x.Data.Values.ToArray());
+                        .ExecuteAsync().ContinueInBackground(x => BuildStatus = x.Data.Values.ToArray());
                 }
-
-                //Comments.Reset((await pullRequest.GetAllComments().ExecuteAsync()).Data.Values);
             });
 
             GoToCommitsCommand.Subscribe(x =>
@@ -95,7 +99,7 @@ namespace CodeStash.Core.ViewModels.PullRequests
                 vm.ProjectKey = ProjectKey;
                 vm.RepositorySlug = RepositorySlug;
                 vm.PullRequestId = PullRequestId;
-                vm.PullRequestDestination = PullRequest.ToRef.Id; //.Replace("refs/heads/", string.Empty);
+                vm.PullRequestDestination = PullRequest.ToRef.Id;
                 ShowViewModel(vm);
             });
 
@@ -106,6 +110,17 @@ namespace CodeStash.Core.ViewModels.PullRequests
                 vm.Node = Commits[0].Id;
                 ShowViewModel(vm);
             });
+
+            GoToParticipantsCommand = new ReactiveCommand();
+            GoToParticipantsCommand.Subscribe(x =>
+            {
+                var vm = CreateViewModel<PullRequestParticipantsViewModel>();
+                vm.ProjectKey = ProjectKey;
+                vm.RepositorySlug = RepositorySlug;
+                vm.PullRequestId = PullRequestId;
+                ShowViewModel(vm);
+            });
+
         }
     }
 }

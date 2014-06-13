@@ -1,6 +1,119 @@
 ﻿@model AtlassianStashSharp.Models.Diff
 <html>
+	<head>
+	<style>
+		* {
+			font-size: 16px;
+		    font-family:Courier, monospace;
+		}
+		body {
+		    margin:0;
+		}
+		table {
+			border-collapse:collapse;
+			border:1px solid darkgray;
+		    width:100%;
+		}
+		table tbody td {
+			padding:.3em .3em;
+		    width: 100%;
+		}
+		table thead {
+			border-bottom:1px solid #BBC;
+			background:#EFEFEF;
+		}
+		.line-num {
+			background:#EED;
+			font-weight:normal;
+			border:1px solid #BBC;
+			color:#886;
+			padding:.3em .3em;
+			text-align:right;
+		}
+		tr.line-removed {
+			background-color: #fee8e9;	
+		}
+		tr.line-added {
+			background-color: #ddffdd;	
+		}
+		.comment > td {
+			background:#EED;
+			border:1px solid #BBC;
+		}
+		.comment > td > div.inner {
+			border-radius: 3px;
+			background:#fff;
+			border:1px solid #BBC;
+			padding: 10px 10px;
+		}
+		.comment-inner > h3 {
+			color:#3b73af;
+			font-weight: bold;
+			margin: 0px 0px;
+		}
+		.comment-inner > img {
+			float: left;
+			border-radius: 3px;
+			margin-right: 10px;
+			width: 36px;
+			height: 36px;
+			border: none;
+		}
+		.comment-inner > .content {
+			overflow: hidden;
+			word-wrap: break-word;
+		}
+	</style>
+	</head>
     <body>
-    <h1>@Model</h1>
+    <table>
+    	<tbody>
+
+    		@helper InsertComments(AtlassianStashSharp.Models.Comment comment)
+    		{
+    			<div class="comment-inner">
+					<img src="Images/avatar@2x.png" />
+					<h3>@comment.Author.DisplayName</h3>
+					<div class="content">@comment.Text</div>
+				</div>
+				<div style="margin-left: 46px">
+					@foreach (var c in comment.Comments)
+					{
+						<hr />
+						@InsertComments(c)
+					}
+				</div>
+    		}
+
+    		@foreach (var diff in @Model.Diffs[0].Hunks)
+    		{
+    			foreach (var segment in diff.Segments)
+    			{
+    				foreach (var line in segment.Lines)
+    				{
+    					<tr class="line-@segment.Type.ToLower()">
+    						<th class="line-num src">@if (!string.Equals(segment.Type, "ADDED")) { <span>@line.Source</span> } else { <span>&nbsp;</span> }</th>
+    						<th class="line-num dest">@if (!string.Equals(segment.Type, "REMOVED")) { <span>@line.Destination</span> } else { <span>&nbsp;</span> }</th>
+    						<td><pre>@line.Line</pre></td>
+    					</tr>
+
+						if (line.CommentIds != null)
+						{
+	    					foreach (var comment in line.CommentIds)
+	    					{
+				    			<tr class="comment">
+				    				<td colspan="3">
+				    					<div class="inner">
+	    									@InsertComments(@Model.Diffs[0].LineComments.FirstOrDefault(x => x.Id == comment))
+			    						</div>
+				    				</td>
+				    			</tr>
+	    					}
+    					}
+    				}
+    			}
+    		}
+    	</tbody>
+    </table>
     </body>
 </html>

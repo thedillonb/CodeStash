@@ -1,20 +1,17 @@
-﻿using System;
-using ReactiveUI;
+﻿using ReactiveUI;
 using Xamarin.Utilities.Core.ViewModels;
 using CodeStash.Core.Services;
-using System.Threading.Tasks;
-using System.Text;
 using AtlassianStashSharp.Models;
 
-namespace CodeStash.Core.ViewModels.Commits
+namespace CodeStash.Core.ViewModels.PullRequests
 {
-    public class CommitDiffViewModel : LoadableViewModel
+    public class PullRequestDiffViewModel : LoadableViewModel
     {
         public string ProjectKey { get; set; }
 
         public string RepositorySlug { get; set; }
 
-        public string Node { get; set; }
+        public long PullRequestId { get; set; }
 
         public string Path { get; set; }
 
@@ -27,11 +24,11 @@ namespace CodeStash.Core.ViewModels.Commits
             private set { this.RaiseAndSetIfChanged(ref _diff, value); }
         }
 
-        public CommitDiffViewModel(IApplicationService applicationService)
+        public PullRequestDiffViewModel(IApplicationService applicationService)
         {
             LoadCommand.RegisterAsyncTask(async _ =>
             {
-                Diff = (await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Commits[Node].GetDiff(Path).ExecuteAsync()).Data;
+                Diff = (await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].PullRequests[PullRequestId].GetDiff(Path).ExecuteAsync()).Data;
             });
         }
     }

@@ -19,7 +19,6 @@ namespace CodeStash.Core.Services
         {
             DefaultValueService = defaultValueService;
             AccountsService = accountsService;
-            System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
             AccountsService.WhenAnyObservable(x => x.ActiveAccountChanged).StartWith(AccountsService.ActiveAccount).Subscribe(account =>
             {

@@ -1,0 +1,209 @@
+﻿@model List<AtlassianStashSharp.Models.Activity>
+<html><head>
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0"/>
+<script type="text/javascript">
+function size() { return document.getElementById('main').scrollHeight + 0; }
+function rs() { document.location.href = 'app://resize'; }; window.onsize = rs;
+var h = 0; setInterval(function() { if (size() != h) { h = size(); rs(); } }, 100);
+</script>
+<style>
+* {
+-webkit-touch-callout: none;
+-webkit-user-select: none;
+font-family: Helvetica;
+font-size: 13px;
+}
+
+body{
+font-family: Helvetica;
+font-size: 13px;
+margin: 0px;
+}
+
+.comment:first-child {
+border-top: none;
+}
+
+.comment {
+border-top: 1px solid #c8c8c8;
+padding: 8px 6px 2px;
+}
+
+.comment > img{
+position: absolute;
+width: 32px;
+height: 32px;
+}
+
+.comment > div {
+display: inline-block;
+padding-left: 40px;
+box-sizing: border-box;
+width: 100%;
+}
+
+.comment > div > h1 {
+font-size: 14px;
+margin: 1px 0 2px 0;
+color: #406fb9;
+white-space: nowrap;
+overflow: hidden;
+}
+
+.comment > div > span {
+font-size: 11px;
+margin: 0;
+color: #404040;
+white-space: nowrap;
+overflow: hidden;
+}
+
+.comment > div > div {
+margin: 0;
+word-wrap: break-word;
+}
+
+.comment > div > div img {
+max-width: 100%;
+}
+
+#main { width: 100%; }
+
+img { max-width: 100%; } 
+p { margin: 10px 0; white-space: pre-wrap; } 
+pre, li, ul { word-wrap: break-word; } 
+
+.mark h1, .mark h2, .mark h3, .mark h4, .mark h5, .mark h6 {
+margin: 1em 0 15px;
+padding: 0;
+font-weight: bold;
+line-height: 1.7;
+cursor: text;
+position: relative;
+}
+
+ul, ol {
+padding: 0;
+margin-top: 0;
+margin-bottom: 0;
+padding-left: 20px;
+}
+
+pre {
+background-color: #f8f8f8;
+border: 1px solid #ddd;
+font-size: 13px;
+line-height: 19px;
+overflow: auto;
+padding: 6px 10px;
+border-radius: 3px;
+word-wrap: normal;
+}
+dl dt {
+font-size: 14px;
+font-weight: bold;
+font-style: italic;
+padding: 0;
+margin-top: 15px;
+}
+blockquote {
+border-left: 4px solid #DDD;
+padding: 0 15px;
+color: #777;
+}
+table {
+width: 100%;
+overflow: auto;
+display: block;
+}
+table tr {
+border-top: 1px solid #ccc;
+background-color: #fff;
+}
+table th {
+font-weight: bold;
+}
+table th, table td {
+border: 1px solid #ddd;
+padding: 4px 11px;
+}
+table tr:nth-child(2n) {
+background-color: #f8f8f8;
+}
+.mark h2 {
+font-size: 1.2em;
+border-bottom: 1px solid #eee;
+}
+.mark h1 {
+font-size: 1.6em;
+border-bottom: 1px solid #ddd;
+}
+
+.mark .label {
+display: inline;
+padding: .2em .6em .2em;
+font-size: 85%;
+font-weight: 700;
+line-height: 1;
+color: #fff;
+text-align: center;
+white-space: nowrap;
+vertical-align: baseline;
+border-radius: .25em;
+}
+.label-danger {background-color: #d04437;}
+.label-success {background-color: #14892c;}
+.label-info {background-color: #6e5494;}
+.label-default { background-color: #999;}
+.label-open {background-color: #4a6785;}
+.label-update { background-color: #ffd351;color: #594300 !important;}
+</style>
+</head>
+<body>
+<div id="main">
+
+	@foreach (var activity in @Model)
+	{
+		<div class='comment'>
+			<img src="@(MonoTouch.Foundation.NSBundle.MainBundle.BundleUrl)Images/avatar.png" />
+			<div>
+			<h1>@activity.User.DisplayName</h1>
+			<span>@AtlassianStashSharp.Helpers.UnixDateTimeHelper.FromUnixTime(activity.CreatedDate).ToDaysAgo()</span>
+			<div class="mark">
+				@if (string.Equals(activity.Action, "COMMENTED", StringComparison.OrdinalIgnoreCase))
+				{
+					<p>@activity.Comment.Text</p>
+				}            
+				else if (string.Equals(activity.Action, "RESCOPED", StringComparison.OrdinalIgnoreCase))
+				{
+					<p><span class="label label-update">Updated</span> the pull request.</p>
+				}
+				else if (string.Equals(activity.Action, "OPENED", StringComparison.OrdinalIgnoreCase))
+				{
+					<p><span class="label label-open">Opened</span> the pull request.</p>
+				}
+				else if (string.Equals(activity.Action, "MERGED", StringComparison.OrdinalIgnoreCase))
+				{
+					<p><span class="label label-success">Merged</span> this pull request.</p>
+				}
+				else if (string.Equals(activity.Action, "APPROVED", StringComparison.OrdinalIgnoreCase))
+				{
+					<p><span class="label label-success">Approved</span> this pull request.</p>
+				}
+				else if (string.Equals(activity.Action, "DECLINED", StringComparison.OrdinalIgnoreCase))
+				{
+					<p><span class="label label-danger">Declined</span> this pull request.</p>
+				}
+				else
+				{
+					<p><span class="label label-default">@activity.Action</span> the pull request</p>
+				}
+
+			</div>
+			</div>
+		</div>
+	}
+
+</div>
+</body>
+</html>
