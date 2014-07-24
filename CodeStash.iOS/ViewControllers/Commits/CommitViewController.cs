@@ -1,30 +1,22 @@
 ﻿using System;
 using System.Linq;
 using CodeStash.Core.ViewModels.Commits;
-using MonoTouch.Dialog;
-using CodeStash.iOS.Views;
 using System.Reactive.Linq;
 using ReactiveUI;
 using MonoTouch.UIKit;
 using System.Collections.Generic;
-using CodeFramework.iOS.Views;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace CodeStash.iOS.ViewControllers.Commits
 {
-    public class CommitViewController : ViewModelDialogView<CommitViewModel>
+    public class CommitViewController : ViewModelPrettyDialogViewController<CommitViewModel>
     {
-        public CommitViewController()
-            : base(UITableViewStyle.Grouped)
-        {
-        }
-
         public override void ViewDidLoad()
         {
             Title = ViewModel.Title;
 
             base.ViewDidLoad();
-
-            Root = new RootElement(Title) { UnevenRows = true };
 
             var splitElement1 = new SplitElement
             {
@@ -39,22 +31,18 @@ namespace CodeStash.iOS.ViewControllers.Commits
 
             Root.Add(new Section() { splitElement1, splitElement2 });
 
-            var header = new ImageAndTitleHeaderView
-            {
-//                EnableSeperator = true,
-//                SeperatorColor = TableView.SeparatorColor
-                BackgroundColor = UIColor.GroupTableViewBackgroundColor,
-                Image = Images.Avatar,
-                Text = ViewModel.RepositorySlug
-            };
-
-            TableView.TableHeaderView = header;
-            TableView.SectionFooterHeight = 0.3f;
+            HeaderView.Image = Images.Avatar;
+            HeaderView.Text = " ";
 
             ViewModel.WhenAnyValue(x => x.Commit).Where(x => x != null).Subscribe(x =>
             {
-                header.Text = x.Message;
-                TableView.TableHeaderView = header;
+                if (x.Author != null && !string.IsNullOrEmpty(x.Author.Name))
+                    HeaderView.Text = x.Author.Name;
+                else
+                    HeaderView.Text = ViewModel.Title;
+
+                HeaderView.SubText = x.Message;
+                TableView.TableHeaderView = HeaderView;
                 var firstParent = x.Parents.FirstOrDefault();
                 if (firstParent != null)
                     splitElement1.Button1.Text = firstParent.DisplayId;

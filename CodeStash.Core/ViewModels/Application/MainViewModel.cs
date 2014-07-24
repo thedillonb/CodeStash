@@ -10,21 +10,21 @@ namespace CodeStash.Core.ViewModels.Application
 {
     public class MainViewModel : BaseViewModel, IMainViewModel
     {
-        public IReactiveCommand GoToSettingsCommand { get; private set; }
+        public IReactiveCommand<object> GoToSettingsCommand { get; private set; }
 
-        public IReactiveCommand GoToAccountsCommand { get; private set; }
+        public IReactiveCommand<object> GoToAccountsCommand { get; private set; }
 
-        public IReactiveCommand GoToProfileCommand { get; private set; }
+        public IReactiveCommand<object> GoToProfileCommand { get; private set; }
 
         public MainViewModel(IAccountsService accountsService)
         {
-            GoToSettingsCommand = new ReactiveCommand();
+            GoToSettingsCommand = ReactiveCommand.Create();
             GoToSettingsCommand.Subscribe(_ => ShowViewModel(CreateViewModel<SettingsViewModel>()));
 
-            GoToAccountsCommand = new ReactiveCommand();
+            GoToAccountsCommand = ReactiveCommand.Create();
             GoToAccountsCommand.Subscribe(_ => ShowViewModel(CreateViewModel<AccountsViewModel>()));
 
-            GoToProfileCommand = new ReactiveCommand();
+            GoToProfileCommand = ReactiveCommand.Create();
             GoToProfileCommand.Subscribe(_ =>
             {
                 var vm = CreateViewModel<ProfileViewModel>();

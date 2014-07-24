@@ -5,6 +5,7 @@ using ReactiveUI;
 using System.Reactive.Linq;
 using MonoTouch.Foundation;
 using Xamarin.Utilities.ViewControllers;
+using CodeFramework.iOS.SourceBrowser;
 
 namespace CodeStash.iOS.ViewControllers.Source
 {
@@ -27,7 +28,8 @@ namespace CodeStash.iOS.ViewControllers.Source
 
             ViewModel.WhenAnyValue(x => x.Content).Skip(1).Subscribe(x =>
             {
-                var view = new CodeFramework.iOS.SourceBrowser.SyntaxHighlighterView() { Model = x };
+                var model = new SourceBrowserModel { Content = x };
+                var view = new SyntaxHighlighterView { Model = model };
                 _webView.LoadHtmlString(view.GenerateString(), NSBundle.MainBundle.BundleUrl);
             });
         }

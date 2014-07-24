@@ -8,7 +8,7 @@ using Xamarin.Utilities.Core.ReactiveAddons;
 
 namespace CodeStash.Core.ViewModels.Source
 {
-    public class FilesViewModel : LoadableViewModel
+    public class FilesViewModel : BaseViewModel, ILoadableViewModel
     {
         private ContentPath _contentPath;
 
@@ -22,9 +22,18 @@ namespace CodeStash.Core.ViewModels.Source
 
         public string Folder { get; set; }
 
-        public IReactiveCommand GoToSourceCommand { get; private set; }
+        public IReactiveCommand<object> GoToSourceCommand { get; private set; }
 
-        public ReactiveCollection<Content> Contents { get; private set; }
+        public IReadOnlyReactiveList<Content> Contents { get; private set; }
+
+        public IReactiveCommand LoadCommand { get; private set; }
+
+        private string _searchKeyword;
+        public string SearchKeyword
+        {
+            get { return _searchKeyword; }
+            set { this.RaiseAndSetIfChanged(ref _searchKeyword, value); }
+        }
 
         public ContentPath ContentPath
         {
@@ -34,14 +43,18 @@ namespace CodeStash.Core.ViewModels.Source
 
         public FilesViewModel(IApplicationService applicationService)
         {
-            GoToSourceCommand = new ReactiveCommand();
-            Contents = new ReactiveCollection<Content>();
+            GoToSourceCommand = ReactiveCommand.Create();
 
-            LoadCommand.RegisterAsyncTask(async _ =>
+            var contents = new ReactiveCollection<Content>();
+            Contents = contents.CreateDerivedCollection(x => x, 
+                x => x.Path.Name.IndexOf(SearchKeyword ?? string.Empty, StringComparison.OrdinalIgnoreCase) >= 0,
+                signalReset: this.WhenAnyValue(x => x.SearchKeyword));
+
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async _ =>
             {
                 var response = await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].GetContents(Path, Branch, false).ExecuteAsync();
                 ContentPath = response.Data.Path;
-                Contents.Reset(response.Data.Children.Values);
+                contents.Reset(response.Data.Children.Values);
             });
 
             GoToSourceCommand.OfType<Content>().Subscribe(x =>

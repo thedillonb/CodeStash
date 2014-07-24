@@ -9,7 +9,7 @@ using Xamarin.Utilities.Core.ReactiveAddons;
 
 namespace CodeStash.Core.ViewModels.PullRequests
 {
-    public class PullRequestParticipantsViewModel : LoadableViewModel
+    public class PullRequestParticipantsViewModel : BaseViewModel, ILoadableViewModel
     {
         public string ProjectKey { get; set; }
 
@@ -17,16 +17,18 @@ namespace CodeStash.Core.ViewModels.PullRequests
 
         public long PullRequestId { get; set; }
 
-        public IReactiveCommand GoToUserCommand { get; private set; }
+        public IReactiveCommand<object> GoToUserCommand { get; private set; }
 
         public ReactiveCollection<PullRequestParticipant> Participants { get; private set; }
 
+        public IReactiveCommand LoadCommand { get; private set; }
+
         public PullRequestParticipantsViewModel(IApplicationService applicationService)
         {
-            GoToUserCommand = new ReactiveCommand();
+            GoToUserCommand = ReactiveCommand.Create();
             Participants = new ReactiveCollection<PullRequestParticipant>();
 
-            LoadCommand.RegisterAsyncTask(async _ =>
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async _ =>
             {
                 var pullRequest = applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].PullRequests[PullRequestId];
                 Participants.Reset((await pullRequest.GetAllParticipates().ExecuteAsync()).Data.Values);

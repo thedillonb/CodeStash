@@ -8,7 +8,7 @@ using AtlassianStashSharp.Models;
 
 namespace CodeStash.Core.ViewModels.Commits
 {
-    public class CommitDiffViewModel : LoadableViewModel
+    public class CommitDiffViewModel : BaseViewModel, ILoadableViewModel
     {
         public string ProjectKey { get; set; }
 
@@ -27,9 +27,11 @@ namespace CodeStash.Core.ViewModels.Commits
             private set { this.RaiseAndSetIfChanged(ref _diff, value); }
         }
 
+        public IReactiveCommand LoadCommand { get; private set; }
+
         public CommitDiffViewModel(IApplicationService applicationService)
         {
-            LoadCommand.RegisterAsyncTask(async _ =>
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async _ =>
             {
                 Diff = (await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Commits[Node].GetDiff(Path).ExecuteAsync()).Data;
             });

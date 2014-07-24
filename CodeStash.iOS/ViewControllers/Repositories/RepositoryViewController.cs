@@ -1,23 +1,18 @@
 ﻿using System;
 using CodeStash.Core.ViewModels.Repositories;
-using MonoTouch.Dialog;
-using CodeStash.iOS.Views;
 using MonoTouch.UIKit;
 using ReactiveUI;
 using System.Reactive.Linq;
 using System.Linq;
-using CodeFramework.iOS.Views;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace CodeStash.iOS.ViewControllers.Repositories
 {
-    public class RepositoryViewController : ViewModelDialogView<RepositoryViewModel>
+    public class RepositoryViewController : ViewModelPrettyDialogViewController<RepositoryViewModel>
     {
+        private UIActionSheet _actionSheet;
         private const float _spacing = 10f;
-
-        public RepositoryViewController()
-            : base(UITableViewStyle.Grouped)
-        {
-        }
 
         public override void ViewDidLoad()
         {
@@ -25,18 +20,11 @@ namespace CodeStash.iOS.ViewControllers.Repositories
 
             base.ViewDidLoad();
 
-            var header = new ImageAndTitleHeaderView 
-            { 
-                BackgroundColor = UIColor.GroupTableViewBackgroundColor,
-                Image = Images.ProjectAvatar,
-                Text = ViewModel.RepositorySlug
-            };
+            NavigationItem.RightBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Action, (s, e) => ShowActionMenu());
 
-            TableView.TableHeaderView = header;
-            TableView.TableFooterView = new UIView();
-            TableView.SeparatorInset = UIEdgeInsets.Zero;
-            TableView.BackgroundColor = UIColor.GroupTableViewBackgroundColor;
-            TableView.SectionHeaderHeight = 0.3f;
+            HeaderView.Image = Images.ProjectAvatar;
+            HeaderView.Text = ViewModel.RepositorySlug;
+            TableView.TableHeaderView = HeaderView;
 
             var settingsSection = new Section();
             var splitElement = new SplitButtonElement();
@@ -55,10 +43,7 @@ namespace CodeStash.iOS.ViewControllers.Repositories
             codeSection.Add(new StyledStringElement("Source Code", () => ViewModel.GoToSourceCommand.Execute(null), Images.Build.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)));
             codeSection.Add(new StyledStringElement("Pull Requests", () => ViewModel.GoToPullRequestsCommand.Execute(null), Images.Merge.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)));
 
-            var root = new RootElement(Title);
-            root.Add(settingsSection);
-            root.Add(codeSection);
-            Root = root;
+            Root.Reset(settingsSection, codeSection);
 
             ViewModel.WhenAnyValue(x => x.Repository).Where(x => x != null).Subscribe(x =>
             {
@@ -66,11 +51,27 @@ namespace CodeStash.iOS.ViewControllers.Repositories
                 if (selfLink == null || string.IsNullOrEmpty(selfLink.Href))
                     return;
 
-                header.ImageUri = selfLink.Href + "/avatar.png";
+                HeaderView.ImageUri = selfLink.Href + "/avatar.png";
             });
 
             ViewModel.WhenAnyValue(x => x.ForkedRepositories).Subscribe(x => forksButton.Text = x.ToString());
             ViewModel.WhenAnyValue(x => x.RelatedRepositories).Subscribe(x => releatedButton.Text = x.ToString());
+        }
+
+        private void ShowActionMenu()
+        {
+            _actionSheet = new UIActionSheet();
+            _actionSheet.Title = Title;
+            var showinStash = _actionSheet.AddButton("Show in Stash");
+            _actionSheet.CancelButtonIndex = _actionSheet.AddButton("Cancel");
+            _actionSheet.Dismissed += (sender, e) =>
+            {
+                if (e.ButtonIndex == showinStash)
+                    ViewModel.GoToStashCommand.ExecuteIfCan();
+                _actionSheet = null;
+            };
+
+            _actionSheet.ShowInView(View);
         }
     }
 }

@@ -29,15 +29,10 @@ namespace CodeStash.iOS
 
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            // Need it to startup!
-            CodeStash.Core.Bootstrap.Init();
-
-            Theme();
-
             // Load the IoC
             IoC.RegisterAssemblyServicesAsSingletons(typeof(Xamarin.Utilities.Core.Services.IDefaultValueService).Assembly);
             IoC.RegisterAssemblyServicesAsSingletons(typeof(Xamarin.Utilities.Services.DefaultValueService).Assembly);
-            IoC.RegisterAssemblyServicesAsSingletons(typeof(CodeFramework.Core.Services.AccountsService).Assembly);
+            IoC.RegisterAssemblyServicesAsSingletons(typeof(CodeFramework.Core.Services.IAccountsService).Assembly);
             IoC.RegisterAssemblyServicesAsSingletons(typeof(CodeFramework.iOS.Theme).Assembly);
             IoC.RegisterAssemblyServicesAsSingletons(typeof(Core.Services.IApplicationService).Assembly);
             IoC.RegisterAssemblyServicesAsSingletons(GetType().Assembly);
@@ -46,6 +41,15 @@ namespace CodeStash.iOS
             viewModelViewService.RegisterViewModels(typeof(Xamarin.Utilities.Services.DefaultValueService).Assembly);
             viewModelViewService.RegisterViewModels(typeof(CodeFramework.iOS.Theme).Assembly);
             viewModelViewService.RegisterViewModels(GetType().Assembly);
+
+            // Stamp the date this was installed
+            var stampedData = this.StampInstallDate("CodeStash", "codestash_install_date");
+            Console.WriteLine("Install Stamp = " + stampedData);
+
+            // Need it to startup!
+            CodeStash.Core.Bootstrap.Init();
+
+            Theme();
 
             var startupViewController = new StartupView { ViewModel = IoC.Resolve<StartupViewModel>() };
             startupViewController.ViewModel.View = startupViewController;
@@ -65,19 +69,37 @@ namespace CodeStash.iOS
 
         private void Theme()
         {
+            var primaryColor = UIColor.FromRGB(45, 80, 148);
+
+            UIGraphics.BeginImageContext(new System.Drawing.SizeF(1, 64f));
+            primaryColor.SetFill();
+            UIGraphics.RectFill(new System.Drawing.RectangleF(0, 0, 1, 64));
+            var img = UIGraphics.GetImageFromCurrentImageContext();
+            UIGraphics.EndImageContext();
+
+            UIToolbar.Appearance.BackgroundColor = UIColor.White;
+
+            UITabBar.Appearance.TintColor = primaryColor;
+
+            Xamarin.Utilities.ViewControllers.ViewModelPrettyDialogViewController.RefreshIndicatorColor = UIColor.White;
+
+            UIApplication.SharedApplication.SetStatusBarHidden(false, UIStatusBarAnimation.Fade);
+
             //UIApplication.SharedApplication.StatusBarStyle = UIStatusBarStyle.LightContent;
 
-            UISwitch.Appearance.OnTintColor = UIColor.FromRGB(45,80,148);
+            UISwitch.Appearance.OnTintColor = primaryColor;
 
             UINavigationBar.Appearance.TintColor = UIColor.White;
-            UINavigationBar.Appearance.BarTintColor = UIColor.FromRGB(45,80,148);
+            UINavigationBar.Appearance.BarTintColor = primaryColor;
+            UINavigationBar.Appearance.BackgroundColor = primaryColor;
             UINavigationBar.Appearance.SetTitleTextAttributes(new UITextAttributes { TextColor = UIColor.White, Font = UIFont.SystemFontOfSize(18f) });
+            UINavigationBar.Appearance.SetBackgroundImage(img, UIBarPosition.Any, UIBarMetrics.Default);
             UINavigationBar.Appearance.BackIndicatorImage = CodeFramework.iOS.Images.BackButton;
             UINavigationBar.Appearance.BackIndicatorTransitionMaskImage = CodeFramework.iOS.Images.BackButton;
 
             UIImageView.AppearanceWhenContainedIn(typeof(UITableViewCell)).TintColor = UIColor.FromRGB(45, 80, 148);
 
-            MonoTouch.Dialog.SplitButtonElement.TextColor = UIColor.FromRGB(45, 80, 148);
+            Xamarin.Utilities.DialogElements.SplitButtonElement.TextColor = UIColor.FromRGB(45, 80, 148);
 
             //CodeFramework.iOS.Utils.Hud.BackgroundTint = UIColor.FromRGBA(228, 228, 228, 128);
 

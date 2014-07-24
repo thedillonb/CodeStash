@@ -1,19 +1,27 @@
 ﻿using System;
-using MonoTouch.Dialog;
 using CodeStash.Core.ViewModels.PullRequests;
-using CodeFramework.iOS.Views;
 using ReactiveUI;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace CodeStash.iOS.ViewControllers.PullRequests
 {
-    public class PullRequestCommitsViewController : ViewModelCollectionView<PullRequestCommitsViewModel>
+    public class PullRequestCommitsViewController : ViewModelCollectionViewController<PullRequestCommitsViewModel>
     {
+        public PullRequestCommitsViewController()
+            : base(unevenRows: true)
+        {
+            this.WhenActivated(d =>
+            {
+                d(SearchTextChanging.Subscribe(x => ViewModel.SearchKeyword = x));
+            });
+        }
+
         public override void ViewDidLoad()
         {
             Title = ViewModel.Title;
-            Root = new RootElement(ViewModel.Title) { UnevenRows = true };
 
-            Bind(ViewModel.WhenAnyValue(x => x.Commits), x =>
+            this.BindList(ViewModel.Commits, x =>
             {
                 var element = new NameTimeStringElement
                 {

@@ -8,18 +8,20 @@ using Xamarin.Utilities.Core.ReactiveAddons;
 
 namespace CodeStash.Core.ViewModels.Build
 {
-    public class BuildStatusesViewModel : LoadableViewModel
+    public class BuildStatusesViewModel : BaseViewModel, ILoadableViewModel
     {
         public string Node { get; set; }
 
         public ReactiveCollection<BuildStatus> BuildStatues { get; private set; }
 
-        public IReactiveCommand GoToBuildStatusCommand { get; private set; }
+        public IReactiveCommand<object> GoToBuildStatusCommand { get; private set; }
+
+        public IReactiveCommand LoadCommand { get; private set; }
 
         public BuildStatusesViewModel(IApplicationService applicationService)
         {
             BuildStatues = new ReactiveCollection<BuildStatus>();
-            GoToBuildStatusCommand = new ReactiveCommand();
+            GoToBuildStatusCommand = ReactiveCommand.Create();
 
             GoToBuildStatusCommand.OfType<BuildStatus>().Subscribe(x =>
             {
@@ -28,7 +30,7 @@ namespace CodeStash.Core.ViewModels.Build
                 ShowViewModel(vm);
             });
 
-            LoadCommand.RegisterAsyncTask(async _ =>
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async _ =>
             {
                 BuildStatues.Reset((await applicationService.StashClient.BuildStatus[Node].GetStatus().ExecuteAsync()).Data.Values);
             });

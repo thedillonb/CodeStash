@@ -8,7 +8,7 @@ using Xamarin.Utilities.Core.ViewModels;
 
 namespace CodeStash.Core.ViewModels.Source
 {
-    public class SourceViewModel : LoadableViewModel
+    public class SourceViewModel : BaseViewModel, ILoadableViewModel
     {
         public string ProjectKey { get; set; }
 
@@ -18,7 +18,7 @@ namespace CodeStash.Core.ViewModels.Source
 
         public ReactiveList<Branch> Branches { get; private set; }
 
-        public IReactiveCommand GoToSourceCommand { get; private set; }
+        public IReactiveCommand<object> GoToSourceCommand { get; private set; }
 
         private int _selectedView;
         public int SelectedView
@@ -27,13 +27,15 @@ namespace CodeStash.Core.ViewModels.Source
             set { this.RaiseAndSetIfChanged(ref _selectedView, value); }
         }
 
+        public IReactiveCommand LoadCommand { get; private set; }
+
         public SourceViewModel(IApplicationService applicationService)
         {
-            GoToSourceCommand = new ReactiveCommand();
+            GoToSourceCommand = ReactiveCommand.Create();
             Tags = new ReactiveList<Tag>();
             Branches = new ReactiveList<Branch>();
 
-            LoadCommand.RegisterAsyncTask(_ => Load(applicationService));
+            LoadCommand = ReactiveCommand.CreateAsyncTask(_ => Load(applicationService));
 
             this.WhenAnyValue(x => x.SelectedView).Skip(1).Subscribe(_ => LoadCommand.Execute(null));
 

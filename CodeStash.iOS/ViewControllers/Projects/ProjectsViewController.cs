@@ -1,26 +1,26 @@
-﻿using MonoTouch.Dialog;
-using MonoTouch.UIKit;
+﻿using MonoTouch.UIKit;
 using CodeStash.Core.ViewModels.Projects;
-using CodeFramework.iOS.Views;
 using ReactiveUI;
 using System.Drawing;
 using System.Linq;
 using System;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace CodeStash.iOS.ViewControllers.Projects
 {
-    public class ProjectsViewController : ViewModelCollectionView<ProjectsViewModel>
+    public class ProjectsViewController : ViewModelCollectionViewController<ProjectsViewModel>
     {
         public ProjectsViewController()
-            : base("Projects")
+            : base(searchbarEnabled: false)
         {
-            EnableSearch = false;
+            Title = "Projects";
         }
 
         public override void ViewDidLoad()
         {
             TableView.SeparatorInset = new UIEdgeInsets(0, 44f, 0, 0);
-            Bind(ViewModel.WhenAnyValue(x => x.Projects), x =>
+            this.BindList(ViewModel.Projects, x =>
             {
                 var el = new ProjectElement(x.Name, x.Description);
                 el.Image = Images.ProjectAvatar;

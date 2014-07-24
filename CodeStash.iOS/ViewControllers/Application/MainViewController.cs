@@ -56,8 +56,7 @@ namespace CodeStash.iOS.ViewControllers.Application
 
             public override void PresentViewController(UIViewController viewControllerToPresent, bool animated, NSAction completionHandler)
             {
-                var openMenuButton = new UIBarButtonItem(CodeFramework.iOS.Images.MenuButton, UIBarButtonItemStyle.Plain, (s, e) => _slideoutNavigationController.Open(true));
-                var ctrl = new MainNavigationController(viewControllerToPresent, _slideoutNavigationController, openMenuButton);
+                var ctrl = new MainNavigationController(viewControllerToPresent, _slideoutNavigationController);
                 _slideoutNavigationController.SetMainViewController(ctrl, animated);
             }
         }

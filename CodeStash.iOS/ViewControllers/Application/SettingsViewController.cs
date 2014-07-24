@@ -1,16 +1,16 @@
 ﻿using CodeStash.Core.ViewModels.Application;
 using MonoTouch.UIKit;
-using MonoTouch.Dialog;
 using MonoTouch.Foundation;
 using ReactiveUI;
-using CodeFramework.iOS.Views;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace CodeStash.iOS.ViewControllers.Application
 {
-    public class SettingsViewController : ViewModelDialogView<SettingsViewModel>
+    public class SettingsViewController : ViewModelDialogViewController<SettingsViewModel>
     {
         public SettingsViewController()
-            : base(UITableViewStyle.Grouped)
+            : base(style: UITableViewStyle.Grouped)
         {
             Title = "Settings";
         }
@@ -38,7 +38,7 @@ namespace CodeStash.iOS.ViewControllers.Application
                 new StyledStringElement("App Version", ViewModel.Version)
             };
 
-            Root = new RootElement(Title) { sectionApplication, sectionAbout };
+            Root.Reset(sectionApplication, sectionAbout);
         }
     }
 }

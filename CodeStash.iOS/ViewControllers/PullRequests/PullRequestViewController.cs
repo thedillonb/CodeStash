@@ -1,30 +1,25 @@
 ﻿using System;
 using ReactiveUI;
 using CodeStash.Core.ViewModels.PullRequests;
-using CodeStash.iOS.Views;
 using MonoTouch.UIKit;
 using System.Reactive.Linq;
 using System.Linq;
-using MonoTouch.Dialog;
-using CodeFramework.iOS.Views;
-using CodeFramework.iOS.Elements;
-using Xamarin.Utilities.Core.Services;
-using MonoTouch.Foundation;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace CodeStash.iOS.ViewControllers.PullRequests
 {
-    public class PullRequestViewController : ViewModelDialogView<PullRequestViewModel>
+    public class PullRequestViewController : ViewModelPrettyDialogViewController<PullRequestViewModel>
     {
-        public PullRequestViewController()
-            : base(UITableViewStyle.Grouped)
-        {
-        }
+        private UIActionSheet _actionSheet;
 
         public override void ViewDidLoad()
         {
-            base.ViewDidLoad();
+            Title = string.Format("Pull Request #{0}", ViewModel.PullRequestId);
 
-            Root = new RootElement(string.Format("Pull Request #{0}", ViewModel.PullRequestId)) { UnevenRows = true };
+            NavigationItem.RightBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Action, (s, e) => ShowActionMenu());
+
+            base.ViewDidLoad();
 
             var description = new StyledMultilineElement(string.Empty);
             description.Font = UIFont.SystemFontOfSize(12f);
@@ -52,33 +47,27 @@ namespace CodeStash.iOS.ViewControllers.PullRequests
             var commentsElement = new WebElement("comments");
             var commentsSection = new Section() { commentsElement };
 
-            var header = new ImageAndTitleHeaderView 
-            { 
-                BackgroundColor = UIColor.GroupTableViewBackgroundColor,
-                Image = Images.Avatar,
-                Text = " "
-            };
-            TableView.TableHeaderView = header;
-            TableView.SectionFooterHeight = 0.3f;
+            HeaderView.Image = Images.Avatar;
+            HeaderView.Text = " ";
 
             ViewModel.GoToCommentsCommand.Subscribe(_ =>
             {
-                if (commentsElement.GetImmediateRootElement() != null)
+                if (commentsElement.GetRootElement() != null)
                     TableView.ScrollToRow(commentsElement.IndexPath, UITableViewScrollPosition.Middle, true);
             });
 
             ViewModel.WhenAnyValue(x => x.PullRequest).Where(x => x != null).Subscribe(x =>
             {
-                header.Text = x.Title;
+                HeaderView.Text = x.Title;
                 statusElement.Button1.Text = x.State;
                 description.Caption = x.Description;
-                if (description.GetImmediateRootElement() == null)
+                if (description.GetRootElement() == null)
                     Root[0].Insert(0, UITableViewRowAnimation.Fade, description);
 
                 var selfLink = x.Author.User.Links["self"].FirstOrDefault();
                 if (selfLink != null && !string.IsNullOrEmpty(selfLink.Href))
-                    header.ImageUri = selfLink.Href + "/avatar.png";
-                TableView.TableHeaderView = header;
+                    HeaderView.ImageUri = selfLink.Href + "/avatar.png";
+                TableView.TableHeaderView = HeaderView;
             });
 
             ViewModel.Participants.Changed.Subscribe(_ =>
@@ -106,15 +95,18 @@ namespace CodeStash.iOS.ViewControllers.PullRequests
 
                 if (ViewModel.Activities.Count > 0)
                 {
-                    if (commentsSection.GetImmediateRootElement() == null)
+                    if (commentsSection.Root == null)
                         Root.Add(commentsSection);
 
                     var template = new CommentCellView { Model = ViewModel.Activities.ToList() };
-                    commentsElement.Value = template.GenerateString();
+                    var file = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "pull_request_comments.html");
+                    using (var s = new System.IO.StreamWriter(file, false, System.Text.Encoding.UTF8))
+                        template.Generate(s);
+                    commentsElement.ContentPath = file;
                 }
                 else
                 {
-                    if (commentsSection.GetImmediateRootElement() != null)
+                    if (commentsSection.Root != null)
                         Root.Remove(commentsSection, UITableViewRowAnimation.Fade);
                 }
             });
@@ -130,6 +122,22 @@ namespace CodeStash.iOS.ViewControllers.PullRequests
             }
 
             return 1 + comments;
+        }
+
+        private void ShowActionMenu()
+        {
+            _actionSheet = new UIActionSheet();
+            _actionSheet.Title = Title;
+            var showinStash = _actionSheet.AddButton("Show in Stash");
+            _actionSheet.CancelButtonIndex = _actionSheet.AddButton("Cancel");
+            _actionSheet.Dismissed += (sender, e) =>
+            {
+                if (e.ButtonIndex == showinStash)
+                    ViewModel.GoToStashCommand.ExecuteIfCan();
+                _actionSheet = null;
+            };
+
+            _actionSheet.ShowInView(View);
         }
     }
 }

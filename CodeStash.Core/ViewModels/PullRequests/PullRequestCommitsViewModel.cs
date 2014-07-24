@@ -9,7 +9,7 @@ using Xamarin.Utilities.Core.ReactiveAddons;
 
 namespace CodeStash.Core.ViewModels.PullRequests
 {
-    public class PullRequestCommitsViewModel : LoadableViewModel
+    public class PullRequestCommitsViewModel : BaseViewModel, ILoadableViewModel
     {
         public string ProjectKey { get; set; }
 
@@ -19,15 +19,27 @@ namespace CodeStash.Core.ViewModels.PullRequests
 
         public string Title { get; set; }
 
-        public IReactiveCommand GoToCommitCommand { get; private set; }
+        public IReactiveCommand<object> GoToCommitCommand { get; private set; }
 
-        public ReactiveCollection<Commit> Commits { get; private set; }
+        public IReadOnlyReactiveList<Commit> Commits { get; private set; }
+
+        public IReactiveCommand LoadCommand { get; private set; }
+
+        private string _searchKeyword;
+        public string SearchKeyword
+        {
+            get { return _searchKeyword; }
+            set { this.RaiseAndSetIfChanged(ref _searchKeyword, value); }
+        }
 
         public PullRequestCommitsViewModel(IApplicationService applicationService)
         {
-            Commits = new ReactiveCollection<Commit>();
+            var commits = new ReactiveCollection<Commit>();
+            Commits = commits.CreateDerivedCollection(x => x, 
+                x => x.Message.IndexOf(SearchKeyword ?? string.Empty, StringComparison.OrdinalIgnoreCase) >= 0,
+                signalReset: this.WhenAnyValue(x => x.SearchKeyword));
 
-            GoToCommitCommand = new ReactiveCommand();
+            GoToCommitCommand = ReactiveCommand.Create();
             GoToCommitCommand.OfType<Commit>().Subscribe(x =>
             {
                 var vm = CreateViewModel<CommitViewModel>();
@@ -37,10 +49,10 @@ namespace CodeStash.Core.ViewModels.PullRequests
                 ShowViewModel(vm);
             });
 
-            LoadCommand.RegisterAsyncTask(async x =>
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async x =>
             {
                 var response = await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].PullRequests[PullRequestId].GetAllCommits().ExecuteAsync();
-                Commits.Reset(response.Data.Values);
+                commits.Reset(response.Data.Values);
             });
         }
     }

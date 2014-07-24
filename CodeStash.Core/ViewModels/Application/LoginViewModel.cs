@@ -7,6 +7,7 @@ using CodeFramework.Core.Data;
 using CodeFramework.Core.Services;
 using System.Linq;
 using CodeFramework.Core.Messages;
+using CodeStash.Core.Data;
 
 namespace CodeStash.Core.ViewModels.Application
 {
@@ -33,8 +34,8 @@ namespace CodeStash.Core.ViewModels.Application
             set { this.RaiseAndSetIfChanged(ref _domain, value); }
         }
 
-        private Account _loggedInAccount;
-        public Account LoggedInAcconut
+        private IAccount _loggedInAccount;
+        public IAccount LoggedInAcconut
         {
             get { return _loggedInAccount; }
             private set { this.RaiseAndSetIfChanged(ref _loggedInAccount, value); }
@@ -44,31 +45,31 @@ namespace CodeStash.Core.ViewModels.Application
 
         public LoginViewModel(IAccountsService accountsService)
         {
-            LoginCommand = new ReactiveCommand(this.WhenAny(x => x.Username, x => x.Password, x => x.Domain, (u, p, d) => 
-                !string.IsNullOrEmpty(u.Value) && !string.IsNullOrEmpty(p.Value) && !string.IsNullOrEmpty(d.Value)));
-
-            LoginCommand.RegisterAsyncTask(async x =>
-            {
-                var domain = Domain.TrimEnd('/');
-                var client = AtlassianStashSharp.StashClient.CrateBasic(new Uri(domain), Username, Password);
-                var info = await client.Users[Username].Get().ExecuteAsync();
-
-                var account = new Account {Username = Username, Password = Password, Domain = domain};
-                if (string.IsNullOrEmpty(account.AvatarUrl))
+            LoginCommand = ReactiveCommand.CreateAsyncTask(
+                this.WhenAny(x => x.Username, x => x.Password, x => x.Domain, (u, p, d) => 
+                    !string.IsNullOrEmpty(u.Value) && !string.IsNullOrEmpty(p.Value) && !string.IsNullOrEmpty(d.Value)),
+                async x =>
                 {
-                    var selfLink = info.Data.Links["self"].FirstOrDefault();
-                    if (selfLink != null && !string.IsNullOrEmpty(selfLink.Href))
-                    {
-                        account.AvatarUrl = selfLink.Href + "/avatar.png";
-                    }
-                }
+                    var domain = Domain.TrimEnd('/');
+                    var client = AtlassianStashSharp.StashClient.CrateBasic(new Uri(domain), Username, Password);
+                    var info = await client.Users[Username].Get().ExecuteAsync();
 
-                accountsService.Insert(account);
-                accountsService.ActiveAccount = account;
-                LoggedInAcconut = account;
-                MessageBus.Current.SendMessage(new LogoutMessage());
-                //DismissCommand.ExecuteIfCan();
-            });
+                    var account = new Account {Username = Username, Password = Password, Domain = domain};
+                    if (string.IsNullOrEmpty(account.AvatarUrl))
+                    {
+                        var selfLink = info.Data.Links["self"].FirstOrDefault();
+                        if (selfLink != null && !string.IsNullOrEmpty(selfLink.Href))
+                        {
+                            account.AvatarUrl = selfLink.Href + "/avatar.png";
+                        }
+                    }
+
+                    accountsService.Insert(account);
+                    accountsService.ActiveAccount = account;
+                    LoggedInAcconut = account;
+                    MessageBus.Current.SendMessage(new LogoutMessage());
+                    //DismissCommand.ExecuteIfCan();
+                });
         }
 
     }

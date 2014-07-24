@@ -1,19 +1,20 @@
 ﻿using System;
 using CodeStash.Core.ViewModels.PullRequests;
-using MonoTouch.Dialog;
 using System.Linq;
 using MonoTouch.UIKit;
 using ReactiveUI;
 using AtlassianStashSharp.Helpers;
-using CodeFramework.iOS.Views;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace CodeStash.iOS.ViewControllers.PullRequests
 {
-    public class PullRequestsViewController : ViewModelDialogView<PullRequestsViewModel>
+    public class PullRequestsViewController : ViewModelDialogViewController<PullRequestsViewModel>
     {
         public PullRequestsViewController()
-            : base(UITableViewStyle.Plain)
+            : base(unevenRows: true, style: UITableViewStyle.Plain)
         {
+            Title = "Pull Requests";
         }
 
         public override void ViewDidLoad()
@@ -21,9 +22,7 @@ namespace CodeStash.iOS.ViewControllers.PullRequests
             base.ViewDidLoad();
 
             var sec = new Section();
-            var root = new RootElement("Pull Requests") { UnevenRows = true };
-            root.Add(sec);
-            Root = root;
+            Root.Reset(sec);
 
             ViewModel.PullRequests.Changed.Subscribe(_ => sec.Reset(ViewModel.PullRequests.Select(x =>
             {

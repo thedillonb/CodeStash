@@ -1,15 +1,19 @@
 ﻿using System;
 using CodeStash.Core.ViewModels.Repositories;
-using System.Linq;
-using CodeStash.iOS.Views;
 using ReactiveUI;
 using System.Reactive.Linq;
 using MonoTouch.UIKit;
+using Xamarin.Utilities.Views;
 
 namespace CodeStash.iOS.ViewControllers.Repositories
 {
     public class RepositoriesViewController : BaseRepositoriesViewController<RepositoriesViewModel>
     {
+        public RepositoriesViewController()
+            : base(false)
+        {
+        }
+
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
@@ -24,16 +28,15 @@ namespace CodeStash.iOS.ViewControllers.Repositories
             };
             TableView.TableHeaderView = header;
 
-            ViewModel.WhenAnyValue(x => x.Project).Where(x => x != null).Subscribe(x =>
+            ViewModel.WhenAnyValue(x => x.DisplayName).Where(x => x != null).Subscribe(x => 
             {
-                if (x.IsPersonal)
-                    header.Text = x.Name + "'s Personal Repositories";
-                else
-                    header.Text = x.Description;
+                header.Text = x;
                 TableView.TableHeaderView = header;
-                var selfLink = x.Links["self"].FirstOrDefault();
-                if (selfLink != null && !string.IsNullOrEmpty(selfLink.Href))
-                    header.ImageUri = selfLink.Href + "/avatar.png";
+            });
+
+            ViewModel.WhenAnyValue(x => x.ImageUrl).Where(x => x != null).Subscribe(x =>
+            {
+                    header.ImageUri = x;
             });
         }
     }

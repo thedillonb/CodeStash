@@ -1,18 +1,24 @@
-﻿using CodeStash.Core.ViewModels.Commits;
-using MonoTouch.Dialog;
-using CodeFramework.iOS.Views;
+﻿using System;
+using CodeStash.Core.ViewModels.Commits;
 using ReactiveUI;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace CodeStash.iOS.ViewControllers.Commits
 {
-    public class CommitsBranchViewController : ViewModelCollectionView<CommitsBranchViewModel>
+    public class CommitsBranchViewController : ViewModelCollectionViewController<CommitsBranchViewModel>
     {
         public override void ViewDidLoad()
         {
-            var icon = Images.Branch.ImageWithRenderingMode(MonoTouch.UIKit.UIImageRenderingMode.AlwaysTemplate);
             Title = "Commits";
 
-            Bind(ViewModel.WhenAnyValue(x => x.Branches), x => 
+            this.WhenActivated(d =>
+            {
+                d(SearchTextChanging.Subscribe(x => ViewModel.SearchKeyword = x));
+            });
+
+            var icon = Images.Branch.ImageWithRenderingMode(MonoTouch.UIKit.UIImageRenderingMode.AlwaysTemplate);
+            this.BindList(ViewModel.Branches, x => 
             {
                 var element = new StyledStringElement(x.DisplayId, () => ViewModel.GoToCommitsCommand.Execute(x));
                 element.Image = icon;

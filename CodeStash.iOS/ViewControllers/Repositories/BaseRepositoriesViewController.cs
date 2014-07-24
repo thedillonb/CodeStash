@@ -1,13 +1,23 @@
-﻿using MonoTouch.UIKit;
-using MonoTouch.Dialog;
+﻿using System;
+using MonoTouch.UIKit;
 using CodeStash.Core.ViewModels.Repositories;
-using CodeFramework.iOS.Views;
 using ReactiveUI;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace CodeStash.iOS.ViewControllers.Repositories
 {
-    public abstract class BaseRepositoriesViewController<TViewModel> : ViewModelCollectionView<TViewModel> where TViewModel : BaseRepositoriesViewModel
+    public abstract class BaseRepositoriesViewController<TViewModel> : ViewModelCollectionViewController<TViewModel> where TViewModel : BaseRepositoriesViewModel
     {
+        protected BaseRepositoriesViewController(bool searchbar = true)
+            : base(searchbarEnabled: searchbar)
+        {
+            this.WhenActivated(d =>
+            {
+                d(SearchTextChanging.Subscribe(x => ViewModel.SearchKeyword = x));
+            });
+        }
+
         public override void ViewDidLoad()
         {
             Title = ViewModel.Name;
@@ -15,7 +25,7 @@ namespace CodeStash.iOS.ViewControllers.Repositories
 
             base.ViewDidLoad();
 
-            this.Bind(ViewModel.WhenAnyValue(x => x.Repositories), x =>
+            this.BindList(ViewModel.Repositories, x =>
             {
                 var el = new StyledStringElement(x.Name, ViewModel.ShowOwner ? x.Project.Name : null, UITableViewCellStyle.Subtitle);
                 el.Accessory = UITableViewCellAccessory.DisclosureIndicator;

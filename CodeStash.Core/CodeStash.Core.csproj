@@ -36,13 +36,16 @@
       <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\ReactiveUI.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Core">
-      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Core.dll</HintPath>
+      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\Common\System.Reactive.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Interfaces">
-      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Interfaces.dll</HintPath>
+      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\Common\System.Reactive.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Linq">
-      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\System.Reactive.Linq.dll</HintPath>
+      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\Common\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Splat">
+      <HintPath>..\lib\CodeFramework\lib\Xamarin.Utilities\lib\iOS\Splat.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
@@ -89,9 +92,12 @@
     <Compile Include="ViewModels\PullRequests\PullRequestDiffViewModel.cs" />
     <Compile Include="Bootstrap.cs" />
     <Compile Include="ViewModels\PullRequests\PullRequestParticipantsViewModel.cs" />
+    <Compile Include="Data\Account.cs" />
+    <Compile Include="Services\AccountsService.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <Folder Include="ViewModels\Build\" />
+    <Folder Include="Data\" />
   </ItemGroup>
 </Project>

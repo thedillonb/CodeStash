@@ -30,7 +30,7 @@ namespace CodeStash.Core.ViewModels.Application
         {
             ApplicationService = applicationService;
             EnvironmentalService = environmentalService;
-            DeleteCacheCommand = new ReactiveCommand();
+            DeleteCacheCommand = ReactiveCommand.Create();
 //            SaveCredentials = ApplicationService.Account.SaveCredentials;
 //
 //            this.WhenAnyValue(x => x.SaveCredentials).Skip(1).Subscribe(x =>

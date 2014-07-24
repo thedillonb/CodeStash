@@ -3,15 +3,16 @@ using ReactiveUI;
 using System.Threading.Tasks;
 using CodeStash.Core.Services;
 using AtlassianStashSharp.Models;
-using Xamarin.Utilities.Core.ViewModels;
 using CodeStash.Core.ViewModels.Source;
 using CodeStash.Core.ViewModels.PullRequests;
 using CodeStash.Core.ViewModels.Commits;
 using System.Reactive.Linq;
+using Xamarin.Utilities.Core.ViewModels;
+using CodeFramework.Core.Services;
 
 namespace CodeStash.Core.ViewModels.Repositories
 {
-    public class RepositoryViewModel : LoadableViewModel
+    public class RepositoryViewModel : BaseViewModel, ILoadableViewModel
     {
         public string ProjectKey { get; set; }
 
@@ -45,20 +46,23 @@ namespace CodeStash.Core.ViewModels.Repositories
             private set { this.RaiseAndSetIfChanged(ref _forkedRepositories, value); }
         }
 
-        public IReactiveCommand GoToSourceCommand { get; private set; }
+        public IReactiveCommand<object> GoToSourceCommand { get; private set; }
 
-        public IReactiveCommand GoToPullRequestsCommand { get; private set; }
+        public IReactiveCommand<object> GoToPullRequestsCommand { get; private set; }
 
-        public IReactiveCommand GoToCommitsCommand { get; private set; }
+        public IReactiveCommand<object> GoToCommitsCommand { get; private set; }
 
-        public IReactiveCommand GoToForksCommand { get; private set; }
+        public IReactiveCommand<object> GoToForksCommand { get; private set; }
 
-        public IReactiveCommand GoToRelatedCommand { get; private set; }
+        public IReactiveCommand<object> GoToRelatedCommand { get; private set; }
 
+        public IReactiveCommand<object> GoToStashCommand { get; private set; }
 
-        public RepositoryViewModel(IApplicationService applicationService)
+        public IReactiveCommand LoadCommand { get; private set; }
+
+        public RepositoryViewModel(IApplicationService applicationService, IAccountsService accountsService)
         {
-            LoadCommand.RegisterAsyncTask(async _ => 
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async _ => 
             {
                 applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].GetRelated().ExecuteAsync().ContinueWith(t =>
                 {
@@ -75,7 +79,7 @@ namespace CodeStash.Core.ViewModels.Repositories
                 Repository = (await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Get().ExecuteAsync()).Data;
             });
 
-            GoToSourceCommand = new ReactiveCommand();
+            GoToSourceCommand = ReactiveCommand.Create();
             GoToSourceCommand.Subscribe(_ =>
             {
                 var vm = CreateViewModel<SourceViewModel>();
@@ -84,7 +88,7 @@ namespace CodeStash.Core.ViewModels.Repositories
                 ShowViewModel(vm);
             });
 
-            GoToPullRequestsCommand = new ReactiveCommand();
+            GoToPullRequestsCommand = ReactiveCommand.Create();
             GoToPullRequestsCommand.Subscribe(_ =>
             {
                 var vm = CreateViewModel<PullRequestsViewModel>();
@@ -93,7 +97,7 @@ namespace CodeStash.Core.ViewModels.Repositories
                 ShowViewModel(vm);
             });
 
-            GoToCommitsCommand = new ReactiveCommand();
+            GoToCommitsCommand = ReactiveCommand.Create();
             GoToCommitsCommand.Subscribe(_ =>
             {
                 var vm = CreateViewModel<CommitsBranchViewModel>();
@@ -102,7 +106,7 @@ namespace CodeStash.Core.ViewModels.Repositories
                 ShowViewModel(vm);
             });
 
-            GoToForksCommand = new ReactiveCommand(this.WhenAnyValue(x => x.ForkedRepositories).Any(x => x > 0));
+            GoToForksCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.ForkedRepositories).Any(x => x > 0));
             GoToForksCommand.Subscribe(_ =>
             {
                 var vm = CreateViewModel<ForkedRepositoriesViewModel>();
@@ -112,13 +116,32 @@ namespace CodeStash.Core.ViewModels.Repositories
                 ShowViewModel(vm);
             });
 
-            GoToRelatedCommand = new ReactiveCommand(this.WhenAnyValue(x => x.RelatedRepositories).Any(x => x > 0));
+            GoToRelatedCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.RelatedRepositories).Any(x => x > 0));
             GoToRelatedCommand.Subscribe(_ =>
             {
                 var vm = CreateViewModel<RelatedRepositoriesViewModel>();
                 vm.ProjectKey = ProjectKey;
                 vm.RepositorySlug = RepositorySlug;
                 vm.Name = "Related";
+                ShowViewModel(vm);
+            });
+
+            GoToStashCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.Repository).Select(x => x != null));
+            GoToStashCommand.Select(x => Repository).Subscribe(x =>
+            {
+                var vm = CreateViewModel<WebBrowserViewModel>();
+                if (x.Links == null || !x.Links.ContainsKey("self"))
+                {
+                    if (x.Link.Url.StartsWith("http", StringComparison.Ordinal))
+                        vm.Url = x.Link.Url;
+                    else
+                        vm.Url = accountsService.ActiveAccount.Domain.TrimEnd('/') + "/" + x.Link.Url.TrimStart('/');
+                }
+                else
+                {
+                    vm.Url = x.Links["self"][0].Href;
+                }
+
                 ShowViewModel(vm);
             });
         }

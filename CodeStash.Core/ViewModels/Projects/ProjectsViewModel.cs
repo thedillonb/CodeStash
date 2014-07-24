@@ -9,25 +9,26 @@ using Xamarin.Utilities.Core.ReactiveAddons;
 using AtlassianStashSharp.Helpers;
 using CodeFramework.Core.Services;
 using CodeFramework.Core.Data;
-using System.Collections.Generic;
 
 namespace CodeStash.Core.ViewModels.Projects
 {
-    public class ProjectsViewModel  : LoadableViewModel
+    public class ProjectsViewModel  : BaseViewModel, ILoadableViewModel
     {
         public ReactiveCollection<Project> Projects { get; private set; }
 
         public IAccount Account { get; private set; }
 
-        public IReactiveCommand GoToProjectCommand { get; private set; }
+        public IReactiveCommand<object> GoToProjectCommand { get; private set; }
+
+        public IReactiveCommand LoadCommand { get; private set; }
 
         public ProjectsViewModel(IApplicationService applicationService, IAccountsService accountsService)
         {
             Account = accountsService.ActiveAccount;
-            GoToProjectCommand = new ReactiveCommand();
+            GoToProjectCommand = ReactiveCommand.Create();
             Projects = new ReactiveCollection<Project>(new [] { CreatePersonalProject(accountsService.ActiveAccount) });
 
-            LoadCommand.RegisterAsyncTask(async x =>
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async x =>
             {
                 var getAllProjects = applicationService.StashClient.Projects.GetAll();
 
@@ -44,6 +45,7 @@ namespace CodeStash.Core.ViewModels.Projects
                 var vm = this.CreateViewModel<RepositoriesViewModel>();
                 vm.ProjectKey = x.Key;
                 vm.Name = x.Name;
+                vm.Personal = x.Type == null;
                 ShowViewModel(vm);
             });
         }

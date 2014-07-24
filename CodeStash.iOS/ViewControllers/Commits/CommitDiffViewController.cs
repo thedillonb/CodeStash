@@ -8,16 +8,8 @@ using Xamarin.Utilities.Core.Services;
 
 namespace CodeStash.iOS.ViewControllers.Commits
 {
-    public class CommitDiffViewController : WebViewController, IViewFor<CommitDiffViewModel>
+    public class CommitDiffViewController : WebView<CommitDiffViewModel>
     {
-        public CommitDiffViewModel ViewModel { get; set; }
-
-        object IViewFor.ViewModel
-        {
-            get { return ViewModel; }
-            set { ViewModel = (CommitDiffViewModel)value; }
-        }
-
         public override void ViewDidLoad()
         {
             Title = ViewModel.Name;

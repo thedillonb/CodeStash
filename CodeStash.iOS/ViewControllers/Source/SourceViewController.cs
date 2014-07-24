@@ -4,15 +4,15 @@ using MonoTouch.UIKit;
 using ReactiveUI;
 using System.Linq;
 using System.Reactive.Linq;
-using MonoTouch.Dialog;
-using CodeFramework.iOS.Views;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace CodeStash.iOS.ViewControllers.Source
 {
-    public class SourceViewController : ViewModelDialogView<SourceViewModel>
+    public class SourceViewController : ViewModelDialogViewController<SourceViewModel>
     {
         public SourceViewController()
-            : base(UITableViewStyle.Plain)
+            : base(style: UITableViewStyle.Plain)
         {
         }
 
@@ -26,7 +26,8 @@ namespace CodeStash.iOS.ViewControllers.Source
             NavigationItem.TitleView = selector;
 
             var sec = new Section();
-            Root = new RootElement("Source") { sec };
+            Root.Reset(sec);
+
             var branchIcon = Images.Branch.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
             var tagIcon = Images.Tag.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 

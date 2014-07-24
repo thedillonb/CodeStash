@@ -6,7 +6,7 @@ using Xamarin.Utilities.Core.ViewModels;
 
 namespace CodeStash.Core.ViewModels.Source
 {
-    public class FileViewModel : LoadableViewModel
+    public class FileViewModel : BaseViewModel, ILoadableViewModel
     {
         public string ProjectKey { get; set; }
 
@@ -25,9 +25,11 @@ namespace CodeStash.Core.ViewModels.Source
             private set { this.RaiseAndSetIfChanged(ref _content, value); }
         }
 
+        public IReactiveCommand LoadCommand { get; private set; }
+
         public FileViewModel(IApplicationService applicationService)
         {
-            LoadCommand.RegisterAsyncTask(async _ =>
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async _ =>
             {
                 var response = await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].GetFileContent(Path, Branch).ExecuteAsync();
                 if (response.Data.Lines == null)

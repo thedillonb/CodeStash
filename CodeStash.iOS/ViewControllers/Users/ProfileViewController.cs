@@ -2,42 +2,36 @@
 using System.Linq;
 using System.Reactive.Linq;
 using AtlassianStashSharp.Models;
-using CodeFramework.iOS.Views;
 using CodeStash.Core.ViewModels.Users;
-using CodeStash.iOS.Views;
-using MonoTouch.Dialog;
 using MonoTouch.UIKit;
 using ReactiveUI;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace CodeStash.iOS.ViewControllers.Users
 {
-    public class ProfileViewController : ViewModelDialogView<ProfileViewModel>
+    public class ProfileViewController : ViewModelPrettyDialogViewController<ProfileViewModel>
     {
         public override void ViewDidLoad()
         {
-            Style = UITableViewStyle.Grouped;
             Title = ViewModel.UserSlug;
 
             base.ViewDidLoad();
 
-            var header = new ImageAndTitleHeaderView { BackgroundColor = UIColor.GroupTableViewBackgroundColor };
-            header.Image = CodeFramework.iOS.Images.LoginUserUnknown;
-            header.Text = ViewModel.UserSlug;
+            HeaderView.Image = CodeFramework.iOS.Images.LoginUserUnknown;
 
             var repositorySection = new Section();
-            Root = new RootElement(Title) { repositorySection };
-
-            TableView.TableHeaderView = header;
+            Root.Reset(repositorySection);
 
             ViewModel.WhenAnyValue(x => x.User).Where(x => x != null).Subscribe(x =>
             {
-                header.Text = x.DisplayName;
+                HeaderView.Text = x.DisplayName;
 
                 var selfLink = x.Links["self"].FirstOrDefault();
                 if (selfLink == null || string.IsNullOrEmpty(selfLink.Href))
                     return;
 
-                header.ImageUri = selfLink.Href + "/avatar.png";
+                HeaderView.ImageUri = selfLink.Href + "/avatar.png";
             });
 
             ViewModel.Repositories.Changed.Subscribe(_ => repositorySection.Reset(ViewModel.Repositories.Select(x =>
@@ -47,6 +41,7 @@ namespace CodeStash.iOS.ViewControllers.Users
                 el.Tapped += () => ViewModel.GoToRepositoryCommand.Execute(x);
                 return el;
             })));
+
         }
     }
 }

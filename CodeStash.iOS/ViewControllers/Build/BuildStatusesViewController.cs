@@ -4,14 +4,16 @@ using MonoTouch.UIKit;
 using CodeStash.Core.ViewModels.Build;
 using CodeFramework.iOS.Views;
 using ReactiveUI;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace CodeStash.iOS.ViewControllers.Build
 {
-    public class BuildStatusesViewController : ViewModelCollectionView<BuildStatusesViewModel>
+    public class BuildStatusesViewController : ViewModelCollectionViewController<BuildStatusesViewModel>
     {
         public BuildStatusesViewController()
+            : base(searchbarEnabled: false)
         {
-            EnableSearch = false;
         }
 
         public override void ViewDidLoad()
@@ -21,7 +23,7 @@ namespace CodeStash.iOS.ViewControllers.Build
             var failedIcon = Images.Error.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
             var loadingIcon = Images.Update.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 
-            Bind(ViewModel.WhenAnyValue(x => x.BuildStatues), x =>
+            this.BindList(ViewModel.BuildStatues, x =>
             {
                 var element = new StyledStringElement(x.Name, string.Empty, UITableViewCellStyle.Subtitle);
 

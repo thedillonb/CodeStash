@@ -20,6 +20,8 @@ namespace CodeStash.Core
 
             IoC.RegisterAsInstance<IAddAccountViewModel, CodeStash.Core.ViewModels.Application.LoginViewModel>();
             IoC.RegisterAsInstance<IMainViewModel, CodeStash.Core.ViewModels.Application.MainViewModel>();
+
+            IoC.Resolve<IErrorService>().Init("http://sentry.dillonbuchanan.com/api/10/store/", "feff80b737194baaa858bb22d8c0dd3f", "192c3148ee584e4ab80561c5d16bc83a");
         }
     }
 }

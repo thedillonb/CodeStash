@@ -6,10 +6,12 @@ using Xamarin.Utilities.Core.ViewModels;
 using CodeStash.Core.ViewModels.Build;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Reactive.Linq;
+using CodeFramework.Core.Services;
 
 namespace CodeStash.Core.ViewModels.PullRequests
 {
-    public class PullRequestViewModel : LoadableViewModel
+    public class PullRequestViewModel : BaseViewModel, ILoadableViewModel
     {
         private PullRequest _pullRequest;
 
@@ -45,27 +47,30 @@ namespace CodeStash.Core.ViewModels.PullRequests
 
         public ReactiveList<Activity> Activities { get; private set; }
 
-        public IReactiveCommand GoToChangesCommand { get; private set; }
+        public IReactiveCommand<object> GoToChangesCommand { get; private set; }
 
-        public IReactiveCommand GoToCommitsCommand { get; private set; }
+        public IReactiveCommand<object> GoToCommitsCommand { get; private set; }
 
-        public IReactiveCommand GoToBuildStatusCommand { get; private set; }
+        public IReactiveCommand<object> GoToBuildStatusCommand { get; private set; }
 
-        public IReactiveCommand GoToCommentsCommand { get; private set; }
+        public IReactiveCommand<object> GoToCommentsCommand { get; private set; }
 
-        public IReactiveCommand GoToParticipantsCommand { get; private set; }
+        public IReactiveCommand<object> GoToParticipantsCommand { get; private set; }
 
+        public IReactiveCommand<object> GoToStashCommand { get; private set; }
 
-        public PullRequestViewModel(IApplicationService applicationService)
+        public IReactiveCommand LoadCommand { get; private set; }
+
+        public PullRequestViewModel(IApplicationService applicationService, IAccountsService accountsService)
         {
             Commits = new ReactiveList<Commit>();
             Participants = new ReactiveList<PullRequestParticipant>();
             Activities = new ReactiveList<Activity>();
-            GoToChangesCommand = new ReactiveCommand();
-            GoToCommitsCommand = new ReactiveCommand();
-            GoToCommentsCommand = new ReactiveCommand();
+            GoToChangesCommand = ReactiveCommand.Create();
+            GoToCommitsCommand = ReactiveCommand.Create();
+            GoToCommentsCommand = ReactiveCommand.Create();
 
-            LoadCommand.RegisterAsyncTask(async _ =>
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async _ =>
             {
                 var pullRequest = applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].PullRequests[PullRequestId];
                 PullRequest = (await pullRequest.Get().ExecuteAsync()).Data;
@@ -103,7 +108,7 @@ namespace CodeStash.Core.ViewModels.PullRequests
                 ShowViewModel(vm);
             });
 
-            GoToBuildStatusCommand = new ReactiveCommand(this.WhenAnyValue(x => x.BuildStatus, x => x != null && x.Length > 0));
+            GoToBuildStatusCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.BuildStatus, x => x != null && x.Length > 0));
             GoToBuildStatusCommand.Subscribe(x =>
             {
                 var vm = CreateViewModel<BuildStatusesViewModel>();
@@ -111,7 +116,7 @@ namespace CodeStash.Core.ViewModels.PullRequests
                 ShowViewModel(vm);
             });
 
-            GoToParticipantsCommand = new ReactiveCommand();
+            GoToParticipantsCommand = ReactiveCommand.Create();
             GoToParticipantsCommand.Subscribe(x =>
             {
                 var vm = CreateViewModel<PullRequestParticipantsViewModel>();
@@ -121,6 +126,24 @@ namespace CodeStash.Core.ViewModels.PullRequests
                 ShowViewModel(vm);
             });
 
+            GoToStashCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.PullRequest).Select(x => x != null));
+            GoToStashCommand.Select(x => PullRequest).Subscribe(x =>
+            {
+                var vm = CreateViewModel<WebBrowserViewModel>();
+                if (x.Links == null || !x.Links.ContainsKey("self"))
+                {
+                    if (x.Link.Url.StartsWith("http", StringComparison.Ordinal))
+                        vm.Url = x.Link.Url;
+                    else
+                        vm.Url = accountsService.ActiveAccount.Domain.TrimEnd('/') + "/" + x.Link.Url.TrimStart('/');
+                }
+                else
+                {
+                    vm.Url = x.Links["self"][0].Href;
+                }
+
+                ShowViewModel(vm);
+            });
         }
     }
 }

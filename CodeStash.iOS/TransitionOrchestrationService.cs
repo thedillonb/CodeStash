@@ -58,8 +58,7 @@ namespace CodeStash.iOS
             else if (fromViewController is MainViewController)
             {
                 var slideout = ((MainViewController)fromViewController);
-                slideout.MainViewController = new MainNavigationController(toViewController, slideout, 
-                    new UIBarButtonItem(CodeFramework.iOS.Images.MenuButton, UIBarButtonItemStyle.Plain, (s, e) => slideout.Open(true)));
+                slideout.MainViewController = new MainNavigationController(toViewController, slideout);
             }
             else
             {

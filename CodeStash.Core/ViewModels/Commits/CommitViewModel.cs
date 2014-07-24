@@ -11,7 +11,7 @@ using CodeStash.Core.ViewModels.Build;
 
 namespace CodeStash.Core.ViewModels.Commits
 {
-    public class CommitViewModel : LoadableViewModel
+    public class CommitViewModel : BaseViewModel, ILoadableViewModel
     {
         public string ProjectKey { get; set; }
 
@@ -55,22 +55,24 @@ namespace CodeStash.Core.ViewModels.Commits
 
         public ReactiveList<Change> Changes { get; private set; }
 
-        public IReactiveCommand GoToBuildStatusCommand { get; private set; }
+        public IReactiveCommand<object> GoToBuildStatusCommand { get; private set; }
 
-        public IReactiveCommand GoToParentCommitCommand { get; private set; }
+        public IReactiveCommand<object> GoToParentCommitCommand { get; private set; }
 
-        public IReactiveCommand GoToBranchesCommand { get; private set; }
+        public IReactiveCommand<object> GoToBranchesCommand { get; private set; }
 
-        public IReactiveCommand GoToCommentsCommand { get; private set; }
+        public IReactiveCommand<object> GoToCommentsCommand { get; private set; }
 
-        public IReactiveCommand GoToDiffCommand { get; private set; }
+        public IReactiveCommand<object> GoToDiffCommand { get; private set; }
+
+        public IReactiveCommand LoadCommand { get; private set; }
 
         public CommitViewModel(IApplicationService applicationService)
         {
             Changes = new ReactiveList<Change>();
             Branches = new ReactiveList<Branch>();
 
-            LoadCommand.RegisterAsyncTask(async _ =>
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async _ =>
             {
                 applicationService.StashClient.BranchUtilities.GetBranches(ProjectKey, RepositorySlug, Node)
                     .ExecuteAsync().ContinueInBackground(x => Branches.Reset(x.Data.Values));
@@ -83,7 +85,7 @@ namespace CodeStash.Core.ViewModels.Commits
                 Changes.Reset(await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Commits[Node].GetAllChanges().ExecuteAsyncAll());
             });
 
-            GoToBuildStatusCommand = new ReactiveCommand(this.WhenAnyValue(x => x.BuildStatus, x => x != null && x.Length > 0));
+            GoToBuildStatusCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.BuildStatus, x => x != null && x.Length > 0));
             GoToBuildStatusCommand.Subscribe(_ =>
             {
                 var vm = CreateViewModel<BuildStatusesViewModel>();
@@ -91,7 +93,7 @@ namespace CodeStash.Core.ViewModels.Commits
                 ShowViewModel(vm);
             });
 
-            GoToParentCommitCommand = new ReactiveCommand(this.WhenAnyValue(x => x.Commit, x => x != null && x.Parents != null && x.Parents.Count > 0));
+            GoToParentCommitCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.Commit, x => x != null && x.Parents != null && x.Parents.Count > 0));
             GoToParentCommitCommand.Subscribe(_ =>
             {
 //                if (Commit.Parents.Count > 1)
@@ -109,7 +111,7 @@ namespace CodeStash.Core.ViewModels.Commits
                 }
             });
 
-            GoToBranchesCommand = new ReactiveCommand(this.Branches.CountChanged.Select(x => x > 0));
+            GoToBranchesCommand = ReactiveCommand.Create(this.Branches.CountChanged.Select(x => x > 0));
             GoToBranchesCommand.Subscribe(_ =>
             {
 //                if (Branches.Count > 1)
@@ -128,9 +130,9 @@ namespace CodeStash.Core.ViewModels.Commits
                 }
             });
 
-            GoToCommentsCommand = new ReactiveCommand();
+            GoToCommentsCommand = ReactiveCommand.Create();
 
-            GoToDiffCommand = new ReactiveCommand(this.WhenAnyValue(x => x.Commit, x => x != null));
+            GoToDiffCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.Commit).Select(x => x != null));
             GoToDiffCommand.OfType<Change>().Subscribe(x =>
             {
                 var vm = CreateViewModel<CommitDiffViewModel>();

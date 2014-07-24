@@ -1,26 +1,27 @@
 ﻿using System;
 using CodeStash.Core.ViewModels.PullRequests;
 using MonoTouch.UIKit;
-using MonoTouch.Dialog;
 using System.Collections.Generic;
 using System.Linq;
 using ReactiveUI;
-using CodeFramework.iOS.Views;
+using Xamarin.Utilities.ViewControllers;
+using Xamarin.Utilities.DialogElements;
 
 namespace CodeStash.iOS.ViewControllers.PullRequests
 {
-    public class PullRequestChangesViewController : ViewModelCollectionView<PullRequestChangesViewModel>
+    public class PullRequestChangesViewController : ViewModelCollectionViewController<PullRequestChangesViewModel>
     {
         public PullRequestChangesViewController()
+            : base(searchbarEnabled: false)
         {
-            EnableSearch = false;
         }
 
         public override void ViewDidLoad()
         {
+            Title = "Changes";
+
             base.ViewDidLoad();
 
-            Root = new RootElement("Changes");
             var fileIcon = Images.File.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 
             ViewModel.Changes.Changed.Subscribe(_ =>

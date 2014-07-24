@@ -1,6 +1,5 @@
 ﻿using System;
 using Xamarin.Utilities.ViewControllers;
-using CodeStash.Core.ViewModels.Commits;
 using ReactiveUI;
 using MonoTouch.Foundation;
 using System.Reactive.Linq;
@@ -10,16 +9,8 @@ using Xamarin.Utilities.Core.Services;
 
 namespace CodeStash.iOS.ViewControllers.PullRequests
 {
-    public class PullRequestDiffViewController : WebViewController, IViewFor<PullRequestDiffViewModel>
+    public class PullRequestDiffViewController : WebView<PullRequestDiffViewModel>
     {
-        public PullRequestDiffViewModel ViewModel { get; set; }
-
-        object IViewFor.ViewModel
-        {
-            get { return ViewModel; }
-            set { ViewModel = (PullRequestDiffViewModel)value; }
-        }
-
         public override void ViewDidLoad()
         {
             Title = ViewModel.Name;

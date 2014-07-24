@@ -8,25 +8,38 @@ using Xamarin.Utilities.Core.ReactiveAddons;
 
 namespace CodeStash.Core.ViewModels.Commits
 {
-    public class CommitsBranchViewModel : LoadableViewModel
+    public class CommitsBranchViewModel : BaseViewModel, ILoadableViewModel
     {
         public string ProjectKey { get; set; }
 
         public string RepositorySlug { get; set; }
 
-        public ReactiveCollection<Branch> Branches { get; private set; }
+        public IReadOnlyReactiveList<Branch> Branches { get; private set; }
 
-        public IReactiveCommand GoToCommitsCommand { get; private set; }
+        public IReactiveCommand LoadCommand { get; private set; }
+
+        public IReactiveCommand<object> GoToCommitsCommand { get; private set; }
+
+        private string _searchKeyword;
+        public string SearchKeyword
+        {
+            get { return _searchKeyword; }
+            set { this.RaiseAndSetIfChanged(ref _searchKeyword, value); }
+        }
 
         public CommitsBranchViewModel(IApplicationService applicationService)
         {
-            GoToCommitsCommand = new ReactiveCommand();
-            Branches = new ReactiveCollection<Branch>();
+            GoToCommitsCommand = ReactiveCommand.Create();
 
-            LoadCommand.RegisterAsyncTask(async x =>
+            var branches = new ReactiveCollection<Branch>();
+            Branches = branches.CreateDerivedCollection(x => x, 
+                x => x.DisplayId.IndexOf(SearchKeyword ?? string.Empty, StringComparison.OrdinalIgnoreCase) >= 0,
+                signalReset: this.WhenAnyValue(x => x.SearchKeyword));
+
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async x =>
             {
                 var response = await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Branches.GetAll().ExecuteAsync();
-                Branches.Reset(response.Data.Values);
+                branches.Reset(response.Data.Values);
             });
 
             GoToCommitsCommand.OfType<Branch>().Subscribe(x =>

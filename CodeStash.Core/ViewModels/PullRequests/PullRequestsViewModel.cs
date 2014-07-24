@@ -8,7 +8,7 @@ using Xamarin.Utilities.Core.ViewModels;
 
 namespace CodeStash.Core.ViewModels.PullRequests
 {
-    public class PullRequestsViewModel : LoadableViewModel
+    public class PullRequestsViewModel : BaseViewModel, ILoadableViewModel
     {
         protected readonly IApplicationService ApplicationService;
         private int _selectedView;
@@ -19,7 +19,9 @@ namespace CodeStash.Core.ViewModels.PullRequests
 
         public ReactiveList<PullRequest> PullRequests { get; private set; }
 
-        public IReactiveCommand GoToPullRequestCommand { get; private set; }
+        public IReactiveCommand<object> GoToPullRequestCommand { get; private set; }
+
+        public IReactiveCommand LoadCommand { get; private set; }
 
         public int SelectedView
         {
@@ -32,11 +34,11 @@ namespace CodeStash.Core.ViewModels.PullRequests
             ApplicationService = applicationService;
             PullRequests = new ReactiveList<PullRequest>();
 
-            LoadCommand.RegisterAsyncTask(_ => Load());
+            LoadCommand = ReactiveCommand.CreateAsyncTask(_ => Load());
 
             this.WhenAnyValue(x => x.SelectedView).Skip(1).Subscribe(_ => LoadCommand.ExecuteIfCan());
 
-            GoToPullRequestCommand = new ReactiveCommand();
+            GoToPullRequestCommand = ReactiveCommand.Create();
             GoToPullRequestCommand.OfType<PullRequest>().Subscribe(x =>
             {
                 var vm = CreateViewModel<PullRequestViewModel>();

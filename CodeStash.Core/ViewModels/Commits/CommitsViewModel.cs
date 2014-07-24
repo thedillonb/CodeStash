@@ -2,13 +2,13 @@
 using CodeStash.Core.Services;
 using ReactiveUI;
 using AtlassianStashSharp.Models;
-using Xamarin.Utilities.Core.ViewModels;
 using System.Reactive.Linq;
 using Xamarin.Utilities.Core.ReactiveAddons;
+using Xamarin.Utilities.Core.ViewModels;
 
 namespace CodeStash.Core.ViewModels.Commits
 {
-    public class CommitsViewModel : LoadableViewModel
+    public class CommitsViewModel : BaseViewModel, ILoadableViewModel
     {
         public string ProjectKey { get; set; }
 
@@ -18,15 +18,27 @@ namespace CodeStash.Core.ViewModels.Commits
 
         public string Title { get; set; }
 
-        public IReactiveCommand GoToCommitCommand { get; private set; }
+        public IReactiveCommand<object> GoToCommitCommand { get; private set; }
 
-        public ReactiveCollection<Commit> Commits { get; private set; }
+        public IReadOnlyReactiveList<Commit> Commits { get; private set; }
+
+        public IReactiveCommand LoadCommand { get; private set; }
+
+        private string _searchKeyword;
+        public string SearchKeyword
+        {
+            get { return _searchKeyword; }
+            set { this.RaiseAndSetIfChanged(ref _searchKeyword, value); }
+        }
 
         public CommitsViewModel(IApplicationService applicationService)
         {
-            Commits = new ReactiveCollection<Commit>();
+            var commits = new ReactiveCollection<Commit>();
+            Commits = commits.CreateDerivedCollection(x => x, 
+                x => x.Message.IndexOf(SearchKeyword ?? string.Empty, StringComparison.OrdinalIgnoreCase) >= 0,
+                signalReset: this.WhenAnyValue(x => x.SearchKeyword));
 
-            GoToCommitCommand = new ReactiveCommand();
+            GoToCommitCommand = ReactiveCommand.Create();
             GoToCommitCommand.OfType<Commit>().Subscribe(x =>
             {
                 var vm = CreateViewModel<CommitViewModel>();
@@ -36,10 +48,10 @@ namespace CodeStash.Core.ViewModels.Commits
                 ShowViewModel(vm);
             });
 
-            LoadCommand.RegisterAsyncTask(async x =>
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async x =>
             {
                 var response = await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].Commits.GetAll(until: Branch).ExecuteAsync();
-                Commits.Reset(response.Data.Values);
+                commits.Reset(response.Data.Values);
             });
         }
     }

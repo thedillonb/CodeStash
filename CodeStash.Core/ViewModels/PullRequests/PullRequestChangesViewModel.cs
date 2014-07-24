@@ -5,11 +5,10 @@ using AtlassianStashSharp.Models;
 using CodeStash.Core.Services;
 using AtlassianStashSharp.Helpers;
 using System.Reactive.Linq;
-using CodeStash.Core.ViewModels.Commits;
 
 namespace CodeStash.Core.ViewModels.PullRequests
 {
-    public class PullRequestChangesViewModel : LoadableViewModel
+    public class PullRequestChangesViewModel : BaseViewModel, ILoadableViewModel
     {
         public string ProjectKey { get; set; }
 
@@ -21,19 +20,20 @@ namespace CodeStash.Core.ViewModels.PullRequests
 
         public ReactiveList<Change> Changes { get; private set; }
 
-        public IReactiveCommand GoToDiffCommand { get; private set; }
+        public IReactiveCommand<object> GoToDiffCommand { get; private set; }
 
+        public IReactiveCommand LoadCommand { get; private set; }
 
         public PullRequestChangesViewModel(IApplicationService applicationService)
         {
             Changes = new ReactiveList<Change>();
 
-            LoadCommand.RegisterAsyncTask(async _ =>
+            LoadCommand = ReactiveCommand.CreateAsyncTask(async _ =>
             {
                 Changes.Reset(await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].PullRequests[PullRequestId].GetAllChanges().ExecuteAsyncAll());
             });
          
-            GoToDiffCommand = new ReactiveCommand();
+            GoToDiffCommand = ReactiveCommand.Create();
             GoToDiffCommand.OfType<Change>().Subscribe(x =>
             {
                 var vm = CreateViewModel<PullRequestDiffViewModel>();
