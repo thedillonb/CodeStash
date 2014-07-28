@@ -23,9 +23,9 @@ namespace CodeStash.iOS.ViewControllers.Application
         {
             base.ViewDidLoad();
 
-            ViewModel.WhenAnyValue(x => x.Username).Subscribe(x => User.Text = x);
-            ViewModel.WhenAnyValue(x => x.Password).Subscribe(x => Password.Text = x);
-            ViewModel.WhenAnyValue(x => x.Domain).Subscribe(x => Domain.Text = x);
+//            ViewModel.WhenAnyValue(x => x.Username).Subscribe(x => User.Text = x);
+//            ViewModel.WhenAnyValue(x => x.Password).Subscribe(x => Password.Text = x);
+//            ViewModel.WhenAnyValue(x => x.Domain).Subscribe(x => Domain.Text = x);
 
             User.EditingChanged += (sender, args) => 
                 ViewModel.Username = User.Text;

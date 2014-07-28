@@ -2,12 +2,14 @@
 using CodeStash.Core.Services;
 using ReactiveUI;
 using System.Text;
-using Xamarin.Utilities.Core.ViewModels;
+using CodeFramework.Core.ViewModels.Source;
 
 namespace CodeStash.Core.ViewModels.Source
 {
-    public class FileViewModel : BaseViewModel, ILoadableViewModel
+    public class FileViewModel : FileSourceViewModel<string>
     {
+        private IReactiveCommand _loadCommand;
+
         public string ProjectKey { get; set; }
 
         public string RepositorySlug { get; set; }
@@ -18,28 +20,28 @@ namespace CodeStash.Core.ViewModels.Source
 
         public string FileName { get; set; }
 
-        private string _content;
-        public string Content
+        public override IReactiveCommand LoadCommand 
         {
-            get { return _content; }
-            private set { this.RaiseAndSetIfChanged(ref _content, value); }
+            get { return _loadCommand; }
         }
-
-        public IReactiveCommand LoadCommand { get; private set; }
 
         public FileViewModel(IApplicationService applicationService)
         {
-            LoadCommand = ReactiveCommand.CreateAsyncTask(async _ =>
+            _loadCommand = ReactiveCommand.CreateAsyncTask(async _ =>
             {
                 var response = await applicationService.StashClient.Projects[ProjectKey].Repositories[RepositorySlug].GetFileContent(Path, Branch).ExecuteAsync();
                 if (response.Data.Lines == null)
                     throw new Exception("Unable to render this type of file.");
 
-                var content = new StringBuilder();
-                foreach (var line in response.Data.Lines)
-                    content.AppendLine(line.Text);
-                Content = content.ToString().Trim();
+                var file = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "source");
+                using (var s = new System.IO.StreamWriter(file, false, Encoding.UTF8))
+                    foreach (var line in response.Data.Lines)
+                        s.WriteLine(line.Text);
+
+                SourceItem = new FileSourceItemViewModel() { IsBinary = false, FilePath = file };
             });
+
+            SetupRx();
         }
     }
 }

@@ -1,17 +1,13 @@
 ﻿using System;
 using MonoTouch.UIKit;
 using CodeStash.Core.ViewModels.Source;
-using ReactiveUI;
-using System.Reactive.Linq;
-using MonoTouch.Foundation;
-using Xamarin.Utilities.ViewControllers;
-using CodeFramework.iOS.SourceBrowser;
+using CodeFramework.iOS.Views.Source;
 
 namespace CodeStash.iOS.ViewControllers.Source
 {
-    public class FileViewController : ViewModelViewController<FileViewModel>
+    public class FileViewController : FileSourceView<FileViewModel>
     {
-        private UIWebView _webView;
+        private UIActionSheet _actionSheet;
 
         public override void ViewDidLoad()
         {
@@ -19,19 +15,23 @@ namespace CodeStash.iOS.ViewControllers.Source
 
             base.ViewDidLoad();
 
-            View.BackgroundColor = UIColor.White;
+            NavigationItem.RightBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Action, (s, e) => ShowMenu());
+        }
 
-            _webView = new UIWebView();
-            _webView.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
-            _webView.Frame = new System.Drawing.RectangleF(0, 0, View.Bounds.Width, View.Bounds.Height);
-            View.Add(_webView);
-
-            ViewModel.WhenAnyValue(x => x.Content).Skip(1).Subscribe(x =>
+        private void ShowMenu()
+        {
+            _actionSheet = new UIActionSheet();
+            _actionSheet.Title = Title;
+            var changeTheme = _actionSheet.AddButton("Change Theme");
+            _actionSheet.CancelButtonIndex = _actionSheet.AddButton("Cancel");
+            _actionSheet.Clicked += (sender, e) => 
             {
-                var model = new SourceBrowserModel { Content = x };
-                var view = new SyntaxHighlighterView { Model = model };
-                _webView.LoadHtmlString(view.GenerateString(), NSBundle.MainBundle.BundleUrl);
-            });
+                if (e.ButtonIndex == changeTheme)
+                    ShowThemePicker();
+                _actionSheet = null;
+            };
+
+            _actionSheet.ShowInView(View);
         }
     }
 }
